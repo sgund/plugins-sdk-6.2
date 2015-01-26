@@ -1,5 +1,6 @@
 /bin
 /.DS_Store
+<<<<<<< HEAD
 /.classpath
 /.project
 /CONTRIBUTING.markdown
@@ -32,3 +33,38 @@
 /webs/
 /README.md
 /.ivy/
+=======
+/.metadata
+/dist/
+/ext/
+/hooks/
+/layouttpl/
+/lib/
+/misc/
+/osgi/
+/shared/
+/themes/
+/tools/
+/webs/
+/build-common-ivy.xml
+/build-common-osgi-plugin.xml
+/build-common-plugin.xml
+/build-common-plugins.xml
+/build-common.xml
+/build.isturm.properties
+/build.properties
+/build.xml
+/common.bnd
+/CONTRIBUTING.markdown
+/copyright.txt
+/ivy-settings-publisher.xml
+/ivy-settings.xml
+/ivy.xml
+/ivy.xml.MD5
+/README.markdown
+/README.md
+/.classpath
+/.project
+/bin1/
+/build.sgund.properties
+>>>>>>> refs/heads/master
