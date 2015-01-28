@@ -8,6 +8,9 @@ import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletException;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
 
 import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -42,26 +45,40 @@ import de.uhh.l2g.plugins.service.persistence.InstitutionPersistence;
 public class AdminInstitutionManagement extends MVCPortlet {
 	
 	
+	@Override
+	public void render(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
+		
+		try {
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			         Institution.class.getName(), renderRequest);
+			
+			long groupId = serviceContext.getScopeGroupId();
+
+			long institutionId = ParamUtil.getLong(renderRequest, "institutionId");
+			
+		    
+		    List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(groupId);
+		    
+		    System.out.println(institutionId+" "+groupId+" "+institutions.size());
+		    //new Top Level Institution if empty
+		    if (institutions.size() == 0) {
+		    	//Institution institution = InstitutionLocalServiceUtil.addInstitution("Main", "default", serviceContext);
+		    	//SessionMessages.add(renderRequest, "entryAdded");
+		    	//institutionId = institution.getInstitutionId();
+		    }
+		    
+		    if (!(institutionId > 0)) {
+		    	institutionId = institutions.get(0).getInstitutionId();
+	        }
+
+		    renderRequest.setAttribute("institutionId", institutionId);
+
 	
-	public void viewInstitutionList(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
+		    } catch (Exception e) {
+		    	throw new PortletException(e);
+		    }
 		
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-		         Institution.class.getName(), request);
-		
-	    String name = ParamUtil.getString(request, "institution");
-	    String streamer = ParamUtil.getString(request, "streamingserver");
-
-	    try {
-	        InstitutionLocalServiceUtil.addInstitution(name, streamer, serviceContext);
-
-	        SessionMessages.add(request, "institutionAdded");
-
-	    } catch (Exception e) {
-	        SessionErrors.add(request, e.getClass().getName());
-
-	        response.setRenderParameter("mvcPath",
-	            "/admin/institutionList.jsp");
-	    }
+		super.render(renderRequest, renderResponse);
 
 		
 	}

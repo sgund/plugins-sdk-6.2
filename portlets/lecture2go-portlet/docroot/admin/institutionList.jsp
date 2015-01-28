@@ -1,9 +1,17 @@
 <%@include file="/init.jsp"%>
+<%@ page import="de.uhh.l2g.plugins.model.Institution" %>
+<%@ page import="de.uhh.l2g.plugins.service.InstitutionLocalServiceUtil" %>
+<%@ page import="de.uhh.l2g.plugins.service.HostLocalServiceUtil" %>
+
 <liferay-ui:error key="host-or-institution-error" message="host-or-institution-error"/>
 
 <portlet:renderURL var="viewURL"><portlet:param name="jspPage" value="/admin/institutionList.jsp" /></portlet:renderURL>
 <portlet:actionURL name="addInstitutionEntry" var="addInstitutionEntryURL"></portlet:actionURL>
 
+<%
+
+
+%>
 
 <aui:form action="<%= addInstitutionEntryURL %>" name="<portlet:namespace />fm">
 
@@ -37,3 +45,5 @@
         </aui:button-row>
 
 </aui:form>
+
+
