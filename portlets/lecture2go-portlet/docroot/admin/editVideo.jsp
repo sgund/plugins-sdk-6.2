@@ -1,3 +1,4 @@
+<%@page import="de.uhh.l2g.plugins.util.Security"%>
 <%@page import="de.uhh.l2g.plugins.service.HostLocalServiceUtil"%>
 <%@include file="/init.jsp"%>
 
@@ -51,7 +52,6 @@
 <aui:fieldset helpMessage="test" column="true" label="video-file" >
 	<div>
 		<input id="fileupload" type="file" name="files[]" data-url="/servlet-file-upload/upload" multiple>
-		<input type="button" id="upload" value="upload"/>
 		<br/>
 		<div id="progress" class="progress">
 	    	<div class="bar" style="width: 0%;"></div>
@@ -130,11 +130,38 @@
 <liferay-portlet:resourceURL id="updateDescription" var="updateDescriptionURL" />
 <liferay-portlet:resourceURL id="updateLicense" var="updateLicenseURL" />
 <liferay-portlet:resourceURL id="updateVideoFileName" var="updateVideoFileNameURL" />
+<liferay-portlet:resourceURL id="videoFileNameExists" var="videoFileNameExistsURL" />
 
 <script type="text/javascript">
+var firstUpload = 0;
+<%if(reqVideo.getFilename().length()==0){%>firstUpload=1;<%}%>
 $(function () {
     $('#fileupload').fileupload({
         dataType: 'json',
+        add: function(e, data) {
+            var uploadErrors = [];
+            var acceptFileTypes = /(mp4|m4v|m4a|mp3|ogg|flv|webm|pdf)$/i;//file types
+			
+            if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+                uploadErrors.push('not an accepted file type');
+            }
+            if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 2147483648) {
+                uploadErrors.push('max file size 2 GB');
+            }
+          	//check for first uplode
+        	if(firstUpload==1){
+        		if(data.originalFiles[0]['type'].indexOf('mp4')==-1 && data.originalFiles[0]['type'].indexOf('mp3')==-1){
+        			uploadErrors.push('first upload has to be a mp3 or mp4 media file');   
+        		}else{
+        			if(videoFileNameExistsInDatabase(data.originalFiles[0]['name'])==1) uploadErrors.push('file exists in DB, please rename');  
+        		}
+        	}
+            if(uploadErrors.length > 0) {
+                alert(uploadErrors.join("\n"));
+            } else {
+                data.submit();
+            }
+        },
         done: function (e, data) {
         	$("tr:has(td)").remove();
             $.each(data.result, function (index, file) {
@@ -146,7 +173,10 @@ $(function () {
                 		.append($('<td/>').html("<a href='upload?f="+index+"'>Click</a>"))
 
                 		)//end $("#uploaded-files").append()
-                		updateVideoFileName(file);
+                		if(file.fileName.indexOf("mp4") > -1 || file.fileName.indexOf("mp3") > -1){
+                			updateVideoFileName(file);
+                		}
+               			firstUpload=0;
             }); 
         },
         progressall: function (e, data) {
@@ -158,11 +188,32 @@ $(function () {
         // The example input, doesn't have to be part of the upload form:
         data.formData = {
         		repository: "<%=reqProducer.getHomeDir()%>",
-        		openaccess: "<%=reqVideo.getOpenAccess()%>"
+        		openaccess: "<%=reqVideo.getOpenAccess()%>",
+        		lectureseriesNumber: "<%=reqLectureseries.getNumber()%>",
+        		fileName: "<%=VideoLocalServiceUtil.getVideo(reqVideo.getVideoId()).getFilename()%>",
+        		secureFileName: "<%=VideoLocalServiceUtil.getVideo(reqVideo.getVideoId()).getSurl()%>",
         };        
     });
    
 });
+
+function videoFileNameExistsInDatabase (fileName){
+	var ret = 0;
+	$.ajax({
+		  type: "POST",
+		  url: "<%=videoFileNameExistsURL%>",
+		  dataType: 'json',
+		  data: {
+			  <portlet:namespace/>fileName: fileName
+		  },
+		  global: false,
+		  async:false,
+		  success: function(data) {
+		    ret = data.exist;
+		  }
+	})
+	return ret;
+}
 
 function updateVideoFileName(file){
 	AUI().use('aui-io-request', 'aui-node',

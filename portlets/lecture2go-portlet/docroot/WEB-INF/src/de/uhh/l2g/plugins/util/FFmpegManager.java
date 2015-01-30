@@ -184,24 +184,39 @@ public class FFmpegManager {
 		String command2 = PropsUtil.get("lecture2go.ffmpeg.bin") + " -ss 13 -i " + fileLocation + " -f image2 -vframes 1 -filter:v scale='300:-1' " + thumbPreffLoc + "_m.jpg";
 		boolean ret = true;
 		try {
-			runCmd.exec(command);
 			File f = new File(thumbnailLocation);
+			int i =0;
+			while (i<100){
+				i++;
+				if(!f.isFile())runCmd.exec(command);
+				else break;
+			}
 			if (!f.isFile())
 				ret = false;
 		} catch (IOException e) {
 			ret = false;
 		}
 		try {
-			runCmd.exec(command1);
 			File f = new File(thumbPreffLoc + "_s.jpg");
+			int i =0;
+			while (i<100){
+				i++;
+				if(!f.isFile())runCmd.exec(command1);
+				else break;
+			}
 			if (!f.isFile())
 				ret = false;
 		} catch (IOException e) {
 			ret = false;
 		}
 		try {
-			runCmd.exec(command2);
 			File f = new File(thumbPreffLoc + "_m.jpg");
+			int i =0;
+			while (i<100){
+				i++;
+				if(!f.isFile())runCmd.exec(command2);
+				else break;
+			}
 			if (!f.isFile())
 				ret = false;
 		} catch (IOException e) {
@@ -369,7 +384,7 @@ public class FFmpegManager {
 	 * @throws SystemException 
 	 * @throws PortalException 
 	 */
-	public void updateFfmpegMetadata(Video video) throws IOException, PortalException, SystemException {
+	public static void updateFfmpegMetadata(Video video) throws IOException, PortalException, SystemException {
 		Host host = HostLocalServiceUtil.getHost(video.getHostId());
 		Producer producer = ProducerLocalServiceUtil.getProducer(video.getProducerId());
 		// FFMPEG
@@ -388,7 +403,8 @@ public class FFmpegManager {
 			
 			//update video object
 			VideoLocalServiceUtil.updateVideo(video);
-		} catch (NullPointerException npe) {
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 		}
 	}
 }
