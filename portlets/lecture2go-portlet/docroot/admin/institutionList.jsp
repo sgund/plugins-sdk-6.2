@@ -9,8 +9,15 @@
 <portlet:actionURL name="addInstitutionEntry" var="addInstitutionEntryURL"></portlet:actionURL>
 
 <%
+long institutionId = Long.valueOf((Long) renderRequest.getAttribute("institutionId"));
 
+PortletURL portletURL = renderResponse.createRenderURL();
+portletURL.setParameter("institutionId", institutionId+"");
+List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(0);
 
+for (int i = 0; i < institutions.size(); i++) {
+	Institution curInstitution = (Institution) institutions.get(i);
+}
 %>
 
 <aui:form action="<%= addInstitutionEntryURL %>" name="<portlet:namespace />fm">
@@ -29,11 +36,11 @@
 		    	title="Advanced Streaming Server Options">
 		
 		 	    <aui:fieldset>
-					<aui:input name="Entry Name" label="name"></aui:input>
-		 	        <aui:input name="Streaming Server Domain or IP" label="ip"></aui:input>
-		 	        <aui:input name="HTTP Protocol" label="protocol"></aui:input>
-		 	        <aui:input name="Server Template" label="template"></aui:input>  
-		 	        <aui:button value="Refresh" type="button" onClick="<%= viewURL.toString() %>"></aui:button>          
+					<aui:input label="Server Name" name="name" required="true"></aui:input>
+		 	        <aui:input label="Streaming Server Domain or IP" name="ip"></aui:input>
+		 	        <aui:input label="HTTP Protocol" name="protocol"></aui:input>
+		 	        <aui:input label="Server Template" name="template"></aui:input>  
+		 	        <aui:button value="Refresh" label="Add to List" type="button" onClick="<%= viewURL.toString() %>"></aui:button>          
 		 	    </aui:fieldset>
 
 		</liferay-ui:panel>

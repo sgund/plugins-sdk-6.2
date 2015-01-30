@@ -39,10 +39,16 @@
         <supports>
             <action-key>ADD_INSTITUTION_ENTRY</action-key>
             <action-key>ADD_SUB_INSTITUTION_ENTRY</action-key>
+            <action-key>EDIT_ROOT_INSTITUTION</action-key>
             <action-key>ADD_HOST_ENTRY</action-key>
+            <action-key>EDIT_HOST_ENTRY</action-key>
+            <action-key>VIEW_ALL_INSTITUTIONS</action-key>
+            <action-key>EDIT_ALL_INSTITUTIONS</action-key>
+            <action-key>VIEW_OWN_INSTITUTIONS</action-key>
+            <action-key>EDIT_OWN_INSTITUTIONS</action-key>
         </supports>
         <site-member-defaults>
-            <action-key>ADD_INSTITUTION_ENTRY</action-key>
+            <action-key>ADD_SUB_INSTITUTION_ENTRY</action-key>
             <action-key>ADD_HOST_ENTRY</action-key>
         </site-member-defaults>
         <guest-defaults>

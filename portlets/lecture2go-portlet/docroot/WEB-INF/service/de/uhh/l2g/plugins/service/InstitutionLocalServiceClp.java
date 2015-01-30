@@ -123,30 +123,34 @@ public class InstitutionLocalServiceClp implements InstitutionLocalService {
 
 		_methodParameterTypes20 = new String[] { "long" };
 
-		_methodName21 = "getByParentId";
+		_methodName21 = "getByGroupIdAndParent";
 
-		_methodParameterTypes21 = new String[] { "long", "java.lang.String" };
+		_methodParameterTypes21 = new String[] { "long", "long" };
 
-		_methodName22 = "getByParent";
+		_methodName22 = "getByParentId";
 
-		_methodParameterTypes22 = new String[] { "long" };
+		_methodParameterTypes22 = new String[] { "long", "java.lang.String" };
 
-		_methodName23 = "getByLevel";
+		_methodName23 = "getByParent";
 
-		_methodParameterTypes23 = new String[] { "int" };
+		_methodParameterTypes23 = new String[] { "long" };
 
-		_methodName24 = "getByLectureseriesId";
+		_methodName24 = "getByLevel";
 
-		_methodParameterTypes24 = new String[] { "long", "int", "int" };
+		_methodParameterTypes24 = new String[] { "int" };
 
-		_methodName25 = "getAllSortedAsTree";
+		_methodName25 = "getByLectureseriesId";
 
-		_methodParameterTypes25 = new String[] { "int", "int" };
+		_methodParameterTypes25 = new String[] { "long", "int", "int" };
 
-		_methodName26 = "addInstitution";
+		_methodName26 = "getAllSortedAsTree";
 
-		_methodParameterTypes26 = new String[] {
-				"java.lang.String", "java.lang.String",
+		_methodParameterTypes26 = new String[] { "int", "int" };
+
+		_methodName27 = "addInstitution";
+
+		_methodParameterTypes27 = new String[] {
+				"java.lang.String", "java.lang.String", "long",
 				"com.liferay.portal.service.ServiceContext"
 			};
 	}
@@ -759,14 +763,43 @@ public class InstitutionLocalServiceClp implements InstitutionLocalService {
 	}
 
 	@Override
+	public java.util.List<de.uhh.l2g.plugins.model.Institution> getByGroupIdAndParent(
+		long groupId, long parentId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName21,
+					_methodParameterTypes21, new Object[] { groupId, parentId });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (java.util.List<de.uhh.l2g.plugins.model.Institution>)ClpSerializer.translateOutput(returnObj);
+	}
+
+	@Override
 	public java.util.List<de.uhh.l2g.plugins.model.Institution> getByParentId(
 		long parentId, java.lang.String type)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName21,
-					_methodParameterTypes21,
+			returnObj = _invokableLocalService.invokeMethod(_methodName22,
+					_methodParameterTypes22,
 					new Object[] { parentId, ClpSerializer.translateInput(type) });
 		}
 		catch (Throwable t) {
@@ -795,8 +828,8 @@ public class InstitutionLocalServiceClp implements InstitutionLocalService {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName22,
-					_methodParameterTypes22, new Object[] { parentId });
+			returnObj = _invokableLocalService.invokeMethod(_methodName23,
+					_methodParameterTypes23, new Object[] { parentId });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -823,8 +856,8 @@ public class InstitutionLocalServiceClp implements InstitutionLocalService {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName23,
-					_methodParameterTypes23, new Object[] { level });
+			returnObj = _invokableLocalService.invokeMethod(_methodName24,
+					_methodParameterTypes24, new Object[] { level });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -852,8 +885,8 @@ public class InstitutionLocalServiceClp implements InstitutionLocalService {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName24,
-					_methodParameterTypes24,
+			returnObj = _invokableLocalService.invokeMethod(_methodName25,
+					_methodParameterTypes25,
 					new Object[] { lectureseriesId, begin, end });
 		}
 		catch (Throwable t) {
@@ -882,8 +915,8 @@ public class InstitutionLocalServiceClp implements InstitutionLocalService {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName25,
-					_methodParameterTypes25, new Object[] { begin, end });
+			returnObj = _invokableLocalService.invokeMethod(_methodName26,
+					_methodParameterTypes26, new Object[] { begin, end });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -906,19 +939,21 @@ public class InstitutionLocalServiceClp implements InstitutionLocalService {
 
 	@Override
 	public de.uhh.l2g.plugins.model.Institution addInstitution(
-		java.lang.String name, java.lang.String streamer,
+		java.lang.String name, java.lang.String streamer, long parentId,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName26,
-					_methodParameterTypes26,
+			returnObj = _invokableLocalService.invokeMethod(_methodName27,
+					_methodParameterTypes27,
 					new Object[] {
 						ClpSerializer.translateInput(name),
 						
 					ClpSerializer.translateInput(streamer),
+						
+					parentId,
 						
 					ClpSerializer.translateInput(serviceContext)
 					});
@@ -999,4 +1034,6 @@ public class InstitutionLocalServiceClp implements InstitutionLocalService {
 	private String[] _methodParameterTypes25;
 	private String _methodName26;
 	private String[] _methodParameterTypes26;
+	private String _methodName27;
+	private String[] _methodParameterTypes27;
 }

@@ -56,19 +56,19 @@ public class AdminInstitutionManagement extends MVCPortlet {
 
 			long institutionId = ParamUtil.getLong(renderRequest, "institutionId");
 			
-		    
-		    List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(groupId);
-		    
-		    System.out.println(institutionId+" "+groupId+" "+institutions.size());
+		
+		    List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(0);
+		
+		    System.out.println(institutionId+" "+groupId+" "+institutions.toString());
 		    //new Top Level Institution if empty
 		    if (institutions.size() == 0) {
-		    	//Institution institution = InstitutionLocalServiceUtil.addInstitution("Main", "default", serviceContext);
-		    	//SessionMessages.add(renderRequest, "entryAdded");
-		    	//institutionId = institution.getInstitutionId();
+		    	Institution institution = InstitutionLocalServiceUtil.addInstitution("Main", "default",new Long(0), serviceContext);
+		    	SessionMessages.add(renderRequest, "entryAdded");
+		    	institutionId = institution.getInstitutionId();
 		    }
 		    
 		    if (!(institutionId > 0)) {
-		    	institutionId = institutions.get(0).getInstitutionId();
+		    	//institutionId = institutions.get(0).getInstitutionId();
 	        }
 
 		    renderRequest.setAttribute("institutionId", institutionId);
@@ -91,10 +91,11 @@ public class AdminInstitutionManagement extends MVCPortlet {
 		
 	    String name = ParamUtil.getString(request, "institution");
 	    String streamer = ParamUtil.getString(request, "serverselect");
+	    Long parent = ParamUtil.getLong(request, "parent");
 
 	    try {
 	         InstitutionLocalServiceUtil.addInstitution(
-	              name, streamer, serviceContext);
+	              name, streamer, parent, serviceContext);
 
 	         SessionMessages.add(request, "entryAdded");
 
@@ -121,10 +122,11 @@ public class AdminInstitutionManagement extends MVCPortlet {
 	
 		String name = ParamUtil.getString(request, "institution");
 		String streamer = ParamUtil.getString(request, "serverselect");
+		Long parent = ParamUtil.getLong(request, "parent");
 
-		try {
-			InstitutionLocalServiceUtil.addInstitution(
-					name, streamer, serviceContext);
+	    try {
+	         InstitutionLocalServiceUtil.addInstitution(
+	              name, streamer, parent, serviceContext);
 
 			SessionMessages.add(request, "entryAdded");
 
@@ -151,10 +153,11 @@ public void viewStreamingServerList(ActionRequest request, ActionResponse respon
 	
     String name = ParamUtil.getString(request, "institution");
     String streamer = ParamUtil.getString(request, "serverselect");
+    Long parent = ParamUtil.getLong(request, "parent");
 
     try {
          InstitutionLocalServiceUtil.addInstitution(
-              name, streamer, serviceContext);
+              name, streamer, parent, serviceContext);
 
          SessionMessages.add(request, "entryAdded");
 

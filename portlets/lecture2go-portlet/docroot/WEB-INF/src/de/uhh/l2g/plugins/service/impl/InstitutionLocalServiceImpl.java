@@ -29,6 +29,7 @@ import de.uhh.l2g.plugins.HostServerTemplateException;
 import de.uhh.l2g.plugins.HostStreamerException;
 import de.uhh.l2g.plugins.model.Host;
 import de.uhh.l2g.plugins.model.Institution;
+import de.uhh.l2g.plugins.service.InstitutionLocalServiceUtil;
 import de.uhh.l2g.plugins.service.base.InstitutionLocalServiceBaseImpl;
 import de.uhh.l2g.plugins.service.persistence.InstitutionFinderUtil;
 
@@ -66,6 +67,11 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 	public List<Institution> getByGroupId(long groupId) throws SystemException {
 		return institutionPersistence.findByGroupId(groupId);
 	}
+	
+	public List<Institution> getByGroupIdAndParent(long groupId, long parentId) throws SystemException {
+		return institutionPersistence.findByG_P(groupId, parentId);
+	}
+
 
 	public List<Institution> getByParentId(long parentId, String type) throws SystemException {
 		return institutionPersistence.findByParent(parentId);
@@ -119,8 +125,8 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 		}
 
 	}
-
-	public Institution addInstitution(String name, String streamer, ServiceContext serviceContext) throws SystemException, PortalException {
+	
+	public Institution addInstitution(String name, String streamer, long parentId, ServiceContext serviceContext) throws SystemException, PortalException {
 
 		long groupId = serviceContext.getScopeGroupId();
 		long userId = serviceContext.getUserId();
@@ -132,10 +138,15 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 		long institutionId = counterLocalService.increment(Institution.class.getName());
 
 		Institution institution = institutionPersistence.create(institutionId);
-		//Institution_Host institution_host = institutionHostPersitence.create()
+
+		Institution parent = InstitutionLocalServiceUtil.getById(parentId);
 
 		institution.setName(name);
+		institution.setGroupId(0);
 		//institution.setStreamer(streamer);
+		institution.setParentId(parentId);
+		if (parentId > 0) institution.setLevel(parent.getLevel()+1);
+		else institution.setLevel(0);
 		institution.setExpandoBridgeAttributes(serviceContext);
 		
 		institutionPersistence.update(institution);
@@ -145,5 +156,8 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 		
 		return institution;
 	}
+
+
+
 
 }

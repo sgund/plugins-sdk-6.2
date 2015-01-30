@@ -287,6 +287,12 @@ public class InstitutionLocalServiceUtil {
 		return getService().getByGroupId(groupId);
 	}
 
+	public static java.util.List<de.uhh.l2g.plugins.model.Institution> getByGroupIdAndParent(
+		long groupId, long parentId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getByGroupIdAndParent(groupId, parentId);
+	}
+
 	public static java.util.List<de.uhh.l2g.plugins.model.Institution> getByParentId(
 		long parentId, java.lang.String type)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -317,11 +323,12 @@ public class InstitutionLocalServiceUtil {
 	}
 
 	public static de.uhh.l2g.plugins.model.Institution addInstitution(
-		java.lang.String name, java.lang.String streamer,
+		java.lang.String name, java.lang.String streamer, long parentId,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		return getService().addInstitution(name, streamer, serviceContext);
+		return getService()
+				   .addInstitution(name, streamer, parentId, serviceContext);
 	}
 
 	public static void clearService() {
