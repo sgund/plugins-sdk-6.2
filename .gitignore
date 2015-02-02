@@ -1,6 +1,5 @@
 /bin
 /.DS_Store
-<<<<<<< HEAD
 /.classpath
 /.project
 /CONTRIBUTING.markdown
@@ -33,7 +32,6 @@
 /webs/
 /README.md
 /.ivy/
-=======
 /.metadata
 /dist/
 /ext/
@@ -67,4 +65,3 @@
 /.project
 /bin1/
 /build.sgund.properties
->>>>>>> refs/heads/master
