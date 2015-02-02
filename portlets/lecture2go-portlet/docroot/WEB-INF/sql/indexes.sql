@@ -8,12 +8,18 @@ create index IX_59DDB869 on LG_Host (hostId);
 create index IX_78986E50 on LG_Institution (groupId);
 create index IX_BB3A2F69 on LG_Institution (groupId, parentId);
 create index IX_49E78C5A on LG_Institution (level);
+create index IX_982D2D90 on LG_Institution (level, groupId);
 create index IX_C5BF45E1 on LG_Institution (level, typ);
+create index IX_63B03BE9 on LG_Institution (level, typ, groupId);
 create index IX_582427D9 on LG_Institution (name);
+create index IX_755E10F1 on LG_Institution (name, groupId);
 create index IX_40A7A033 on LG_Institution (parentId);
 create index IX_61742A2C on LG_Institution (sort);
+create index IX_ACBFFBFE on LG_Institution (sort, groupId);
 create index IX_C968E6A1 on LG_Institution (typ);
+create index IX_8BEF7329 on LG_Institution (typ, groupId);
 create index IX_C9925EAD on LG_Institution (www);
+create index IX_8A5E489D on LG_Institution (www, groupId);
 
 create index IX_C8262FF0 on LG_Institution_Host (hostId);
 create index IX_9018FE6A on LG_Institution_Host (institutionId);
