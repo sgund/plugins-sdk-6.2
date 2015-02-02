@@ -1289,6 +1289,7 @@ public interface InstitutionPersistence extends BasePersistence<Institution> {
 	public int countByG_P(long groupId, long parentId)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
+
 	/**
 	* Caches the institution in the entity cache if it is enabled.
 	*
