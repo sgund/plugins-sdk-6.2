@@ -293,6 +293,17 @@ public class InstitutionLocalServiceUtil {
 		return getService().getByGroupIdAndParent(groupId, parentId);
 	}
 
+	public static java.util.List<de.uhh.l2g.plugins.model.Institution> getByGroupIdAndParent(
+		long groupId, long parentId, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getByGroupIdAndParent(groupId, parentId, start, end);
+	}
+
+	public static int getByGroupIdAndParentCount(long groupId, long parentId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getByGroupIdAndParentCount(groupId, parentId);
+	}
+
 	public static java.util.List<de.uhh.l2g.plugins.model.Institution> getByParentId(
 		long parentId, java.lang.String type)
 		throws com.liferay.portal.kernel.exception.SystemException {

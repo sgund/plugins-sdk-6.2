@@ -18,6 +18,7 @@ List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(0);
 for (int i = 0; i < institutions.size(); i++) {
 	Institution curInstitution = (Institution) institutions.get(i);
 }
+
 %>
 
 <aui:form action="<%= addInstitutionEntryURL %>" name="<portlet:namespace />fm">
@@ -39,7 +40,8 @@ for (int i = 0; i < institutions.size(); i++) {
 					<aui:input label="Server Name" name="name" required="true"></aui:input>
 		 	        <aui:input label="Streaming Server Domain or IP" name="ip"></aui:input>
 		 	        <aui:input label="HTTP Protocol" name="protocol"></aui:input>
-		 	        <aui:input label="Server Template" name="template"></aui:input>  
+		 	        <aui:input label="Server Template" name="template"></aui:input>
+		 	        <aui:input name='institutionId' type='hidden' value='<%= ParamUtil.getString(renderRequest, "institutionId") %>'/>
 		 	        <aui:button value="Refresh" label="Add to List" type="button" onClick="<%= viewURL.toString() %>"></aui:button>          
 		 	    </aui:fieldset>
 
@@ -53,4 +55,27 @@ for (int i = 0; i < institutions.size(); i++) {
 
 </aui:form>
 
+<liferay-ui:search-container 
+orderByCol="sort" 
+orderByType="asc"  
+emptyResultsMessage="there-are-no-institutions"  
+delta="20"
+deltaConfigurable="true">
+    <liferay-ui:search-container-results
+        results="<%=InstitutionLocalServiceUtil.getByGroupIdAndParent(new Long(0), new Long(1), searchContainer.getStart(), searchContainer.getEnd())%>"
+        total="<%=InstitutionLocalServiceUtil.getByGroupIdAndParentCount(new Long(0), new Long(1))%>" />
+		
+    <liferay-ui:search-container-row
+        className="de.uhh.l2g.plugins.model.Institution" modelVar="institution"
+        keyProperty="intsitutionId">
+        
+        <liferay-ui:search-container-column-text property="sort" name="institution" colspan="2"/>
 
+        <liferay-ui:search-container-column-text property="name" />
+        
+
+    </liferay-ui:search-container-row>
+
+
+    <liferay-ui:search-iterator />
+</liferay-ui:search-container>

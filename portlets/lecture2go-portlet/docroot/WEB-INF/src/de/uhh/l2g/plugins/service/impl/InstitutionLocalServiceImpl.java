@@ -71,7 +71,14 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 	public List<Institution> getByGroupIdAndParent(long groupId, long parentId) throws SystemException {
 		return institutionPersistence.findByG_P(groupId, parentId);
 	}
-
+	
+	public List<Institution> getByGroupIdAndParent(long groupId, long parentId, int start, int end) throws SystemException {
+		return institutionPersistence.findByG_P(groupId, parentId, start, end);
+	}
+	
+	public int getByGroupIdAndParentCount(long groupId, long parentId) throws SystemException {
+		return institutionPersistence.countByG_P(groupId, parentId);
+	}
 
 	public List<Institution> getByParentId(long parentId, String type) throws SystemException {
 		return institutionPersistence.findByParent(parentId);
