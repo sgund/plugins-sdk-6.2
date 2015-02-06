@@ -438,17 +438,23 @@ public class InstitutionClp extends BaseModelImpl<Institution>
 
 	@Override
 	public int compareTo(Institution institution) {
-		long primaryKey = institution.getPrimaryKey();
+		int value = 0;
 
-		if (getPrimaryKey() < primaryKey) {
-			return -1;
+		if (getSort() < institution.getSort()) {
+			value = -1;
 		}
-		else if (getPrimaryKey() > primaryKey) {
-			return 1;
+		else if (getSort() > institution.getSort()) {
+			value = 1;
 		}
 		else {
-			return 0;
+			value = 0;
 		}
+
+		if (value != 0) {
+			return value;
+		}
+
+		return 0;
 	}
 
 	@Override

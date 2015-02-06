@@ -37,6 +37,7 @@ import de.uhh.l2g.plugins.model.Institution;
 import de.uhh.l2g.plugins.model.Host;
 import de.uhh.l2g.plugins.model.Producer;
 import de.uhh.l2g.plugins.service.CoordinatorLocalServiceUtil;
+import de.uhh.l2g.plugins.service.HostLocalServiceUtil;
 import de.uhh.l2g.plugins.service.InstitutionLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Institution_HostLocalServiceUtil;
 import de.uhh.l2g.plugins.service.ProducerLocalServiceUtil;
@@ -55,11 +56,15 @@ public class AdminInstitutionManagement extends MVCPortlet {
 			long groupId = serviceContext.getScopeGroupId();
 
 			long institutionId = ParamUtil.getLong(renderRequest, "institutionId");
+			long hostId = ParamUtil.getLong(renderRequest, "hostId");
 			
 		
 		    List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(0);
-		
+		    List<Host> host = HostLocalServiceUtil.getByGroupId(0);
+		    
 		    System.out.println(institutionId+" "+groupId+" "+institutions.toString());
+		    System.out.println(hostId+" "+groupId+" "+host.toString());
+		    
 		    //new Top Level Institution if empty
 		    if (institutions.size() == 0) {
 		    	Institution institution = InstitutionLocalServiceUtil.addInstitution("Main", "default",new Long(0), serviceContext);
@@ -67,11 +72,18 @@ public class AdminInstitutionManagement extends MVCPortlet {
 		    	institutionId = institution.getInstitutionId();
 		    }
 		    
+		    if (host.size() == 0) {
+		    	Host default_host = HostLocalServiceUtil.addHost("Default", "localhost", "Web","HTTP", "", 80, serviceContext);
+		    	SessionMessages.add(renderRequest, "entryAdded");
+		    	long default_hostId = default_host.getHostId();
+		    }
+		    
 		    if (!(institutionId > 0)) {
-		    	//institutionId = institutions.get(0).getInstitutionId();
+		    	institutionId = institutions.get(0).getInstitutionId();
 	        }
 
 		    renderRequest.setAttribute("institutionId", institutionId);
+		    renderRequest.setAttribute("hostId", hostId);
 
 	
 		    } catch (Exception e) {

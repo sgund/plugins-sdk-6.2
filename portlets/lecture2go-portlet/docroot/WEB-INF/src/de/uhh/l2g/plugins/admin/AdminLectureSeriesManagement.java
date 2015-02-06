@@ -51,6 +51,9 @@ public class AdminLectureSeriesManagement extends MVCPortlet {
 		request.setAttribute("reqLectureseries", reqLectureseries);
 
 		response.setRenderParameter("jspPage", "/admin/editLectureseries.jsp");
+		
+		
+		
 
 		//institutions for coordinator or administrator
 		//l2go administrator is logged in

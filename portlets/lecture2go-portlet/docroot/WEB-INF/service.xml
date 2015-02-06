@@ -59,6 +59,8 @@
     	<column name="level" type="int"></column>
     	<column name="sort" type="int"></column>
     	<column name="groupId" type="long"></column>
+		<order by="asc"> <order-column name="sort" />  
+		</order> 
     	<finder name="Parent" return-type="Collection">
     		<finder-column name="parentId"></finder-column>
     	</finder>
@@ -114,7 +116,7 @@
             <finder-column name="groupId"></finder-column>
         </finder>
         <finder name="G_P_S" return-type="Collection">
-            <finder-column name="groupdId"></finder-column>
+            <finder-column name="groupId"></finder-column>
             <finder-column name="parentId"></finder-column>
             <finder-column name="sort"></finder-column>
         </finder>

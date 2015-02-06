@@ -69,8 +69,8 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 		};
 	public static final String TABLE_SQL_CREATE = "create table LG_Institution (institutionId LONG not null primary key,parentId LONG,name VARCHAR(75) null,typ VARCHAR(75) null,www VARCHAR(75) null,level INTEGER,sort INTEGER,groupId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table LG_Institution";
-	public static final String ORDER_BY_JPQL = " ORDER BY institution.institutionId ASC";
-	public static final String ORDER_BY_SQL = " ORDER BY LG_Institution.institutionId ASC";
+	public static final String ORDER_BY_JPQL = " ORDER BY institution.sort ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY LG_Institution.sort ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -90,7 +90,6 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 	public static long SORT_COLUMN_BITMASK = 16L;
 	public static long TYP_COLUMN_BITMASK = 32L;
 	public static long WWW_COLUMN_BITMASK = 64L;
-	public static long INSTITUTIONID_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.de.uhh.l2g.plugins.model.Institution"));
 
@@ -330,7 +329,7 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 
 	@Override
 	public void setSort(int sort) {
-		_columnBitmask |= SORT_COLUMN_BITMASK;
+		_columnBitmask = -1L;
 
 		if (!_setOriginalSort) {
 			_setOriginalSort = true;
@@ -414,17 +413,23 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 
 	@Override
 	public int compareTo(Institution institution) {
-		long primaryKey = institution.getPrimaryKey();
+		int value = 0;
 
-		if (getPrimaryKey() < primaryKey) {
-			return -1;
+		if (getSort() < institution.getSort()) {
+			value = -1;
 		}
-		else if (getPrimaryKey() > primaryKey) {
-			return 1;
+		else if (getSort() > institution.getSort()) {
+			value = 1;
 		}
 		else {
-			return 0;
+			value = 0;
 		}
+
+		if (value != 0) {
+			return value;
+		}
+
+		return 0;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 <%@include file="/init.jsp"%>
 <%@ page import="de.uhh.l2g.plugins.model.Institution" %>
+<%@ page import="com.liferay.portal.kernel.dao.search.ResultRow" %>
+<%@ page import="de.uhh.l2g.plugins.model.Host" %>
 <%@ page import="de.uhh.l2g.plugins.service.InstitutionLocalServiceUtil" %>
 <%@ page import="de.uhh.l2g.plugins.service.HostLocalServiceUtil" %>
 
@@ -10,13 +12,16 @@
 
 <%
 long institutionId = Long.valueOf((Long) renderRequest.getAttribute("institutionId"));
+long hostId = Long.valueOf((Long) renderRequest.getAttribute("hostId"));
 
 PortletURL portletURL = renderResponse.createRenderURL();
 portletURL.setParameter("institutionId", institutionId+"");
-List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(0);
+portletURL.setParameter("hostId", hostId+"");
+List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupIdAndParent(0,1);
 
 for (int i = 0; i < institutions.size(); i++) {
 	Institution curInstitution = (Institution) institutions.get(i);
+	long curId = curInstitution.getInstitutionId();
 }
 
 %>
@@ -67,11 +72,36 @@ deltaConfigurable="true">
 		
     <liferay-ui:search-container-row
         className="de.uhh.l2g.plugins.model.Institution" modelVar="institution"
-        keyProperty="intsitutionId">
+        keyProperty="institutionId">
         
-        <liferay-ui:search-container-column-text property="sort" name="institution" colspan="2"/>
+        <liferay-ui:search-container-column-text property="sort" name="Order"/>
 
-        <liferay-ui:search-container-column-text property="name" />
+        <liferay-ui:search-container-column-text property="name" name="Institution"/>
+        
+        <liferay-ui:search-container-column-text>
+        
+        <%
+ 			ResultRow container_row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
+ 			Institution institution_row = (Institution)row.getObject();
+ 			String id_row = "SubInst"+String.valueOf(institution_row.getInstitutionId()); 
+ 		%>
+		<liferay-ui:panel 
+		    	defaultState="closed" 
+		    	extended="<%= false %>" 
+		    	id="<%= id_row %>"
+		    	persistState="<%= true %>" 
+		    	title="subInstitution"  >
+		
+		 	    <aui:fieldset>
+					<aui:input label="Server Name" name="name" required="true"></aui:input>
+		 	        <aui:input label="Streaming Server Domain or IP" name="ip"></aui:input>
+		 	        <aui:input label="HTTP Protocol" name="protocol"></aui:input>
+		 	        <aui:input label="Server Template" name="template"></aui:input>
+		 	        <aui:input name='institutionId' type='hidden' value='<%= ParamUtil.getString(renderRequest, "institutionId") %>'/>
+		 	        <aui:button value="Refresh" label="Add to List" type="button" onClick="<%= viewURL.toString() %>"></aui:button>          
+		 	    </aui:fieldset>
+		</liferay-ui:panel>
+		</liferay-ui:search-container-column-text>
         
 
     </liferay-ui:search-container-row>
