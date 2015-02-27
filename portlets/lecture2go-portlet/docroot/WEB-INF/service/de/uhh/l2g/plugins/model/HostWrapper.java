@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -328,7 +328,7 @@ public class HostWrapper implements Host, ModelWrapper<Host> {
 	}
 
 	@Override
-	public int compareTo(de.uhh.l2g.plugins.model.Host host) {
+	public int compareTo(Host host) {
 		return _host.compareTo(host);
 	}
 
@@ -338,17 +338,17 @@ public class HostWrapper implements Host, ModelWrapper<Host> {
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Host> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<Host> toCacheModel() {
 		return _host.toCacheModel();
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Host toEscapedModel() {
+	public Host toEscapedModel() {
 		return new HostWrapper(_host.toEscapedModel());
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Host toUnescapedModel() {
+	public Host toUnescapedModel() {
 		return new HostWrapper(_host.toUnescapedModel());
 	}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -302,7 +302,7 @@ public class VideohitlistWrapper implements Videohitlist,
 	}
 
 	@Override
-	public int compareTo(de.uhh.l2g.plugins.model.Videohitlist videohitlist) {
+	public int compareTo(Videohitlist videohitlist) {
 		return _videohitlist.compareTo(videohitlist);
 	}
 
@@ -312,17 +312,17 @@ public class VideohitlistWrapper implements Videohitlist,
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Videohitlist> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<Videohitlist> toCacheModel() {
 		return _videohitlist.toCacheModel();
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Videohitlist toEscapedModel() {
+	public Videohitlist toEscapedModel() {
 		return new VideohitlistWrapper(_videohitlist.toEscapedModel());
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Videohitlist toUnescapedModel() {
+	public Videohitlist toUnescapedModel() {
 		return new VideohitlistWrapper(_videohitlist.toUnescapedModel());
 	}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -328,7 +328,7 @@ public class ProducerWrapper implements Producer, ModelWrapper<Producer> {
 	}
 
 	@Override
-	public int compareTo(de.uhh.l2g.plugins.model.Producer producer) {
+	public int compareTo(Producer producer) {
 		return _producer.compareTo(producer);
 	}
 
@@ -338,17 +338,17 @@ public class ProducerWrapper implements Producer, ModelWrapper<Producer> {
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Producer> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<Producer> toCacheModel() {
 		return _producer.toCacheModel();
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Producer toEscapedModel() {
+	public Producer toEscapedModel() {
 		return new ProducerWrapper(_producer.toEscapedModel());
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Producer toUnescapedModel() {
+	public Producer toUnescapedModel() {
 		return new ProducerWrapper(_producer.toUnescapedModel());
 	}
 

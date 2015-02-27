@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -999,7 +999,7 @@ public class VideoLocalServiceClp implements VideoLocalService {
 	}
 
 	@Override
-	public org.json.JSONObject getJSONVideo(java.lang.Long videoId) {
+	public org.json.JSONArray getJSONVideo(java.lang.Long videoId) {
 		Object returnObj = null;
 
 		try {
@@ -1019,7 +1019,7 @@ public class VideoLocalServiceClp implements VideoLocalService {
 			}
 		}
 
-		return (org.json.JSONObject)ClpSerializer.translateOutput(returnObj);
+		return (org.json.JSONArray)ClpSerializer.translateOutput(returnObj);
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -220,7 +220,7 @@ public class SysWrapper implements Sys, ModelWrapper<Sys> {
 	}
 
 	@Override
-	public int compareTo(de.uhh.l2g.plugins.model.Sys sys) {
+	public int compareTo(Sys sys) {
 		return _sys.compareTo(sys);
 	}
 
@@ -230,17 +230,17 @@ public class SysWrapper implements Sys, ModelWrapper<Sys> {
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Sys> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<Sys> toCacheModel() {
 		return _sys.toCacheModel();
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Sys toEscapedModel() {
+	public Sys toEscapedModel() {
 		return new SysWrapper(_sys.toEscapedModel());
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Sys toUnescapedModel() {
+	public Sys toUnescapedModel() {
 		return new SysWrapper(_sys.toUnescapedModel());
 	}
 

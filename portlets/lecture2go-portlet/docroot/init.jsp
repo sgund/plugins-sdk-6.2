@@ -13,6 +13,8 @@
 <%@ page import="javax.portlet.PortletPreferences"%>
 <%@ page import="com.liferay.util.PwdGenerator"%>
 
+
+<%@ page import="java.util.Enumeration"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.List"%>
@@ -23,6 +25,8 @@
 <%@ page import="java.lang.String"%>
 
 <%@ page import="javax.portlet.PortletURL"%>
+<%@ page import="javax.portlet.PortletException"%>
+<%@ page import="org.apache.jasper.JasperException"%>
 
 <%@ page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil"%>
@@ -83,39 +87,49 @@
 <%@ page import="de.uhh.l2g.plugins.model.impl.VideoImpl"%>
 <%@ page import="de.uhh.l2g.plugins.model.impl.ProducerImpl"%>
 <%@ page import="de.uhh.l2g.plugins.model.impl.LicenseImpl"%>
+<%@ page import="de.uhh.l2g.plugins.util.Security"%>
+<%@ page import="de.uhh.l2g.plugins.service.HostLocalServiceUtil"%>
 
 <%@ page import="de.uhh.l2g.plugins.util.Lecture2GoRoleChecker"%>
-<%@ page import="com.sun.xml.internal.rngom.ast.builder.Include"%>
+
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects/>
 
 <%
-//check lecture2go user permissions
-User remoteUser = UserLocalServiceUtil.getUser(new Long (request.getRemoteUser()));
-//l2go administrator is logged in
-boolean permissionAdmin = permissionChecker.hasPermission(remoteUser.getGroupId(), User.class.getName(), remoteUser.getPrimaryKey(), "ADD_L2GOADMIN");
-//l2go coordinator is logged in
-boolean permissionCoordinator = permissionChecker.hasPermission(remoteUser.getGroupId(), User.class.getName(), remoteUser.getPrimaryKey(), "ADD_L2GOPRODUCER");
-//l2go producer is logged in
-boolean permissionProducer = Lecture2GoRoleChecker.isProducer(remoteUser);
-//l2go student is logged in
-boolean permissionStudent = Lecture2GoRoleChecker.isStudent(remoteUser);
+	//check lecture2go user permissions
+	User remoteUser = UserLocalServiceUtil.createUser(0);
+	//l2go administrator is logged in
+	boolean permissionAdmin = false;
+	//l2go coordinator is logged in
+	boolean permissionCoordinator = false;
+	//l2go producer is logged in
+	boolean permissionProducer = false;
+	//l2go student is logged in
+	boolean permissionStudent = false;
 
-if(permissionAdmin){
-	permissionCoordinator=false;
-	permissionProducer=false;
-	permissionStudent=false;
-}else{
-	if(permissionCoordinator){
+try{
+	remoteUser = UserLocalServiceUtil.getUser(new Long (request.getRemoteUser()));
+	permissionAdmin = permissionChecker.hasPermission(remoteUser.getGroupId(), User.class.getName(), remoteUser.getPrimaryKey(), "ADD_L2GOADMIN");
+	permissionCoordinator = permissionChecker.hasPermission(remoteUser.getGroupId(), User.class.getName(), remoteUser.getPrimaryKey(), "ADD_L2GOPRODUCER");
+	permissionProducer = new Lecture2GoRoleChecker().isProducer(remoteUser);
+	permissionStudent = new Lecture2GoRoleChecker().isStudent(remoteUser);
+	if(permissionAdmin){
+		permissionCoordinator=false;
 		permissionProducer=false;
-		permissionStudent=false;		
+		permissionStudent=false;
 	}else{
-		if(permissionProducer){
-			permissionStudent=false;
+		if(permissionCoordinator){
+			permissionProducer=false;
+			permissionStudent=false;		
+		}else{
+			if(permissionProducer){
+				permissionStudent=false;
+			}
 		}
 	}
+	PortletPreferences prefs = renderRequest.getPreferences();	
+}catch(Exception e){
+	//
 }
-
-PortletPreferences prefs = renderRequest.getPreferences();
 %>

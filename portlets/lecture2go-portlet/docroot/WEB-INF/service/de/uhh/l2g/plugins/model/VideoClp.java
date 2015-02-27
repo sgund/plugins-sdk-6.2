@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -1654,17 +1654,25 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 
 	@Override
 	public int compareTo(Video video) {
-		long primaryKey = video.getPrimaryKey();
+		int value = 0;
 
-		if (getPrimaryKey() < primaryKey) {
-			return -1;
+		if (getVideoId() < video.getVideoId()) {
+			value = -1;
 		}
-		else if (getPrimaryKey() > primaryKey) {
-			return 1;
+		else if (getVideoId() > video.getVideoId()) {
+			value = 1;
 		}
 		else {
-			return 0;
+			value = 0;
 		}
+
+		value = value * -1;
+
+		if (value != 0) {
+			return value;
+		}
+
+		return 0;
 	}
 
 	@Override
@@ -1687,6 +1695,10 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 		else {
 			return false;
 		}
+	}
+
+	public Class<?> getClpSerializerClass() {
+		return _clpSerializerClass;
 	}
 
 	@Override
@@ -1865,4 +1877,5 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 	private long _rootInstitutionId;
 	private int _citation2go;
 	private BaseModel<?> _videoRemoteModel;
+	private Class<?> _clpSerializerClass = de.uhh.l2g.plugins.service.ClpSerializer.class;
 }

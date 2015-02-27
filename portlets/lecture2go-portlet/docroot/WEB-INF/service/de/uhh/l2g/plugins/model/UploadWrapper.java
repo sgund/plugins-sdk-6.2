@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -323,7 +323,7 @@ public class UploadWrapper implements Upload, ModelWrapper<Upload> {
 	}
 
 	@Override
-	public int compareTo(de.uhh.l2g.plugins.model.Upload upload) {
+	public int compareTo(Upload upload) {
 		return _upload.compareTo(upload);
 	}
 
@@ -333,17 +333,17 @@ public class UploadWrapper implements Upload, ModelWrapper<Upload> {
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Upload> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<Upload> toCacheModel() {
 		return _upload.toCacheModel();
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Upload toEscapedModel() {
+	public Upload toEscapedModel() {
 		return new UploadWrapper(_upload.toEscapedModel());
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Upload toUnescapedModel() {
+	public Upload toUnescapedModel() {
 		return new UploadWrapper(_upload.toUnescapedModel());
 	}
 
