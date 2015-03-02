@@ -1,12 +1,7 @@
 package de.uhh.l2g.plugins.admin;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -18,14 +13,15 @@ import javax.portlet.PortletException;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
 import de.uhh.l2g.plugins.NoSuchLicenseException;
@@ -53,7 +49,9 @@ import de.uhh.l2g.plugins.service.SegmentLocalServiceUtil;
 import de.uhh.l2g.plugins.service.VideoLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_InstitutionLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_LectureseriesLocalServiceUtil;
+import de.uhh.l2g.plugins.util.FFmpegManager;
 import de.uhh.l2g.plugins.util.ProzessManager;
+import de.uhh.l2g.plugins.util.Security;
 
 public class AdminVideoManagement extends MVCPortlet {
 
@@ -65,16 +63,16 @@ public class AdminVideoManagement extends MVCPortlet {
 		try{reqVideoId = new Long(request.getParameterMap().get("videoId")[0]);}catch(Exception e){}
 		reqVideo = VideoLocalServiceUtil.getFullVideo(reqVideoId);
 
-		response.setRenderParameter("jspPage", "/admin/segments.jsp");
 		request.setAttribute("reqVideo", reqVideo);
-		
+		String backURL = request.getParameter("backURL");
+		request.setAttribute("backURL", backURL);
+		response.setRenderParameter("jspPage", "/admin/segments.jsp");
 	}
 	
 	public void viewVideo(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
-		
 		// requested producer id
 		Long reqPproducerId = (long)0;
-		try{reqPproducerId = new Long(request.getParameterMap().get("producerI	d")[0]);}catch(Exception e){}
+		try{reqPproducerId = new Long(request.getParameterMap().get("producerId")[0]);}catch(Exception e){}
 		
 		// requested lecture series id
 		Long reqLectureseriesId = (long)0;
@@ -82,8 +80,8 @@ public class AdminVideoManagement extends MVCPortlet {
 			
 		// requested video
 		Long reqVideoId = new Long(0);
-		try{reqVideoId = new Long(request.getParameterMap().get("videoId")[0]);}catch(Exception e){}
 		Video reqVideo = new VideoImpl(); 
+		try{reqVideoId = new Long(request.getParameterMap().get("videoId")[0]);}catch(Exception e){}
 		try{reqVideo = VideoLocalServiceUtil.getVideo(reqVideoId);}catch(Exception e){}
 		
 		//requested producer
@@ -135,6 +133,9 @@ public class AdminVideoManagement extends MVCPortlet {
 		try{reqLicense = LicenseLocalServiceUtil.getByVideoId(reqVideo.getVideoId());}catch(Exception e){}
 		request.setAttribute("reqLicense", reqLicense);
 		
+		String backURL = request.getParameter("backURL");
+		request.setAttribute("backURL", backURL);
+
 		request.setAttribute("reqVideo", reqVideo);
 		response.setRenderParameter("jspPage", "/admin/editVideo.jsp");
 	}
@@ -164,6 +165,8 @@ public class AdminVideoManagement extends MVCPortlet {
 		newVideo.setHostId(reqProducer.getHostId());
 		newVideo.setMetadataId(reqMetadata.getMetadataId());
 		newVideo.setRootInstitutionId(reqProducer.getInstitutionId());
+		newVideo.setOpenAccess(0);
+		newVideo.setSurl(Security.createSecureFileName()+".xx");
 		//save it
 		Video video = VideoLocalServiceUtil.addVideo(newVideo);
 		request.setAttribute("reqVideo", newVideo);
@@ -190,7 +193,8 @@ public class AdminVideoManagement extends MVCPortlet {
 		vf.setVideoId(video.getVideoId());
 		vf.setInstitutionId(reqProducer.getInstitutionId());
 		Video_InstitutionLocalServiceUtil.addVideo_Institution(vf);
-		
+		String backURL = request.getParameter("backURL");
+		request.setAttribute("backURL", backURL);
 		response.setRenderParameter("jspPage", "/admin/editVideo.jsp");
 	}
 	
@@ -200,6 +204,7 @@ public class AdminVideoManagement extends MVCPortlet {
 		String resourceID = resourceRequest.getResourceID();
 		Long videoId = ParamUtil.getLong(resourceRequest, "videoId");
 		Video video = VideoLocalServiceUtil.getFullVideo(videoId);
+		
 		Metadata metadata = new MetadataImpl();
 		try {
 			Long metadataId = video.getMetadataId();
@@ -216,6 +221,63 @@ public class AdminVideoManagement extends MVCPortlet {
 			e1.printStackTrace();
 		} catch (SystemException e1) {
 			e1.printStackTrace();
+		}
+		
+		if(resourceID.equals("updateVideoFileName")){
+			String fileName = ParamUtil.getString(resourceRequest, "fileName");
+			String secureFileName = ParamUtil.getString(resourceRequest, "secureFileName");
+			String generationDate = ParamUtil.getString(resourceRequest, "generationDate");
+			String containerFormat = fileName.split("\\.")[fileName.split("\\.").length-1];
+			//update data base
+			try {
+				video.setFilename(fileName);
+				video.setSurl(secureFileName);
+				video.setContainerFormat(containerFormat);
+				video.setGenerationDate(generationDate);
+				VideoLocalServiceUtil.updateVideo(video);
+				FFmpegManager.updateFfmpegMetadata(video);
+				//update thumbs
+				String image="";
+				String fileLocation="";
+				if(video.getOpenAccess()==1){
+					image = video.getPreffix()+".jpg";
+					fileLocation = ProducerLocalServiceUtil.getProdUcer(video.getProducerId()).getHomeDir() + "/" + video.getFilename();
+				}else{
+					image = video.getSPreffix()+".jpg";
+					fileLocation = ProducerLocalServiceUtil.getProdUcer(video.getProducerId()).getHomeDir() + "/" + video.getSurl();
+				}
+				String thumbnailLocation = PropsUtil.get("lecture2go.images.system.path") + "/" + image;
+				//delete old thumbs
+				String thumbPreffLoc = thumbnailLocation.split(".jpg")[0];
+				File f1 = new File(thumbnailLocation);
+				File f2 = new File(thumbPreffLoc + "_s.jpg");
+				File f3 = new File(thumbPreffLoc + "_m.jpg");
+				f1.delete();
+				f2.delete();
+				f3.delete();
+				//and and thumbs for segments
+				// delete all segment images from repository location
+				try{
+					List<Segment> segmentList = SegmentLocalServiceUtil.getSegmentsByVideoId(video.getVideoId());
+					SegmentLocalServiceUtil.deleteThumbhailsFromSegments(segmentList);
+				}catch (PortalException e) {
+					e.printStackTrace();
+				} catch (SystemException e) {
+					e.printStackTrace();
+				} catch (NullPointerException e){
+					e.printStackTrace();
+				}				
+				FFmpegManager.createThumbnail(fileLocation, thumbnailLocation);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (SystemException e) {
+				e.printStackTrace();
+			} catch (PortalException e) {
+				e.printStackTrace();
+			}
+			
+			JSONObject json = JSONFactoryUtil.createJSONObject();
+			writeJSON(resourceRequest, resourceResponse, json);
 		}
 		
 		if(resourceID.equals("updateMeatadata")){
@@ -253,6 +315,20 @@ public class AdminVideoManagement extends MVCPortlet {
 			JSONObject json = JSONFactoryUtil.createJSONObject();
 			writeJSON(resourceRequest, resourceResponse, json);
 		}
+
+		if(resourceID.equals("videoFileNameExists")){
+			String filename = ParamUtil.getString(resourceRequest, "fileName");
+			JSONObject jo = JSONFactoryUtil.createJSONObject();
+			try {
+				List<Video> vl = VideoLocalServiceUtil.getByFilename(filename); 
+				if(vl.size()>0)jo.put("exist", "1");
+				else jo.put("exist", "0");
+			} catch (SystemException e) {
+				e.printStackTrace();
+				jo.put("exist", "0");
+			}
+			writeJSON(resourceRequest, resourceResponse, jo);
+		}
 		
 		if(resourceID.equals("updateLicense")){
 			String licens = ParamUtil.getString(resourceRequest, "license");
@@ -285,30 +361,6 @@ public class AdminVideoManagement extends MVCPortlet {
 			}
 			JSONObject json = JSONFactoryUtil.createJSONObject();
 			writeJSON(resourceRequest, resourceResponse, json);
-		}
-		
-		if(resourceID.equals("uploadMe")){
-			try {
-				UploadPortletRequest uploadrequest = PortalUtil.getUploadPortletRequest(resourceRequest);
-				InputStream inputStream = uploadrequest.getFileAsStream("fileToUpload");
-
-				if(Validator.isNotNull(inputStream)){
-					File file = uploadrequest.getFile("fileToUpload");
-					String uploadString = getFileAsString(file);
-		
-					if (Validator.isNotNull(uploadString)) {
-						resourceResponse.getWriter().write( "validated_successfully");
-						File newFile = new File("/Users/isturm/Desktop/l2gomedia/"+file.getName());
-						file.renameTo(newFile);
-						logger.info("VALIDATED_SUCCESSFULLY");
-					}else{
-						resourceResponse.getWriter().write("failed");
-						logger.info("VALIDATION_FAILED");
-					}
-				}
-			} catch (Exception e) {
-				logger.info( "Error in adding modem");
-			}			
 		}
 		
 		if(resourceID.equals("toggleSegmentation")){
@@ -436,33 +488,77 @@ public class AdminVideoManagement extends MVCPortlet {
 				e.printStackTrace();
 			}
 		}
+
+		if(resourceID.equals("isFirstUpload")){
+			JSONObject jo = JSONFactoryUtil.createJSONObject();
+			if(video.getFilename().isEmpty())jo.put("firstUpload", "1");
+			else jo.put("firstUpload", "0");
+			writeJSON(resourceRequest, resourceResponse, jo);
+		}
+		
+		if(resourceID.equals("defaultContainer")){
+			JSONObject jo = JSONFactoryUtil.createJSONObject();
+			jo.put("containerFormat", video.getContainerFormat());
+			writeJSON(resourceRequest, resourceResponse, jo);
+		}
+		
+		if(resourceID.equals("deleteFile")){
+			String fileName = ParamUtil.getString(resourceRequest, "fileName");
+			String mainContainerFormat = "";
+
+			//delete file
+			String fPath="";
+			try {
+				fPath = ProducerLocalServiceUtil.getProdUcer(video.getProducerId()).getHomeDir()+"/";
+				mainContainerFormat = VideoLocalServiceUtil.getVideo(videoId).getContainerFormat();
+			} catch (PortalException e) {
+				e.printStackTrace();
+			} catch (SystemException e) {
+				e.printStackTrace();
+			}
+			JSONArray jarr = new JSONArray();
+			//delete all
+			
+			if(fileName.endsWith(mainContainerFormat)){
+				//delete all file on disc 
+				//but not from DB
+				JSONArray jVids = VideoLocalServiceUtil.getJSONVideo(video.getVideoId());
+				for (int i = 0; i < jVids.length(); i++) {
+					try {
+						org.json.JSONObject o = jVids.getJSONObject(i);
+						String fs = (String) o.get("name");
+						File f = new File(fPath+fs);
+						if(f.delete()){
+							o.put("fileId", fs.replace(".", ""));
+						}else{
+							o.put("fileId", "");
+						}
+						jarr.put(o);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+				ProzessManager pm = new ProzessManager();
+				pm.deleteFilesImagesFromVideo(video);
+			}else{
+				org.json.JSONObject o = new org.json.JSONObject();
+					try {
+						File f = new File(fPath+fileName);
+						if(f.delete()){
+							o.put("fileId", fileName.replace(".", ""));
+						}else{
+							o.put("fileId", "");
+						}
+						jarr.put(o);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+			}
+			writeJSON(resourceRequest, resourceResponse, jarr);
+		}
 		
 	}
 
-	public String getFileAsString(File file) {
-		FileInputStream fis = null;
-		BufferedInputStream bis = null;
-		DataInputStream dis = null;
-		StringBuffer sb = new StringBuffer();
-		try {
-			fis = new FileInputStream(file);
-			bis = new BufferedInputStream(fis);
-			dis = new DataInputStream(bis);
-	
-			while (dis.available() != 0) {
-				sb.append(dis.readLine() + "\n");
-			}
-			fis.close();
-			bis.close();
-			dis.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return sb.toString();
-	}
-	
 	public void removeVideo(ActionRequest request, ActionResponse response){
 		Video video = new VideoImpl();
 		Long reqVideoId = new Long(0);
@@ -470,6 +566,12 @@ public class AdminVideoManagement extends MVCPortlet {
 		video = VideoLocalServiceUtil.getFullVideo(reqVideoId);
 		ProzessManager pm = new ProzessManager();	
 		pm.deleteVideo(video);
+		String backURL = request.getParameter("backURL");
+		try {
+			response.sendRedirect(backURL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void lockVideo(ActionRequest request, ActionResponse response){
@@ -482,6 +584,12 @@ public class AdminVideoManagement extends MVCPortlet {
 			pm.deactivateOpenaccess(video);
 		} catch (PortalException e) {
 		} catch (SystemException e) {
+		}
+		String backURL = request.getParameter("backURL");
+		try {
+			response.sendRedirect(backURL);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -496,6 +604,12 @@ public class AdminVideoManagement extends MVCPortlet {
 		} catch (SystemException e) {
 		} catch (PortalException e) {
 		}
+		String backURL = request.getParameter("backURL");
+		try {
+			response.sendRedirect(backURL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void activateDownload(ActionRequest request, ActionResponse response) throws SystemException, PortalException{
@@ -505,6 +619,12 @@ public class AdminVideoManagement extends MVCPortlet {
 		video = VideoLocalServiceUtil.getVideo(reqVideoId);
 		ProzessManager pm = new ProzessManager();
 		pm.activateDownload(video);
+		String backURL = request.getParameter("backURL");
+		try {
+			response.sendRedirect(backURL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void deactivateDownload(ActionRequest request, ActionResponse response) throws SystemException, PortalException{
@@ -514,6 +634,12 @@ public class AdminVideoManagement extends MVCPortlet {
 		video = VideoLocalServiceUtil.getVideo(reqVideoId);
 		ProzessManager pm = new ProzessManager();
 		pm.deactivateDownload(video);
+		String backURL = request.getParameter("backURL");
+		try {
+			response.sendRedirect(backURL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

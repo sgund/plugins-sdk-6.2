@@ -142,7 +142,8 @@ public class AdminUserManagement extends MVCPortlet {
 		for (int i = 0; i < reqUser.getRoles().size(); i++)
 			if(reqUser.getRoles().get(i).getName().equals("L2Go Admin")) isL2goAdmin = true;
 		request.setAttribute("isL2goAdmin", isL2goAdmin);
-		
+		String backURL = request.getParameter("backURL");		
+		request.setAttribute("backURL", backURL);
 		response.setRenderParameter("jspPage", "/admin/editL2GoRole.jsp");
 	}
 	
@@ -200,6 +201,12 @@ public class AdminUserManagement extends MVCPortlet {
 				deleteL2GoRole("L2Go Admin", u);
 		}catch(NullPointerException npe){}
 		// l2go admin request --- end
+		String backURL = request.getParameter("backURL");
+		try {
+			response.sendRedirect(backURL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void deleteL2GoRole(String n, User u) throws PortalException, SystemException{
@@ -260,6 +267,7 @@ public class AdminUserManagement extends MVCPortlet {
 		// save role to l2go producer table
 		p.setProducerId(u.getUserId());
 		p.setInstitutionId(new Long(request.getParameter("pfId")));
+		p.setApproved(1);
 		// repository for producer
 		Host h = null;
 		try{
@@ -268,18 +276,22 @@ public class AdminUserManagement extends MVCPortlet {
 			p.setHostId(h.getHostId());
 			// home directory 
 			p.setHomeDir(u.getScreenName());
-			// add or update entry
-			ProducerLocalServiceUtil.updateProducer(p);
-			createProducersRepository(h, p);
-			// finaly add role to user
-			addL2GoRole("L2Go Producer", u);
-			UserLocalServiceUtil.addRoleUser(RoleLocalServiceUtil.getRole(u.getCompanyId(), "L2Go Producer").getRoleId(), u.getUserId());	
+			if(createProducersRepository(h, p)){
+				// add or update entry
+				ProducerLocalServiceUtil.updateProducer(p);				
+				// finaly add role to user
+				addL2GoRole("L2Go Producer", u);
+				UserLocalServiceUtil.addRoleUser(RoleLocalServiceUtil.getRole(u.getCompanyId(), "L2Go Producer").getRoleId(), u.getUserId());	
+			}else{
+				SessionErrors.add(request, "system-permissions-error");
+			}
 		}catch(Exception e){
 			SessionErrors.add(request, "host-or-institution-error");
 		}
 	}
 	
-	public static void createProducersRepository(Host host, Producer producer) throws IOException{
+	public static boolean createProducersRepository(Host host, Producer producer) throws IOException{
+		boolean ret = false;
 		File folder = new File(PropsUtil.get("lecture2go.media.repository") + "/" + host.getServerRoot() + "/" + producer.getHomeDir() + "/");
 		if (!folder.exists()) {
 			if (folder.mkdir()) {
@@ -296,8 +308,10 @@ public class AdminUserManagement extends MVCPortlet {
 					String cmd = "ln -s " + folder.getAbsolutePath() + " " + prodFolder.getAbsolutePath();
 					runtime.exec(cmd);
 				}
+				ret = true;
 			}
 		}	
+		return ret;
 	}
 	
 	public void initL2goRoles(User u) throws SystemException{

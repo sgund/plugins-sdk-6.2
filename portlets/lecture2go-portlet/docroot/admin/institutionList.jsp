@@ -36,21 +36,21 @@ for (int i = 0; i < institutions.size(); i++) {
             <aui:input name="serverselect" label="Select Streaming Server"></aui:input>
 
         </aui:fieldset>
-        
-       <liferay-ui:panel 
-		    	defaultState="closed" 
-		    	extended="<%= false %>" 
-		    	id="advancedPanel" 
-		    	persistState="<%= true %>" 
+
+       <liferay-ui:panel
+		    	defaultState="closed"
+		    	extended="<%= false %>"
+		    	id="advancedPanel"
+		    	persistState="<%= true %>"
 		    	title="Advanced Streaming Server Options">
-		
+
 		 	    <aui:fieldset>
 					<aui:input label="Server Name" name="name" required="true"></aui:input>
 		 	        <aui:input label="Streaming Server Domain or IP" name="ip"></aui:input>
 		 	        <aui:input label="HTTP Protocol" name="protocol"></aui:input>
 		 	        <aui:input label="Server Template" name="template"></aui:input>
 		 	        <aui:input name='institutionId' type='hidden' value='<%= ParamUtil.getString(renderRequest, "institutionId") %>'/>
-		 	        <aui:button value="Refresh" label="Add to List" type="button" onClick="<%= viewURL.toString() %>"></aui:button>          
+		 	        <aui:button value="Refresh" label="Add to List" type="button" onClick="<%= viewURL.toString() %>"></aui:button>
 		 	    </aui:fieldset>
 
 		</liferay-ui:panel>
@@ -63,96 +63,76 @@ for (int i = 0; i < institutions.size(); i++) {
 
 </aui:form>
 
-<liferay-ui:search-container searchContainer="<%= searchContainer %>" 
+<liferay-ui:search-container searchContainer="<%= searchContainer %>"
 curParam ="curOuter"
-orderByCol="sort" 
-orderByType="asc"  
-emptyResultsMessage="there-are-no-institutions"  
+orderByCol="sort"
+orderByType="asc"
+emptyResultsMessage="there-are-no-institutions"
 delta="20"
 deltaConfigurable="true">
     <liferay-ui:search-container-results
         results="<%=InstitutionLocalServiceUtil.getByGroupIdAndParent(new Long(0), new Long(1), searchContainer.getStart(), searchContainer.getEnd())%>"
         total="<%=InstitutionLocalServiceUtil.getByGroupIdAndParentCount(new Long(0), new Long(1))%>" />
-		
+
     <liferay-ui:search-container-row
         className="de.uhh.l2g.plugins.model.Institution" modelVar="institution"
-        keyProperty="institutionId">
-        
-        <liferay-ui:search-container-column-text property="sort" name="Order"/>
+        keyProperty="institutionId"  escapedModel="<%= false %>" indexVar="i">
 
-        <liferay-ui:search-container-column-text name="Institution">
-        
         <%
  			ResultRow container_row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
  			Institution institution_row = (Institution)row.getObject();
- 			String id_row = "SubInst"+String.valueOf(institution_row.getInstitutionId()); 
- 			String name_row = String.valueOf(institution_row.getName()); 
+ 			long institution_id = institution_row.getInstitutionId();
+ 			String id_row = "Inst"+String.valueOf(institution_row.getInstitutionId());
+ 			String name_row = String.valueOf(institution_row.getName());
  			String streamer_row = String.valueOf(institution_row.getTyp());
- 			
+ 			String curParam_row = "curInner"+String.valueOf(institution_row.getInstitutionId());
+
  		%>
+
+        <liferay-ui:search-container-column-text property="sort" name="Order"/>
+
+        <liferay-ui:search-container-column-text name="Institution">
+
  		<aui:form action="<%= updateInstitutionEntryURL %>" name="<portlet:namespace />fm">
  			<aui:fieldset>
 				<aui:input name="institution" label="Institution Name" value = "<%= name_row %>" required="true"/>
-				<aui:input name="institution" label="Streamer" value = "<%= streamer_row %>" disabled="true"/>
+				<aui:input name="streamer" label="Streamer" value = "<%= streamer_row %>" disabled="true"/>
 			</aui:fieldset>
 				<aui:button type="submit"></aui:button>
  		</aui:form>
  		</liferay-ui:search-container-column-text>
- 		
- 		
+
+
  		<liferay-ui:search-container-column-text name="Advanced">
  		<%
- 			ResultRow inner_row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
- 			Institution subinstitution_row = (Institution)row.getObject();
- 			long sub_id = subinstitution_row.getInstitutionId();
- 			String subid_row = "SubInst"+String.valueOf(subinstitution_row.getInstitutionId());
- 			String subparam_row = "cur"+String.valueOf(subinstitution_row.getInstitutionId());
- 			SearchContainer<Institution> innerContainer = new SearchContainer<Institution>();
- 			
-		%>
-		
-		
-		<% 
-				   
-			System.out.println(sub_id+" "+InstitutionLocalServiceUtil.getByGroupIdAndParent(new Long(0), sub_id).toString()); 
+		//ResultRow container_row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
+		//	Institution institution_row = (Institution)row.getObject();
+		//	long institution_id = institution_row.getInstitutionId();
+		//	String id_row = "Inst"+String.valueOf(institution_row.getInstitutionId());
+		//	String name_row = String.valueOf(institution_row.getName());
+		//	String streamer_row = String.valueOf(institution_row.getTyp());
+		//	String curParam_row = "curInner"+String.valueOf(institution_row.getInstitutionId());
+
+
 		%>
 
 
-		<liferay-ui:panel 
-		    	defaultState="closed" 
-		    	extended="<%= false %>" 
-		    	id="<%= subid_row %>"
-		    	persistState="<%= true %>" 
-		    	title="subInstitution"  >
-		    	
-    	<liferay-ui:search-container
-			curParam ="<%= subparam_row %>"
-				orderByCol="sort" 
-				orderByType="asc"  
-				emptyResultsMessage="<%= subparam_row %>"  
-				delta="20"
-				deltaConfigurable="true">
-				
-					<liferay-ui:search-container-row 
-						className="de.uhh.l2g.plugins.model.Institution" 
-						modelVar=" <%= subid_row %>" 
-        				keyProperty="institutionId">
-   					<liferay-ui:search-container-results
-        				results="<%=InstitutionLocalServiceUtil.getByGroupIdAndParent(new Long(0), sub_id, searchContainer.getStart(), searchContainer.getEnd())%>"
-        				total="<%=InstitutionLocalServiceUtil.getByGroupIdAndParentCount(new Long(0), sub_id)%>" />
-        			
-        			<liferay-ui:search-container-column-text property="sort" name="Order"/>
+		<%
 
-        			<liferay-ui:search-container-column-text property="name" name="Institution" />
-        
-        			</liferay-ui:search-container-row>
-        			<liferay-ui:search-iterator />
-				</liferay-ui:search-container>
-						
- 
+			System.out.println(institution_id+" "+InstitutionLocalServiceUtil.getByGroupIdAndParent(new Long(0), institution_id).toString());
+		%>
+
+
+		<liferay-ui:panel
+		    	defaultState="closed"
+		    	extended="<%= false %>"
+		    	id="<%= id_row %>"
+		    	persistState="<%= true %>"
+		    	title="subInstitution" >
+
 		</liferay-ui:panel>
 		</liferay-ui:search-container-column-text>
-        
+
 
     </liferay-ui:search-container-row>
 

@@ -49,7 +49,7 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 	 *
 	 * Never reference this interface directly. Always use {@link de.uhh.l2g.plugins.service.HostLocalServiceUtil} to access the host local service.
 	 */
-	
+
 
 	public List<Host> getByInstitution(long institutionId) throws SystemException {
 		// TODO Auto-generated method stub
@@ -59,42 +59,42 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 	public Host getByHostId(long hostId) throws SystemException{
 		return hostPersistence.fetchByPrimaryKey(hostId);
 	}
-	
+
 	public List<Host> getByGroupId(long groupId) throws SystemException{
 		return hostPersistence.findByGroupId(groupId);
 	}
-	
+
 	protected void validate (String name, String streamer, String serverTemplate) throws PortalException {
-	    
+
 		if (Validator.isNull(name)) {
 	       throw new HostNameException();
 		 }
-		
+
 	     if (Validator.isNull(streamer) || !Validator.isDomain(streamer) ) {
 	       throw new HostStreamerException();
-	     }     
-	     
+	     }
+
 	     if (Validator.isNull(serverTemplate)) {
 	       throw new HostServerTemplateException();
 	     }
 	}
-	
+
 	public Host addHost(String name, String streamer, String serverTemplate,
 			String protocol, String serverRoot, int port,
 			ServiceContext serviceContext) throws SystemException, PortalException {
-		
+
 		long groupId = serviceContext.getScopeGroupId();
 		long userId = serviceContext.getUserId();
 
 		User user = userPersistence.findByPrimaryKey(userId);
-		
+
 		validate(name,streamer,serverTemplate);
-		
+
 
 		long hostId = counterLocalService.increment();
 
 		Host host = hostPersistence.create(hostId);
-		
+
 		host.setName(name);
 		host.setServerTemplate(serverTemplate);
 		host.setStreamer(streamer);
@@ -104,11 +104,11 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 		host.setExpandoBridgeAttributes(serviceContext);
 
 		hostPersistence.update(host);
-		
+
 		resourceLocalService.addResources(user.getCompanyId(), groupId, userId,
 			       Host.class.getName(), hostId, false, true, true);
 
 		return host;
 	}
-	
+
 }

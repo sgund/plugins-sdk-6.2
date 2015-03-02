@@ -1,3 +1,4 @@
+<%@page import="java.io.PrintWriter"%>
 <%@include file="/init.jsp"%>
 <liferay-ui:error key="host-or-institution-error" message="host-or-institution-error"/>
 <%
@@ -11,6 +12,9 @@
 	Integer roleId = 0;
 	try{tempUserList=UserLocalServiceUtil.getRoleUsers(new Integer(request.getParameter("roleId")));}
 	catch(NumberFormatException nfe){tempUserList=UserLocalServiceUtil.getUsers(1, UserLocalServiceUtil.getUsersCount());}
+	
+	PortletURL portletURL = renderResponse.createRenderURL();
+	portletURL.setParameter("roleId", request.getParameter("roleId")+"");
 %>
 
 <portlet:renderURL var="allRoles"><portlet:param name="jspPage" value="/admin/userList.jsp" /></portlet:renderURL>
@@ -36,7 +40,7 @@
 	</aui:select>
 </aui:form>
 
-<liferay-ui:search-container emptyResultsMessage="no-l2go-roles-found" delta="10">
+<liferay-ui:search-container emptyResultsMessage="no-l2go-roles-found" delta="10" iteratorURL="<%= portletURL %>">
 	<liferay-ui:search-container-results>
 		<%
 			results = ListUtil.subList(tempUserList, searchContainer.getStart(), searchContainer.getEnd());
@@ -49,30 +53,52 @@
 	<liferay-ui:search-container-row className="com.liferay.portal.model.User" keyProperty="userId" modelVar="usr">
 		<portlet:actionURL name="viewRole" var="editURL">
 			<portlet:param name="userId" value="<%= String.valueOf(usr.getUserId())%>" />
+			<portlet:param name="backURL" value="<%=String.valueOf(portletURL)%>"/>
 		</portlet:actionURL>
 		<liferay-ui:search-container-column-text name="name">
 			<aui:a  href="<%=editURL.toString()%>"><%=usr.getFullName()%></aui:a>
 			<br/>
-			<%for (int i = 0; i < usr.getRoles().size(); i++) {
-				String n = usr.getRoles().get(i).getName();
+			<%
+			List<Role> roles = usr.getRoles();
+			String n = "";
+			for (int i = 0; i < roles.size(); i++) {
 				//check for l2g role
-				if(n.contains("L2Go Coordinator")){
+				String rn = roles.get(i).getName();
+				if(rn.contains("L2Go Coordinator")){
 					long fId = new Long(0);
 					try{ fId=CoordinatorLocalServiceUtil.getCoordinator(usr.getUserId()).getInstitutionId(); }catch (Exception e){}
 					String fN = InstitutionLocalServiceUtil.getInstitution(fId).getName();
-					n+=" for "+ fN;
+					n+="coordinator-for "+ fN+"<br/>";
 				}
-				if(n.contains("L2Go Producer")){
+				if(rn.contains("L2Go Producer")){
 					long fId = new Long(0);
 					try{fId = ProducerLocalServiceUtil.getProducer(usr.getUserId()).getInstitutionId();}catch (Exception e){}
 					String fN = InstitutionLocalServiceUtil.getInstitution(fId).getName();
-					n+=" for "+ fN;
+					n+="producer-for "+ fN+"<br/>";
 				}
-				n+="<br/>";
-				out.println(n);					
+				if(!rn.contains("L2Go Producer") && !rn.contains("L2Go Coordinator")){
+					n+=rn+"<br/>";
+				}
 			}%>
+		<%=n%>
 		</liferay-ui:search-container-column-text>
-		<liferay-ui:search-container-column-jsp path="/admin/editL2GoRolesButton.jsp"/>
+		<liferay-ui:search-container-column-text>
+		<%if(permissionAdmin){
+			%>
+			 <a href="<%=editURL.toString()%>">
+	   		 	<span class="icon-large icon-pencil"></span>
+			 </a>			
+			<%
+		}else{
+			if(new Lecture2GoRoleChecker().isProducer(usr) || new Lecture2GoRoleChecker().isStudent(usr)){
+			 %>
+			 <a href="<%=editURL.toString()%>">
+	   		 	<span class="icon-large icon-pencil"></span>
+			 </a>
+			 <%
+			}
+		 }%>
+		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
 
 	<liferay-ui:search-iterator />

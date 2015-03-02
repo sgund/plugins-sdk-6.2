@@ -44,40 +44,40 @@ import de.uhh.l2g.plugins.service.ProducerLocalServiceUtil;
 import de.uhh.l2g.plugins.service.persistence.InstitutionPersistence;
 
 public class AdminInstitutionManagement extends MVCPortlet {
-	
-	
+
+
 	@Override
 	public void render(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
-		
+
 		try {
 			ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			         Institution.class.getName(), renderRequest);
-			
+
 			long groupId = serviceContext.getScopeGroupId();
 
 			long institutionId = ParamUtil.getLong(renderRequest, "institutionId");
 			long hostId = ParamUtil.getLong(renderRequest, "hostId");
-			
-		
+
+
 		    List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(0);
 		    List<Host> host = HostLocalServiceUtil.getByGroupId(0);
-		    
+
 		    System.out.println(institutionId+" "+groupId+" "+institutions.toString());
 		    System.out.println(hostId+" "+groupId+" "+host.toString());
-		    
+
 		    //new Top Level Institution if empty
 		    if (institutions.size() == 0) {
 		    	Institution institution = InstitutionLocalServiceUtil.addInstitution("Main", "default",new Long(0), serviceContext);
 		    	SessionMessages.add(renderRequest, "entryAdded");
 		    	institutionId = institution.getInstitutionId();
 		    }
-		    
+
 		    if (host.size() == 0) {
 		    	Host default_host = HostLocalServiceUtil.addHost("Default", "localhost", "Web","HTTP", "", 80, serviceContext);
 		    	SessionMessages.add(renderRequest, "entryAdded");
-		    	long default_hostId = default_host.getHostId();
+		    	hostId = default_host.getHostId();
 		    }
-		    
+
 		    if (!(institutionId > 0)) {
 		    	institutionId = institutions.get(0).getInstitutionId();
 	        }
@@ -85,22 +85,22 @@ public class AdminInstitutionManagement extends MVCPortlet {
 		    renderRequest.setAttribute("institutionId", institutionId);
 		    renderRequest.setAttribute("hostId", hostId);
 
-	
+
 		    } catch (Exception e) {
 		    	throw new PortletException(e);
 		    }
-		
+
 		super.render(renderRequest, renderResponse);
 
-		
+
 	}
-	
+
 	public void addInstitutionEntry(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
-		
-		
+
+
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 		         Institution.class.getName(), request);
-		
+
 	    String name = ParamUtil.getString(request, "institution");
 	    String streamer = ParamUtil.getString(request, "serverselect");
 	    Long parent = ParamUtil.getLong(request, "parent");
@@ -123,15 +123,15 @@ public class AdminInstitutionManagement extends MVCPortlet {
 	              "/admin/institutionList.jsp");
 	       }
 
-		
+
 	}
-	
+
 	public void updateInstitutionEntry(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
-		
-		
+
+
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 		         Institution.class.getName(), request);
-		
+
 	    String name = ParamUtil.getString(request, "institution");
 	    String streamer = ParamUtil.getString(request, "serverselect");
 	    Long parent = ParamUtil.getLong(request, "parent");
@@ -154,15 +154,15 @@ public class AdminInstitutionManagement extends MVCPortlet {
 	              "/admin/institutionList.jsp");
 	       }
 
-		
+
 	}
-	
+
 	public void addStreamingServerEntry(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
-	
-	
+
+
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				Institution.class.getName(), request);
-	
+
 		String name = ParamUtil.getString(request, "institution");
 		String streamer = ParamUtil.getString(request, "serverselect");
 		Long parent = ParamUtil.getLong(request, "parent");
@@ -185,15 +185,15 @@ public class AdminInstitutionManagement extends MVCPortlet {
               "/admin/institutionList.jsp");
        }
 
-	
+
 	}
 
 public void viewStreamingServerList(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
-	
-	
+
+
 	ServiceContext serviceContext = ServiceContextFactory.getInstance(
 	         Institution.class.getName(), request);
-	
+
     String name = ParamUtil.getString(request, "institution");
     String streamer = ParamUtil.getString(request, "serverselect");
     Long parent = ParamUtil.getLong(request, "parent");
@@ -216,7 +216,7 @@ public void viewStreamingServerList(ActionRequest request, ActionResponse respon
               "/admin/institutionList.jsp");
        }
 
-	
+
 }
 
 }

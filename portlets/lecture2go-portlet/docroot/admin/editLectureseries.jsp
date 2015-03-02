@@ -34,44 +34,56 @@
 	}catch(Exception npe){}
 
 	Map<String,String> institutions = new LinkedHashMap<String, String>();
+	List<Producer> producers = new ArrayList<Producer>();
+
 	if(permissionAdmin){
 		institutions = InstitutionLocalServiceUtil.getAllSortedAsTree(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+		producers = ProducerLocalServiceUtil.getAllProducers(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
 		permissionCoordinator = false;
 	}
-	if(permissionCoordinator)institutions = InstitutionLocalServiceUtil.getByParent(CoordinatorLocalServiceUtil.getCoordinator(remoteUser.getUserId()).getInstitutionId());
+	
+	if(permissionCoordinator){
+		if(institutionId==0)institutionId = CoordinatorLocalServiceUtil.getCoordinator(remoteUser.getUserId()).getInstitutionId();
+		institutions = InstitutionLocalServiceUtil.getByParent(CoordinatorLocalServiceUtil.getCoordinator(remoteUser.getUserId()).getInstitutionId());
+		producers = ProducerLocalServiceUtil.getProducersByInstitutionId(CoordinatorLocalServiceUtil.getCoordinator(remoteUser.getUserId()).getInstitutionId());
+	}
 
 	Locale[] languages = LanguageUtil.getAvailableLocales();
 	String[] availableLanguageIds = LocaleUtil.toLanguageIds(languages);
 	String languageId="";
 
-    List<Producer> producers = ProducerLocalServiceUtil.getAllProducers(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);	
-	List<Long> pIds = ProducerLocalServiceUtil.getAllProducerIds(lId);
+	List<Long> pIds = new ArrayList<Long>();
+	try{
+		pIds = ProducerLocalServiceUtil.getAllProducerIds(lId);
+	}catch (NullPointerException e){}
+	
 	List<String> semesters = LectureseriesLocalServiceUtil.getAllSemesters(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
 	
+	String backURL = "";
+	try{
+		backURL = request.getAttribute("backURL").toString();
+	}catch(Exception e){
+		%>
+			<portlet:renderURL var="back"><portlet:param name="jspPage" value="/admin/lectureSeriesList.jsp" /></portlet:renderURL>
+		<%
+		backURL=back.toString();
+	}
 %>
-
-<portlet:renderURL var="cancelURL">
-	<portlet:param name="jspPage" value="/admin/lectureSeriesList.jsp" />
-</portlet:renderURL>
 
 <portlet:actionURL name="editLectureseries" var="editURL">
 	<portlet:param name="lectureseriesId" value='<%=""+lId%>' />
-</portlet:actionURL>
-
-<portlet:actionURL name="removeLectureseries" var="removeURL">
-	<portlet:param name="lectureseriesId" value='<%=""+lId%>' />
+	<portlet:param name="backURL" value='<%=backURL%>' />
 </portlet:actionURL>
 
 <portlet:actionURL name="addLectureseries" var="addURL">
 	<portlet:param name="lectureseriesId" value='<%=""+lId%>' />
+	<portlet:param name="backURL" value='<%=backURL%>' />
 </portlet:actionURL>
 
 <%
 	if(lId >0) {actionURL=editURL.toString();}
 	else {actionURL = addURL.toString();}
 %>
-
-<aui:input name="teste" type="hidden"/>
 
 <aui:form action="<%=actionURL%>" commandName="model">
 	<aui:fieldset helpMessage="test" column="true" label='<%=lName%>'>
@@ -106,17 +118,20 @@
 		
 			<div class="facilCont">
 				<%
-				List<Institution> fs = InstitutionLocalServiceUtil.getByLectureseriesId(lId, com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
-				for(int i=0;i<fs.size();i++){
-					Institution f = fs.get(i);
-					%>
-					<div id='<%=f.getInstitutionId()%>'> 
-						<%=f.getName()+"&nbsp;&nbsp;&nbsp;" %> 
-						<a style='cursor:pointer;' onClick='document.getElementById("<%=f.getInstitutionId()%>").remove();'><b>X</b></a>
-						<aui:input type="hidden" name="institutions" id="institutions" value="<%=f.getInstitutionId()%>"/>
-					</div>
-					<%
-				}
+				List<Institution> fs = new ArrayList<Institution>();
+				try{
+					fs = InstitutionLocalServiceUtil.getByLectureseriesId(lId, com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+					for(int i=0;i<fs.size();i++){
+						Institution f = fs.get(i);
+						%>
+						<div id='<%=f.getInstitutionId()%>'> 
+							<%=f.getName()+"&nbsp;&nbsp;&nbsp;" %> 
+							<a style='cursor:pointer;' onClick='document.getElementById("<%=f.getInstitutionId()%>").remove();'><b>X</b></a>
+							<aui:input type="hidden" name="institutions" id="institutions" value="<%=f.getInstitutionId()%>"/>
+						</div>
+						<%
+					}					
+				}catch(Exception e){}
 				%>				
 			</div>
 				
@@ -134,16 +149,19 @@
 			</aui:select>
 
 			<div class="prodCont">
-				<%for(int i=0;i<pIds.size();i++){
-					Producer p = ProducerLocalServiceUtil.getProdUcer(new Long(pIds.get(i)+""));
-					%>
-					<div id='<%=p.getProducerId()%>'> 
-						<%=p.getLastName() +", "+p.getFirstName()+"&nbsp;&nbsp;&nbsp;" %> 
-						<a style='cursor:pointer;' onClick='document.getElementById("<%=p.getProducerId()%>").remove();'><b>X</b></a>
-						<aui:input type="hidden" name="producers" id="producers" value="<%=p.getProducerId()%>"/>
-					</div>
-					<%
-				}%>				
+				<%
+				try{
+					for(int i=0;i<pIds.size();i++){
+						Producer p = ProducerLocalServiceUtil.getProdUcer(new Long(pIds.get(i)+""));
+						%>
+						<div id='<%=p.getProducerId()%>'> 
+							<%=p.getLastName() +", "+p.getFirstName()+"&nbsp;&nbsp;&nbsp;" %> 
+							<a style='cursor:pointer;' onClick='document.getElementById("<%=p.getProducerId()%>").remove();'><b>X</b></a>
+							<aui:input type="hidden" name="producers" id="producers" value="<%=p.getProducerId()%>"/>
+						</div>
+						<%
+					}
+				}catch(Exception e){}%>				
 			</div>	
 							
 			<aui:input name="shortDesc" label="short-description"  value="<%=lShortDesc%>"/>
@@ -186,12 +204,7 @@
 			
 			<aui:button-row>
 				<aui:button type="submit" onclick="<portlet:namespace />extractCodeFromEditor()"/>
-				<aui:button type="submit" value="cancel" onClick="<%=cancelURL.toString()%>" />
-				<%if (lId>0) {%>
-				<liferay-ui:icon-menu cssClass="right">
-					<liferay-ui:icon image="delete" message="Remove" url="<%=removeURL.toString()%>" />
-				</liferay-ui:icon-menu>
-				<%}%>
+				<aui:button type="cancel" value="cancel" href="<%=backURL%>"/>
 			</aui:button-row>
 		</aui:layout>
 	</aui:fieldset>

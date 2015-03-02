@@ -1,5 +1,3 @@
-<%@page import="de.uhh.l2g.plugins.util.Security"%>
-<%@page import="de.uhh.l2g.plugins.service.HostLocalServiceUtil"%>
 <%@include file="/init.jsp"%>
 
 <jsp:useBean id="reqLectureseriesList" type="java.util.List<de.uhh.l2g.plugins.model.Lectureseries>" scope="request" />
@@ -8,6 +6,15 @@
 <jsp:useBean id="reqProducer" type="de.uhh.l2g.plugins.model.Producer" scope="request" />
 <jsp:useBean id="reqVideo" type="de.uhh.l2g.plugins.model.Video" scope="request" />
 <jsp:useBean id="reqMetadata" type="de.uhh.l2g.plugins.model.Metadata" scope="request" />
+
+<liferay-portlet:resourceURL id="updateMeatadata" var="updateURL" />
+<liferay-portlet:resourceURL id="updateDescription" var="updateDescriptionURL" />
+<liferay-portlet:resourceURL id="updateLicense" var="updateLicenseURL" />
+<liferay-portlet:resourceURL id="updateVideoFileName" var="updateVideoFileNameURL" />
+<liferay-portlet:resourceURL id="videoFileNameExists" var="videoFileNameExistsURL" />
+<liferay-portlet:resourceURL id="deleteFile" var="deleteFileURL" />
+<liferay-portlet:resourceURL id="isFirstUpload" var="isFirstUploadURL" />
+<liferay-portlet:resourceURL id="defaultContainer" var="defaultContainerURL" />
 
 <%
 	String actionURL = "";
@@ -26,28 +33,8 @@
 	List<String> semesters = LectureseriesLocalServiceUtil.getAllSemesters(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
 
 	String uploadProgressId = PwdGenerator.getPassword(PwdGenerator.KEY3, 4);
+	String backURL = request.getAttribute("backURL").toString();
 %>
-
-<portlet:renderURL var="cancelURL">
-	<portlet:param name="jspPage" value="/admin/videosList.jsp" />
-</portlet:renderURL>
-
-<portlet:actionURL name="editVideo" var="editURL">
-	<portlet:param name="videoId" value='<%=""+reqVideo.getVideoId()%>' />
-</portlet:actionURL>
-
-<portlet:actionURL name="addVideo" var="addURL">
-	<portlet:param name="videoId" value='<%=""+0%>' />
-</portlet:actionURL>
-
-<portlet:actionURL var="editCaseURL" name="uploadCase">
-	<portlet:param name="jspPage" value="/admin/editVideo.jsp" />
-</portlet:actionURL>
-<%
-	if(reqVideo.getVideoId() >0) {actionURL=editURL.toString();}
-	else {actionURL = addURL.toString();}
-%>
-
  
 <aui:fieldset helpMessage="test" column="true" label="video-file" >
 	<div>
@@ -111,14 +98,15 @@
 			<br/><br/>
 			
 			<aui:field-wrapper label="description">
-			    <liferay-ui:input-editor name="longDesc" toolbarSet="liferay-article" initMethod="initEditor" width="250" onChangeMethod="updateDescription" />
+			    <liferay-ui:input-editor name="longDesc" toolbarSet="liferay-article" initMethod="initEditor" width="250" onChangeMethod="setDescriptionData" />
 			    <script type="text/javascript">
 			        function <portlet:namespace />initEditor() { return "<%= UnicodeFormatter.toString(reqMetadata.getDescription()) %>"; }
 			    </script>
 			</aui:field-wrapper>
 			
 			<aui:button-row>
-				<aui:button type="cancel" value="back" onClick="<%=cancelURL.toString()%>" />
+				<aui:button value="apply changes" onclick="applyAllMetadataChanges()"/>
+				<aui:button type="cancel" value="cancel" href="<%=backURL%>"/>
 			</aui:button-row>
 			
 			<aui:input name="videoId" type="hidden" value="<%=reqVideo.getVideoId()%>"/>
@@ -126,15 +114,7 @@
 	</aui:layout>
 </aui:fieldset>
 
-<liferay-portlet:resourceURL id="updateMeatadata" var="updateURL" />
-<liferay-portlet:resourceURL id="updateDescription" var="updateDescriptionURL" />
-<liferay-portlet:resourceURL id="updateLicense" var="updateLicenseURL" />
-<liferay-portlet:resourceURL id="updateVideoFileName" var="updateVideoFileNameURL" />
-<liferay-portlet:resourceURL id="videoFileNameExists" var="videoFileNameExistsURL" />
-
 <script type="text/javascript">
-var firstUpload = 0;
-<%if(reqVideo.getFilename().length()==0){%>firstUpload=1;<%}%>
 $(function () {
     $('#fileupload').fileupload({
         dataType: 'json',
@@ -142,42 +122,50 @@ $(function () {
             var uploadErrors = [];
             var acceptFileTypes = /(mp4|m4v|m4a|mp3|ogg|flv|webm|pdf)$/i;//file types
 			
-            if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+            if (data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
                 uploadErrors.push('not an accepted file type');
             }
-            if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 2147483648) {
+            if (data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 2147483648) {
                 uploadErrors.push('max file size 2 GB');
             }
-          	//check for first uplode
-        	if(firstUpload==1){
-        		if(data.originalFiles[0]['type'].indexOf('mp4')==-1 && data.originalFiles[0]['type'].indexOf('mp3')==-1){
+          	//check for first upload
+        	if (isFirstUpload()==1) {
+        		if (!fileUploadAllowed(data.originalFiles)){
         			uploadErrors.push('first upload has to be a mp3 or mp4 media file');   
-        		}else{
+        		} else {
         			if(videoFileNameExistsInDatabase(data.originalFiles[0]['name'])==1) uploadErrors.push('file exists in DB, please rename');  
         		}
         	}
-            if(uploadErrors.length > 0) {
+            if (uploadErrors.length > 0) {
                 alert(uploadErrors.join("\n"));
             } else {
                 data.submit();
             }
         },
         done: function (e, data) {
-        	$("tr:has(td)").remove();
-            $.each(data.result, function (index, file) {
-                $("#uploaded-files").append(
-                		$('<tr/>')
-                		.append($('<td/>').text(file.fileName))
-                		.append($('<td/>').text(file.fileSize))
-                		.append($('<td/>').text(file.fileType))
-                		.append($('<td/>').html("<a href='upload?f="+index+"'>Click</a>"))
-
-                		)//end $("#uploaded-files").append()
-                		if(file.fileName.indexOf("mp4") > -1 || file.fileName.indexOf("mp3") > -1){
-                			updateVideoFileName(file);
-                		}
-               			firstUpload=0;
-            }); 
+           var vars = data.jqXHR.responseJSON;
+           $.template( "filesTemplate", $("#template") );
+           $("#"+vars[0].id).remove();   
+           $.tmpl( "filesTemplate", vars ).appendTo( ".table" );
+           if(isFirstUpload()==1){//update
+        	   	var f1 = "mp4";
+           		var f2 = "mp3";
+           		var f3 = vars[0].fileName;
+           		if(f3.indexOf(f1) > -1){
+	           		updateVideoFileName(vars[0]);
+           		}
+           		if(f3.indexOf(f2) > -1){
+	           		updateVideoFileName(vars[0]);
+           		}
+           }else{
+				//update only for mp3 and mp4, but without changing the container
+				var f1 = vars[0].fileName;
+				var f2 = defaultContainer();
+				var f3 = "mp4";
+				if(f1.indexOf(f2) > -1 || f1.indexOf(f3) > -1){
+	           		updateVideoFileName(vars[0]);
+				}
+           }
         },
         progressall: function (e, data) {
 	        var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -196,6 +184,54 @@ $(function () {
     });
    
 });
+
+function fileUploadAllowed(data){
+	var ret = false;
+    var acceptFileTypes = /(mp4|mp3)$/i;//file types
+    data.forEach(function(entry) {
+    	console.log(entry['type']);
+    	if(acceptFileTypes.test(entry['type'])){
+        	ret = true;
+        }
+    });
+    return ret;
+}
+
+function defaultContainer(){
+	var ret;
+	$.ajax({
+		  type: "POST",
+		  url: "<%=defaultContainerURL%>",
+		  dataType: 'json',
+		  data: {
+		 	   	<portlet:namespace/>videoId: "<%=reqVideo.getVideoId()%>",
+		  },
+		  global: false,
+		  async:false,
+		  success: function(data) {
+		    ret = data.containerFormat;
+		  }
+	})
+	return ret;
+}
+
+function isFirstUpload(){
+	var ret = 0;
+	$.ajax({
+		  type: "POST",
+		  url: "<%=isFirstUploadURL%>",
+		  dataType: 'json',
+		  data: {
+		 	   	<portlet:namespace/>videoId: "<%=reqVideo.getVideoId()%>",
+		  },
+		  global: false,
+		  async:false,
+		  success: function(data) {
+		    ret = data.firstUpload;
+		  }
+	})
+	return ret;
+}
 
 function videoFileNameExistsInDatabase (fileName){
 	var ret = 0;
@@ -270,7 +306,7 @@ function updateMetadata(){
 	);
 }
 
-function updateLicense(data){
+function updateLicense(data){	
 	AUI().use('aui-io-request', 'aui-node',
 		function(A){
 			A.io.request('<%=updateLicenseURL%>', {
@@ -292,7 +328,28 @@ function updateLicense(data){
 	);
 }
 
-function <portlet:namespace/>updateDescription(data){
+var descData;
+function <portlet:namespace/>setDescriptionData(data){
+	descData = data;
+}
+
+function applyAllMetadataChanges(){
+	AUI().use(
+			'aui-node',
+			function(A) {
+					// Select the node(s) using a css selector string
+				    var license1 = A.one('#<portlet:namespace/>ccbyncsa');
+				    var license2 = A.one('#<portlet:namespace/>uhhl2go');
+				    
+				    updateMetadata();
+				    updateDescription(descData);
+				    updateLicense(license1.get('value'));
+				    updateLicense(license2.get('value'));
+			}
+	);
+}
+
+function updateDescription(data){
 	AUI().use('aui-io-request', 'aui-node',
 		function(A){
 			A.io.request('<%=updateDescriptionURL%>', {
@@ -314,38 +371,44 @@ function <portlet:namespace/>updateDescription(data){
 	);
 }
 
-AUI().use(
-		'aui-node',
-		function(A) {
-				// Select the node(s) using a css selector string
-			    var lectureseries = A.one('#<portlet:namespace/>lectureseriesId');
-			    var language = A.one('#<portlet:namespace/>language');
-			    var title = A.one('#<portlet:namespace/>title');
-			    var tags = A.one('#<portlet:namespace/>tags');
-			    var creator = A.one('#<portlet:namespace/>creator');
-			    var rightsHolder = A.one('#<portlet:namespace/>rightsHolder');
-			    var publisher = A.one('#<portlet:namespace/>publisher');
-			    var license1 = A.one('#<portlet:namespace/>ccbyncsa');
-			    var license2 = A.one('#<portlet:namespace/>uhhl2go');
-			    
-			    lectureseries.on('change',function(A){updateMetadata()});
-				language.on('change',function(A){updateMetadata()});
-			    license2.on('change',function(A){updateLicense(license2.get('value'))});
-			    license1.on('change',function(A){updateLicense(license1.get('value'))});
-
-				title.on('change',function(A){updateMetadata()});
-			    tags.on('change',function(A){updateMetadata()});
-			    creator.on('change',function(A){updateMetadata()});
-			    rightsHolder.on('change',function(A){updateMetadata()});
-			    publisher.on('change',function(A){updateMetadata()});
-			    //test();
-		}
-);
-
-function test() {
-	var tt = <%=VideoLocalServiceUtil.getJSONVideo(reqVideo.getVideoId()).toString()%>;
-	<%if(!reqVideo.getFilename().equals("")){%>
-		document.getElementById("fls").innerHTML = tmpl("template-download", tt);
-	<%}%>
+function deleteFile(fileName){
+	confirm("really? you want to remove this file? ");
+	$.ajax({
+	    url: '<%=deleteFileURL.toString()%>',
+	    method: 'POST',
+	    dataType: "json",
+	    data: {
+	 	   	<portlet:namespace/>fileName: fileName,
+	 	   	<portlet:namespace/>videoId: "<%=reqVideo.getVideoId()%>",
+	    },
+	    success: function(data) {
+	        // since we are using jQuery, you don't need to parse response
+	        console.log(data);
+	        for (var i = 0; i < data.length; i++) {
+	            var obj = data[i];
+		        var id = "#"+obj.fileId;
+		        $(id).remove();
+	        }
+	    }
+	});	
 }
+
+</script>
+
+<!-- Template -->
+<script type="text/x-jquery-tmpl" id="template">
+   	<tr id="<%="${id}"%>">
+    	<td><%="${name}"%></td>
+    	<td>
+			<a class="icon-large icon-remove" onclick="deleteFile('<%="${name}"%>');"></a>
+		</td>
+   	</tr>
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        var vars = <%=VideoLocalServiceUtil.getJSONVideo(reqVideo.getVideoId()).toString()%>;
+        $.template( "filesTemplate", $("#template") );
+        $.tmpl( "filesTemplate", vars ).appendTo( ".table" );
+    });
 </script>
