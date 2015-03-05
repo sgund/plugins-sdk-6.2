@@ -7,10 +7,14 @@
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
+<%!com.liferay.portal.kernel.dao.search.SearchContainer<Institution> searchInstitutionContainer = null;%>
+<%!com.liferay.portal.kernel.dao.search.SearchContainer<Institution> searchSubInstitutionContainer = null;%>
+
 <liferay-ui:error key="host-or-institution-error" message="host-or-institution-error"/>
 
 <portlet:renderURL var="viewURL"><portlet:param name="jspPage" value="/admin/institutionList.jsp" /></portlet:renderURL>
-<portlet:renderURL var="innerURL"><portlet:param name="jspPage" value="/admin/institutionList.jsp" /></portlet:renderURL>
+<liferay-portlet:renderURL varImpl="outerURL"><portlet:param name="jspPage" value="/admin/institutionList.jsp" /></liferay-portlet:renderURL>
+<liferay-portlet:renderURL varImpl="innerURL"><portlet:param name="jspPage" value="/admin/institutionList.jsp" /></liferay-portlet:renderURL>
 <portlet:actionURL name="addInstitutionEntry" var="addInstitutionEntryURL"></portlet:actionURL>
 <portlet:actionURL name="updateInstitutionEntry" var="updateInstitutionEntryURL"></portlet:actionURL>
 
@@ -63,12 +67,13 @@ for (int i = 0; i < institutions.size(); i++) {
 
 </aui:form>
 
-<liferay-ui:search-container searchContainer="<%= searchContainer %>"
+<liferay-ui:search-container searchContainer="<%= searchInstitutionContainer %>"
 curParam ="curOuter"
 orderByCol="sort"
 orderByType="asc"
 emptyResultsMessage="there-are-no-institutions"
 delta="20"
+iteratorURL="<%= outerURL %>"
 deltaConfigurable="true">
     <liferay-ui:search-container-results
         results="<%=InstitutionLocalServiceUtil.getByGroupIdAndParent(new Long(0), new Long(1), searchContainer.getStart(), searchContainer.getEnd())%>"
@@ -89,6 +94,8 @@ deltaConfigurable="true">
 
  		%>
 
+ 		 <liferay-ui:search-container-row-parameter name="rowId" value="<%= institution_row.toString() %>"/>
+
         <liferay-ui:search-container-column-text property="sort" name="Order"/>
 
         <liferay-ui:search-container-column-text name="Institution">
@@ -104,31 +111,48 @@ deltaConfigurable="true">
 
 
  		<liferay-ui:search-container-column-text name="Advanced">
- 		<%
-		//ResultRow container_row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
-		//	Institution institution_row = (Institution)row.getObject();
-		//	long institution_id = institution_row.getInstitutionId();
-		//	String id_row = "Inst"+String.valueOf(institution_row.getInstitutionId());
-		//	String name_row = String.valueOf(institution_row.getName());
-		//	String streamer_row = String.valueOf(institution_row.getTyp());
-		//	String curParam_row = "curInner"+String.valueOf(institution_row.getInstitutionId());
-
-
-		%>
-
 
 		<%
 
-			System.out.println(institution_id+" "+InstitutionLocalServiceUtil.getByGroupIdAndParent(new Long(0), institution_id).toString());
+			//System.out.println(institution_id+" "+InstitutionLocalServiceUtil.getByGroupIdAndParent(new Long(0), institution_id).toString());
 		%>
 
 
 		<liferay-ui:panel
-		    	defaultState="closed"
-		    	extended="<%= false %>"
-		    	id="<%= id_row %>"
-		    	persistState="<%= true %>"
-		    	title="subInstitution" >
+				defaultState="closed"
+				extended="<%= false %>"
+				id="<%= id_row %>"
+				persistState="<%= true %>"
+				title="<%= name_row %>" >
+
+
+			<liferay-ui:search-container searchContainer="<%= searchSubInstitutionContainer %>"
+				curParam ="<%=curParam_row%>"
+				orderByCol="sort"
+				orderByType="asc"
+				emptyResultsMessage="there-are-no-institutions"
+				iteratorURL="<%= innerURL %>"
+				delta="20"
+				deltaConfigurable="true" >
+
+				<liferay-ui:search-container-results
+        			results="<%=InstitutionLocalServiceUtil.getByGroupIdAndParent(new Long(0), institution_id, searchContainer.getStart(), searchContainer.getEnd())%>"
+        			total="<%=InstitutionLocalServiceUtil.getByGroupIdAndParentCount(new Long(0), institution_id)%>" />
+
+				<liferay-ui:search-container-row
+				className="de.uhh.l2g.plugins.model.Institution" modelVar="subInstitution"
+				keyProperty="institutionId"  escapedModel="<%= false %>" indexVar="j">
+
+
+        			<liferay-ui:search-container-column-text property="sort" name="Order"/>
+
+        			<liferay-ui:search-container-column-text property="name" name="Institution" />
+
+        		</liferay-ui:search-container-row>
+        	<liferay-ui:search-iterator searchContainer="<%= searchSubInstitutionContainer %>" />
+			</liferay-ui:search-container>
+
+
 
 		</liferay-ui:panel>
 		</liferay-ui:search-container-column-text>
@@ -137,5 +161,5 @@ deltaConfigurable="true">
     </liferay-ui:search-container-row>
 
 
-    <liferay-ui:search-iterator searchContainer="<%= searchContainer %>" />
+    <liferay-ui:search-iterator searchContainer="<%= searchInstitutionContainer %>" />
 </liferay-ui:search-container>
