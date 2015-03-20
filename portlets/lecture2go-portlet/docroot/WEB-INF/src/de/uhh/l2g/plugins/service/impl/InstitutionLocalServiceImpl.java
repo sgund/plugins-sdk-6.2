@@ -54,7 +54,7 @@ import de.uhh.l2g.plugins.service.persistence.InstitutionFinderUtil;
 public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
-	 * 
+	 *
 	 * Never reference this interface directly. Always use {@link
 	 * de.uhh.l2g.plugins.service.InstitutionLocalServiceUtil} to access the
 	 * institution local service.
@@ -63,19 +63,23 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 	public Institution getById(long institutionId) throws SystemException {
 		return institutionPersistence.fetchByPrimaryKey(institutionId);
 	}
-	
+
 	public List<Institution> getByGroupId(long groupId) throws SystemException {
 		return institutionPersistence.findByGroupId(groupId);
 	}
-	
+
+	public Institution getTopLevelByGroupId(long groupId) throws SystemException {
+		return (Institution) institutionPersistence.findByTopLevel(groupId);
+	}
+
 	public List<Institution> getByGroupIdAndParent(long groupId, long parentId) throws SystemException {
 		return institutionPersistence.findByG_P(groupId, parentId);
 	}
-	
+
 	public List<Institution> getByGroupIdAndParent(long groupId, long parentId, int start, int end) throws SystemException {
 		return institutionPersistence.findByG_P(groupId, parentId, start, end);
 	}
-	
+
 	public int getByGroupIdAndParentCount(long groupId, long parentId) throws SystemException {
 		return institutionPersistence.countByG_P(groupId, parentId);
 	}
@@ -132,14 +136,14 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 		}
 
 	}
-	
+
 	public Institution addInstitution(String name, String streamer, long parentId, ServiceContext serviceContext) throws SystemException, PortalException {
 
 		long groupId = serviceContext.getScopeGroupId();
 		long userId = serviceContext.getUserId();
 
 		User user = userPersistence.findByPrimaryKey(userId);
-		
+
 		validate(name);
 
 		long institutionId = counterLocalService.increment(Institution.class.getName());
@@ -155,12 +159,12 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 		if (parentId > 0) institution.setLevel(parent.getLevel()+1);
 		else institution.setLevel(0);
 		institution.setExpandoBridgeAttributes(serviceContext);
-		
+
 		institutionPersistence.update(institution);
-		
+
 		resourceLocalService.addResources(user.getCompanyId(), groupId, userId,
 			       Institution.class.getName(), institutionId, false, true, true);
-		
+
 		return institution;
 	}
 

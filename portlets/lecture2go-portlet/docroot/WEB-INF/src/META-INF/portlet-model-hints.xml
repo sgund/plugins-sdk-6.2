@@ -119,6 +119,20 @@
 		<field name="chapter" type="int" />
 		<field name="userId" type="long" />
 	</model>
+	<model name="de.uhh.l2g.plugins.model.ServerTemplate">
+		<field name="serverTemplateId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="name" type="String" />
+		<field name="prefixURL" type="String" />
+		<field name="suffixURL" type="String" />
+		<field name="suffixExt" type="String" />
+		<field name="templateURL" type="String" />
+		<field name="prefixFile" type="String" />
+		<field name="suffixFile" type="String" />
+		<field name="templateFile" type="String" />
+		<field name="templateIOs" type="long" />
+		<field name="templateAndroid" type="long" />
+	</model>
 	<model name="de.uhh.l2g.plugins.model.Sys">
 		<field name="sysId" type="int" />
 		<field name="version" type="String" />

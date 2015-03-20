@@ -38,6 +38,7 @@ import de.uhh.l2g.plugins.model.OfficeClp;
 import de.uhh.l2g.plugins.model.ProducerClp;
 import de.uhh.l2g.plugins.model.Producer_LectureseriesClp;
 import de.uhh.l2g.plugins.model.SegmentClp;
+import de.uhh.l2g.plugins.model.ServerTemplateClp;
 import de.uhh.l2g.plugins.model.SysClp;
 import de.uhh.l2g.plugins.model.UploadClp;
 import de.uhh.l2g.plugins.model.VideoClp;
@@ -171,6 +172,10 @@ public class ClpSerializer {
 
 		if (oldModelClassName.equals(SegmentClp.class.getName())) {
 			return translateInputSegment(oldModel);
+		}
+
+		if (oldModelClassName.equals(ServerTemplateClp.class.getName())) {
+			return translateInputServerTemplate(oldModel);
 		}
 
 		if (oldModelClassName.equals(SysClp.class.getName())) {
@@ -344,6 +349,16 @@ public class ClpSerializer {
 		return newModel;
 	}
 
+	public static Object translateInputServerTemplate(BaseModel<?> oldModel) {
+		ServerTemplateClp oldClpModel = (ServerTemplateClp)oldModel;
+
+		BaseModel<?> newModel = oldClpModel.getServerTemplateRemoteModel();
+
+		newModel.setModelAttributes(oldClpModel.getModelAttributes());
+
+		return newModel;
+	}
+
 	public static Object translateInputSys(BaseModel<?> oldModel) {
 		SysClp oldClpModel = (SysClp)oldModel;
 
@@ -483,6 +498,11 @@ public class ClpSerializer {
 		if (oldModelClassName.equals(
 					"de.uhh.l2g.plugins.model.impl.SegmentImpl")) {
 			return translateOutputSegment(oldModel);
+		}
+
+		if (oldModelClassName.equals(
+					"de.uhh.l2g.plugins.model.impl.ServerTemplateImpl")) {
+			return translateOutputServerTemplate(oldModel);
 		}
 
 		if (oldModelClassName.equals("de.uhh.l2g.plugins.model.impl.SysImpl")) {
@@ -663,6 +683,10 @@ public class ClpSerializer {
 			return new de.uhh.l2g.plugins.NoSuchSegmentException();
 		}
 
+		if (className.equals("de.uhh.l2g.plugins.NoSuchServerTemplateException")) {
+			return new de.uhh.l2g.plugins.NoSuchServerTemplateException();
+		}
+
 		if (className.equals("de.uhh.l2g.plugins.NoSuchSysException")) {
 			return new de.uhh.l2g.plugins.NoSuchSysException();
 		}
@@ -820,6 +844,16 @@ public class ClpSerializer {
 		newModel.setModelAttributes(oldModel.getModelAttributes());
 
 		newModel.setSegmentRemoteModel(oldModel);
+
+		return newModel;
+	}
+
+	public static Object translateOutputServerTemplate(BaseModel<?> oldModel) {
+		ServerTemplateClp newModel = new ServerTemplateClp();
+
+		newModel.setModelAttributes(oldModel.getModelAttributes());
+
+		newModel.setServerTemplateRemoteModel(oldModel);
 
 		return newModel;
 	}

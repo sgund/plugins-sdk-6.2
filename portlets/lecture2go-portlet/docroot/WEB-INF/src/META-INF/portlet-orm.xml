@@ -204,6 +204,25 @@
 			<transient name="userUuid" />
 		</attributes>
 	</mapped-superclass>
+	<mapped-superclass class="de.uhh.l2g.plugins.model.impl.ServerTemplateModelImpl">
+		<attributes>
+			<id name="serverTemplateId" />
+			<basic name="groupId" />
+			<basic name="name" />
+			<basic name="prefixURL" />
+			<basic name="suffixURL" />
+			<basic name="suffixExt" />
+			<basic name="templateURL" />
+			<basic name="prefixFile" />
+			<basic name="suffixFile" />
+			<basic name="templateFile" />
+			<basic name="templateIOs" />
+			<basic name="templateAndroid" />
+			<transient name="modelAttributes" />
+			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
+		</attributes>
+	</mapped-superclass>
 	<mapped-superclass class="de.uhh.l2g.plugins.model.impl.SysModelImpl">
 		<attributes>
 			<id name="sysId" />
@@ -359,6 +378,10 @@
 			<transient name="previusSegmentId" />
 			<transient name="seconds" />
 		</attributes>
+	</entity>
+	<entity class="de.uhh.l2g.plugins.model.impl.ServerTemplateImpl" name="ServerTemplate">
+		<table name="LG_ServerTemplate" />
+		<attributes />
 	</entity>
 	<entity class="de.uhh.l2g.plugins.model.impl.SysImpl" name="Sys">
 		<table name="LG_Sys" />

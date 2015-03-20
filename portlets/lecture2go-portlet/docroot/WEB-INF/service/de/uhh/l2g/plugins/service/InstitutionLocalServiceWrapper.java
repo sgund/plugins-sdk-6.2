@@ -301,6 +301,13 @@ public class InstitutionLocalServiceWrapper implements InstitutionLocalService,
 	}
 
 	@Override
+	public de.uhh.l2g.plugins.model.Institution getTopLevelByGroupId(
+		long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _institutionLocalService.getTopLevelByGroupId(groupId);
+	}
+
+	@Override
 	public java.util.List<de.uhh.l2g.plugins.model.Institution> getByGroupIdAndParent(
 		long groupId, long parentId)
 		throws com.liferay.portal.kernel.exception.SystemException {

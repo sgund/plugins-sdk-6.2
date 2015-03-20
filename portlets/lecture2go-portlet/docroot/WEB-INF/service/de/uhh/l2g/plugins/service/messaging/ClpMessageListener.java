@@ -31,6 +31,7 @@ import de.uhh.l2g.plugins.service.OfficeLocalServiceUtil;
 import de.uhh.l2g.plugins.service.ProducerLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Producer_LectureseriesLocalServiceUtil;
 import de.uhh.l2g.plugins.service.SegmentLocalServiceUtil;
+import de.uhh.l2g.plugins.service.ServerTemplateLocalServiceUtil;
 import de.uhh.l2g.plugins.service.SysLocalServiceUtil;
 import de.uhh.l2g.plugins.service.UploadLocalServiceUtil;
 import de.uhh.l2g.plugins.service.VideoLocalServiceUtil;
@@ -78,6 +79,8 @@ public class ClpMessageListener extends BaseMessageListener {
 			Producer_LectureseriesLocalServiceUtil.clearService();
 
 			SegmentLocalServiceUtil.clearService();
+
+			ServerTemplateLocalServiceUtil.clearService();
 
 			SysLocalServiceUtil.clearService();
 

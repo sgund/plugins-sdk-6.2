@@ -59,8 +59,8 @@
     	<column name="level" type="int"></column>
     	<column name="sort" type="int"></column>
     	<column name="groupId" type="long"></column>
-		<order by="asc"> <order-column name="sort" />  
-		</order> 
+		<order by="asc"> <order-column name="sort" />
+		</order>
     	<finder name="Parent" return-type="Collection">
     		<finder-column name="parentId"></finder-column>
     	</finder>
@@ -119,6 +119,9 @@
             <finder-column name="groupId"></finder-column>
             <finder-column name="parentId"></finder-column>
             <finder-column name="sort"></finder-column>
+        </finder>
+        <finder name="TopLevel" return-type="Collection" where="parentId = 0">
+            <finder-column name="groupId"></finder-column>
         </finder>
     </entity>
     <entity name="Lectureseries_Institution" local-service="true" remote-service="false">
@@ -189,7 +192,6 @@
 		<finder name="GroupId" return-type="Collection">
             <finder-column name="groupId"></finder-column>
         </finder>
-
     </entity>
     <entity name="Institution_Host" local-service="true" remote-service="false">
         <column name="institutionHostId" type="long" primary="true" id-type="increment"></column>
@@ -380,6 +382,29 @@
         <finder name="Lectureseries" return-type="Collection">
             <finder-column name="lectureseriesId"></finder-column>
         </finder>
+    </entity>
+    <entity name="ServerTemplate" local-service="true" remote-service="false">
+
+
+    	<!-- PK fields -->
+
+    	<column name="serverTemplateId" type="long" primary="true"></column>
+
+    	<!-- Group instance -->
+
+    	<column name="groupId" type="long"></column>
+
+    	<!-- Audit fields -->
+        <column name="name" type="String" accessor="false"></column>
+        <column name="prefixURL" type="String"></column>
+        <column name="suffixURL" type="String"></column>
+        <column name="suffixExt" type="String"></column>
+        <column name="templateURL" type="String"></column>
+        <column name="prefixFile" type="String"></column>
+        <column name="suffixFile" type="String"></column>
+        <column name="templateFile" type="String"></column>
+        <column name="templateIOs" type="long"></column>
+        <column name="templateAndroid" type="long"></column>
     </entity>
     <exceptions>
         <exception>HostName</exception>

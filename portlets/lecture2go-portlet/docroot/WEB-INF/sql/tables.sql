@@ -136,6 +136,21 @@ create table LG_Segment_User_Video (
 	segmentUserVideoId LONG not null primary key
 );
 
+create table LG_ServerTemplate (
+	serverTemplateId LONG not null primary key,
+	groupId LONG,
+	name VARCHAR(75) null,
+	prefixURL VARCHAR(75) null,
+	suffixURL VARCHAR(75) null,
+	suffixExt VARCHAR(75) null,
+	templateURL VARCHAR(75) null,
+	prefixFile VARCHAR(75) null,
+	suffixFile VARCHAR(75) null,
+	templateFile VARCHAR(75) null,
+	templateIOs LONG,
+	templateAndroid LONG
+);
+
 create table LG_Sys (
 	sysId INTEGER not null primary key,
 	version VARCHAR(75) null,

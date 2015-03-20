@@ -15,6 +15,7 @@
 	<import class="de.uhh.l2g.plugins.model.Producer" />
 	<import class="de.uhh.l2g.plugins.model.Producer_Lectureseries" />
 	<import class="de.uhh.l2g.plugins.model.Segment" />
+	<import class="de.uhh.l2g.plugins.model.ServerTemplate" />
 	<import class="de.uhh.l2g.plugins.model.Sys" />
 	<import class="de.uhh.l2g.plugins.model.Upload" />
 	<import class="de.uhh.l2g.plugins.model.Video" />
@@ -177,6 +178,23 @@
 		<property name="end" type="com.liferay.portal.dao.orm.hibernate.StringType" column="end_" />
 		<property name="chapter" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+	</class>
+	<class name="de.uhh.l2g.plugins.model.impl.ServerTemplateImpl" table="LG_ServerTemplate">
+		<cache usage="read-write" />
+		<id name="serverTemplateId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="prefixURL" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="suffixURL" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="suffixExt" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="templateURL" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="prefixFile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="suffixFile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="templateFile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="templateIOs" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="templateAndroid" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="de.uhh.l2g.plugins.model.impl.SysImpl" table="LG_Sys">
 		<cache usage="read-write" />

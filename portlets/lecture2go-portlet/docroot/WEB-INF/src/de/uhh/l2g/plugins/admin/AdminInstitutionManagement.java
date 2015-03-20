@@ -12,6 +12,9 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.springframework.web.util.*;
+import org.springframework.web.util.UriTemplate;
+
 import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -73,7 +76,7 @@ public class AdminInstitutionManagement extends MVCPortlet {
 		    }
 
 		    if (host.size() == 0) {
-		    	Host default_host = HostLocalServiceUtil.addHost("Default", "localhost", "Web","HTTP", "", 80, serviceContext);
+		    	Host default_host = HostLocalServiceUtil.addHost("Default", "localhost", "Local Webserver","HTTP", "", 80, serviceContext);
 		    	SessionMessages.add(renderRequest, "entryAdded");
 		    	hostId = default_host.getHostId();
 		    }
@@ -126,33 +129,63 @@ public class AdminInstitutionManagement extends MVCPortlet {
 
 	}
 
-	public void updateInstitutionEntry(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
+		public void updateInstitutionEntry(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
 
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-		         Institution.class.getName(), request);
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+					Institution.class.getName(), request);
 
-	    String name = ParamUtil.getString(request, "institution");
-	    String streamer = ParamUtil.getString(request, "serverselect");
-	    Long parent = ParamUtil.getLong(request, "parent");
+			String name = ParamUtil.getString(request, "institution");
+			String streamer = ParamUtil.getString(request, "serverselect");
+			Long parent = ParamUtil.getLong(request, "parent");
 
-	    try {
-	         InstitutionLocalServiceUtil.addInstitution(
-	              name, streamer, parent, serviceContext);
+			try {
+				InstitutionLocalServiceUtil.addInstitution(
+						name, streamer, parent, serviceContext);
 
-	         SessionMessages.add(request, "entryAdded");
+				SessionMessages.add(request, "entryAdded");
 
-	        // response.setRenderParameter("institutionId",
-	        //      Long.toString(institutionId));
+				// response.setRenderParameter("institutionId",
+				//      Long.toString(institutionId));
 
-	       } catch (Exception e) {
-	         SessionErrors.add(request, e.getClass().getName());
+			} catch (Exception e) {
+				SessionErrors.add(request, e.getClass().getName());
 
-	                            PortalUtil.copyRequestParameters(request, response);
+				PortalUtil.copyRequestParameters(request, response);
 
-	         response.setRenderParameter("mvcPath",
-	              "/admin/institutionList.jsp");
-	       }
+				response.setRenderParameter("mvcPath",
+						"/admin/institutionList.jsp");
+			}
+		}
+
+		public void updateTopLevelInstitutionEntry(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
+
+
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			         Institution.class.getName(), request);
+
+		    String name = ParamUtil.getString(request, "institution");
+		    String streamer = ParamUtil.getString(request, "serverselect");
+		    Long parent = ParamUtil.getLong(request, "parent");
+
+		    try {
+		         InstitutionLocalServiceUtil.addInstitution(
+		              name, streamer, parent, serviceContext);
+
+		         SessionMessages.add(request, "entryAdded");
+
+		        // response.setRenderParameter("institutionId",
+		        //      Long.toString(institutionId));
+
+		       } catch (Exception e) {
+		         SessionErrors.add(request, e.getClass().getName());
+
+		                            PortalUtil.copyRequestParameters(request, response);
+
+		         response.setRenderParameter("mvcPath",
+		              "/admin/institutionList.jsp");
+		       }
+
 
 
 	}
@@ -166,6 +199,7 @@ public class AdminInstitutionManagement extends MVCPortlet {
 		String name = ParamUtil.getString(request, "institution");
 		String streamer = ParamUtil.getString(request, "serverselect");
 		Long parent = ParamUtil.getLong(request, "parent");
+
 
 	    try {
 	         InstitutionLocalServiceUtil.addInstitution(
