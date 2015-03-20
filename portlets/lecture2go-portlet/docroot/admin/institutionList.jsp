@@ -45,6 +45,7 @@ for (int i = 0; i < institutions.size(); i++) {
 
 		<aui:fieldset>
 			<aui:input name="institution" label="Institution" required="true" inlineField="true"/>
+
             <aui:input name="serverselect" label="Select Streaming Server" inlineField="true"></aui:input>
 			<aui:button type="submit" value="Add" ></aui:button>
 			<aui:button type="cancel" onClick="<%= viewURL.toString() %>"></aui:button>
@@ -62,8 +63,8 @@ for (int i = 0; i < institutions.size(); i++) {
 					<aui:input label="Server Name" name="name" required="true" inlineField="true"></aui:input>
 		 	        <aui:input label="Streaming Server Domain or IP" name="ip" inlineField="true"></aui:input>
 		 	        <aui:input label="HTTP Protocol" name="protocol" inlineField="true"></aui:input>
-		 	        <aui:input label="Server Template" name="template" inlineField="true"></aui:input>
-		 	        <aui:input name='hostId' type='hidden' value='<%= ParamUtil.getString(renderRequest, "hostId") %>'/>
+		 	        <aui:input label="Server Template" name="template"></aui:input>
+		 	        <aui:input name='hostId' type='hidden' inlineField="true" value='<%= ParamUtil.getString(renderRequest, "hostId") %>'/>
 		 	        <aui:button type="submit"></aui:button>
 					<aui:button type="cancel" onClick="<%= viewURL.toString() %>"></aui:button>
 		 	    </aui:fieldset>
