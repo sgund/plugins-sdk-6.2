@@ -40,7 +40,6 @@
 			ORDER BY path ASC
 		]]>
     </sql>
-    </sql>
         <sql id="de.uhh.l2g.plugins.service.persistence.HostFinder.findAllServerSettingsByInstitution">
 		<![CDATA[
 			SELECT myNode.institutionId, myNode.parentId, myNode.name, myNode.typ, myNode.www, myNode.level, myNode.sort,

@@ -32,14 +32,15 @@ public class ServerTemplateSoap implements Serializable {
 		soapModel.setServerTemplateId(model.getServerTemplateId());
 		soapModel.setGroupId(model.getGroupId());
 		soapModel.setName(model.getName());
+		soapModel.setType(model.getType());
 		soapModel.setPrefixURL(model.getPrefixURL());
 		soapModel.setSuffixURL(model.getSuffixURL());
-		soapModel.setSuffixExt(model.getSuffixExt());
+		soapModel.setSecExt(model.getSecExt());
 		soapModel.setTemplateURL(model.getTemplateURL());
 		soapModel.setPrefixFile(model.getPrefixFile());
 		soapModel.setSuffixFile(model.getSuffixFile());
 		soapModel.setTemplateFile(model.getTemplateFile());
-		soapModel.setTemplateIOs(model.getTemplateIOs());
+		soapModel.setTemplateIOS(model.getTemplateIOS());
 		soapModel.setTemplateAndroid(model.getTemplateAndroid());
 
 		return soapModel;
@@ -117,6 +118,14 @@ public class ServerTemplateSoap implements Serializable {
 		_name = name;
 	}
 
+	public int getType() {
+		return _type;
+	}
+
+	public void setType(int type) {
+		_type = type;
+	}
+
 	public String getPrefixURL() {
 		return _prefixURL;
 	}
@@ -133,12 +142,12 @@ public class ServerTemplateSoap implements Serializable {
 		_suffixURL = suffixURL;
 	}
 
-	public String getSuffixExt() {
-		return _suffixExt;
+	public String getSecExt() {
+		return _secExt;
 	}
 
-	public void setSuffixExt(String suffixExt) {
-		_suffixExt = suffixExt;
+	public void setSecExt(String secExt) {
+		_secExt = secExt;
 	}
 
 	public String getTemplateURL() {
@@ -173,12 +182,12 @@ public class ServerTemplateSoap implements Serializable {
 		_templateFile = templateFile;
 	}
 
-	public long getTemplateIOs() {
-		return _templateIOs;
+	public long getTemplateIOS() {
+		return _templateIOS;
 	}
 
-	public void setTemplateIOs(long templateIOs) {
-		_templateIOs = templateIOs;
+	public void setTemplateIOS(long templateIOS) {
+		_templateIOS = templateIOS;
 	}
 
 	public long getTemplateAndroid() {
@@ -192,13 +201,14 @@ public class ServerTemplateSoap implements Serializable {
 	private long _serverTemplateId;
 	private long _groupId;
 	private String _name;
+	private int _type;
 	private String _prefixURL;
 	private String _suffixURL;
-	private String _suffixExt;
+	private String _secExt;
 	private String _templateURL;
 	private String _prefixFile;
 	private String _suffixFile;
 	private String _templateFile;
-	private long _templateIOs;
+	private long _templateIOS;
 	private long _templateAndroid;
 }

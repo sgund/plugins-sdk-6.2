@@ -72,6 +72,20 @@ public interface HostModel extends BaseModel<Host> {
 	public void setHostId(long hostId);
 
 	/**
+	 * Returns the server template ID of this host.
+	 *
+	 * @return the server template ID of this host
+	 */
+	public long getServerTemplateId();
+
+	/**
+	 * Sets the server template ID of this host.
+	 *
+	 * @param serverTemplateId the server template ID of this host
+	 */
+	public void setServerTemplateId(long serverTemplateId);
+
+	/**
 	 * Returns the protocol of this host.
 	 *
 	 * @return the protocol of this host
@@ -129,21 +143,6 @@ public interface HostModel extends BaseModel<Host> {
 	 * @param serverRoot the server root of this host
 	 */
 	public void setServerRoot(String serverRoot);
-
-	/**
-	 * Returns the server template of this host.
-	 *
-	 * @return the server template of this host
-	 */
-	@AutoEscape
-	public String getServerTemplate();
-
-	/**
-	 * Sets the server template of this host.
-	 *
-	 * @param serverTemplate the server template of this host
-	 */
-	public void setServerTemplate(String serverTemplate);
 
 	/**
 	 * Returns the name of this host.

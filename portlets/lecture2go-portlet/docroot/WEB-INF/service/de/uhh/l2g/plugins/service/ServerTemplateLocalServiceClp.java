@@ -114,6 +114,26 @@ public class ServerTemplateLocalServiceClp implements ServerTemplateLocalService
 		_methodName17 = "setBeanIdentifier";
 
 		_methodParameterTypes17 = new String[] { "java.lang.String" };
+
+		_methodName19 = "getById";
+
+		_methodParameterTypes19 = new String[] { "long" };
+
+		_methodName20 = "getByGroupId";
+
+		_methodParameterTypes20 = new String[] { "long" };
+
+		_methodName21 = "getDeviceSpecificByServerTemplateId";
+
+		_methodParameterTypes21 = new String[] { "long" };
+
+		_methodName22 = "addServerTemplate";
+
+		_methodParameterTypes22 = new String[] {
+				"java.lang.String", "int", "java.lang.String",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"long", "long", "com.liferay.portal.service.ServiceContext"
+			};
 	}
 
 	@Override
@@ -666,6 +686,147 @@ public class ServerTemplateLocalServiceClp implements ServerTemplateLocalService
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public de.uhh.l2g.plugins.model.ServerTemplate getById(long institutionId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName19,
+					_methodParameterTypes19, new Object[] { institutionId });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (de.uhh.l2g.plugins.model.ServerTemplate)ClpSerializer.translateOutput(returnObj);
+	}
+
+	@Override
+	public java.util.List<de.uhh.l2g.plugins.model.ServerTemplate> getByGroupId(
+		long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName20,
+					_methodParameterTypes20, new Object[] { groupId });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (java.util.List<de.uhh.l2g.plugins.model.ServerTemplate>)ClpSerializer.translateOutput(returnObj);
+	}
+
+	@Override
+	public boolean getDeviceSpecificByServerTemplateId(long serverTemplateId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName21,
+					_methodParameterTypes21, new Object[] { serverTemplateId });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return ((Boolean)returnObj).booleanValue();
+	}
+
+	@Override
+	public de.uhh.l2g.plugins.model.ServerTemplate addServerTemplate(
+		java.lang.String name, int type, java.lang.String templateURL,
+		java.lang.String prefixURL, java.lang.String suffixURL,
+		java.lang.String secExt, long iosId, long androidId,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName22,
+					_methodParameterTypes22,
+					new Object[] {
+						ClpSerializer.translateInput(name),
+						
+					type,
+						
+					ClpSerializer.translateInput(templateURL),
+						
+					ClpSerializer.translateInput(prefixURL),
+						
+					ClpSerializer.translateInput(suffixURL),
+						
+					ClpSerializer.translateInput(secExt),
+						
+					iosId,
+						
+					androidId,
+						
+					ClpSerializer.translateInput(serviceContext)
+					});
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
+				throw (com.liferay.portal.kernel.exception.PortalException)t;
+			}
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (de.uhh.l2g.plugins.model.ServerTemplate)ClpSerializer.translateOutput(returnObj);
+	}
+
 	private InvokableLocalService _invokableLocalService;
 	private String _methodName0;
 	private String[] _methodParameterTypes0;
@@ -703,4 +864,12 @@ public class ServerTemplateLocalServiceClp implements ServerTemplateLocalService
 	private String[] _methodParameterTypes16;
 	private String _methodName17;
 	private String[] _methodParameterTypes17;
+	private String _methodName19;
+	private String[] _methodParameterTypes19;
+	private String _methodName20;
+	private String[] _methodParameterTypes20;
+	private String _methodName21;
+	private String[] _methodParameterTypes21;
+	private String _methodName22;
+	private String[] _methodParameterTypes22;
 }

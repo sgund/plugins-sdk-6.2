@@ -49,11 +49,11 @@ public class HostWrapper implements Host, ModelWrapper<Host> {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("hostId", getHostId());
+		attributes.put("serverTemplateId", getServerTemplateId());
 		attributes.put("protocol", getProtocol());
 		attributes.put("streamer", getStreamer());
 		attributes.put("port", getPort());
 		attributes.put("serverRoot", getServerRoot());
-		attributes.put("serverTemplate", getServerTemplate());
 		attributes.put("name", getName());
 		attributes.put("groupId", getGroupId());
 
@@ -66,6 +66,12 @@ public class HostWrapper implements Host, ModelWrapper<Host> {
 
 		if (hostId != null) {
 			setHostId(hostId);
+		}
+
+		Long serverTemplateId = (Long)attributes.get("serverTemplateId");
+
+		if (serverTemplateId != null) {
+			setServerTemplateId(serverTemplateId);
 		}
 
 		String protocol = (String)attributes.get("protocol");
@@ -90,12 +96,6 @@ public class HostWrapper implements Host, ModelWrapper<Host> {
 
 		if (serverRoot != null) {
 			setServerRoot(serverRoot);
-		}
-
-		String serverTemplate = (String)attributes.get("serverTemplate");
-
-		if (serverTemplate != null) {
-			setServerTemplate(serverTemplate);
 		}
 
 		String name = (String)attributes.get("name");
@@ -149,6 +149,26 @@ public class HostWrapper implements Host, ModelWrapper<Host> {
 	@Override
 	public void setHostId(long hostId) {
 		_host.setHostId(hostId);
+	}
+
+	/**
+	* Returns the server template ID of this host.
+	*
+	* @return the server template ID of this host
+	*/
+	@Override
+	public long getServerTemplateId() {
+		return _host.getServerTemplateId();
+	}
+
+	/**
+	* Sets the server template ID of this host.
+	*
+	* @param serverTemplateId the server template ID of this host
+	*/
+	@Override
+	public void setServerTemplateId(long serverTemplateId) {
+		_host.setServerTemplateId(serverTemplateId);
 	}
 
 	/**
@@ -229,26 +249,6 @@ public class HostWrapper implements Host, ModelWrapper<Host> {
 	@Override
 	public void setServerRoot(java.lang.String serverRoot) {
 		_host.setServerRoot(serverRoot);
-	}
-
-	/**
-	* Returns the server template of this host.
-	*
-	* @return the server template of this host
-	*/
-	@Override
-	public java.lang.String getServerTemplate() {
-		return _host.getServerTemplate();
-	}
-
-	/**
-	* Sets the server template of this host.
-	*
-	* @param serverTemplate the server template of this host
-	*/
-	@Override
-	public void setServerTemplate(java.lang.String serverTemplate) {
-		_host.setServerTemplate(serverTemplate);
 	}
 
 	/**

@@ -101,6 +101,20 @@ public interface ServerTemplateModel extends BaseModel<ServerTemplate> {
 	public void setName(String name);
 
 	/**
+	 * Returns the type of this server template.
+	 *
+	 * @return the type of this server template
+	 */
+	public int getType();
+
+	/**
+	 * Sets the type of this server template.
+	 *
+	 * @param type the type of this server template
+	 */
+	public void setType(int type);
+
+	/**
 	 * Returns the prefix u r l of this server template.
 	 *
 	 * @return the prefix u r l of this server template
@@ -131,19 +145,19 @@ public interface ServerTemplateModel extends BaseModel<ServerTemplate> {
 	public void setSuffixURL(String suffixURL);
 
 	/**
-	 * Returns the suffix ext of this server template.
+	 * Returns the sec ext of this server template.
 	 *
-	 * @return the suffix ext of this server template
+	 * @return the sec ext of this server template
 	 */
 	@AutoEscape
-	public String getSuffixExt();
+	public String getSecExt();
 
 	/**
-	 * Sets the suffix ext of this server template.
+	 * Sets the sec ext of this server template.
 	 *
-	 * @param suffixExt the suffix ext of this server template
+	 * @param secExt the sec ext of this server template
 	 */
-	public void setSuffixExt(String suffixExt);
+	public void setSecExt(String secExt);
 
 	/**
 	 * Returns the template u r l of this server template.
@@ -206,18 +220,18 @@ public interface ServerTemplateModel extends BaseModel<ServerTemplate> {
 	public void setTemplateFile(String templateFile);
 
 	/**
-	 * Returns the template i os of this server template.
+	 * Returns the template i o s of this server template.
 	 *
-	 * @return the template i os of this server template
+	 * @return the template i o s of this server template
 	 */
-	public long getTemplateIOs();
+	public long getTemplateIOS();
 
 	/**
-	 * Sets the template i os of this server template.
+	 * Sets the template i o s of this server template.
 	 *
-	 * @param templateIOs the template i os of this server template
+	 * @param templateIOS the template i o s of this server template
 	 */
-	public void setTemplateIOs(long templateIOs);
+	public void setTemplateIOS(long templateIOS);
 
 	/**
 	 * Returns the template android of this server template.

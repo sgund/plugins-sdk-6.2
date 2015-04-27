@@ -9151,6 +9151,245 @@ public class InstitutionPersistenceImpl extends BasePersistenceImpl<Institution>
 	}
 
 	private static final String _FINDER_COLUMN_TOPLEVEL_GROUPID_2 = "institution.groupId = ? AND institution.parentId = 0";
+	public static final FinderPath FINDER_PATH_FETCH_BY_G_I = new FinderPath(InstitutionModelImpl.ENTITY_CACHE_ENABLED,
+			InstitutionModelImpl.FINDER_CACHE_ENABLED, InstitutionImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByG_I",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			InstitutionModelImpl.GROUPID_COLUMN_BITMASK |
+			InstitutionModelImpl.INSTITUTIONID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_I = new FinderPath(InstitutionModelImpl.ENTITY_CACHE_ENABLED,
+			InstitutionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_I",
+			new String[] { Long.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns the institution where groupId = &#63; and institutionId = &#63; or throws a {@link de.uhh.l2g.plugins.NoSuchInstitutionException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param institutionId the institution ID
+	 * @return the matching institution
+	 * @throws de.uhh.l2g.plugins.NoSuchInstitutionException if a matching institution could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Institution findByG_I(long groupId, long institutionId)
+		throws NoSuchInstitutionException, SystemException {
+		Institution institution = fetchByG_I(groupId, institutionId);
+
+		if (institution == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", institutionId=");
+			msg.append(institutionId);
+
+			msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+			if (_log.isWarnEnabled()) {
+				_log.warn(msg.toString());
+			}
+
+			throw new NoSuchInstitutionException(msg.toString());
+		}
+
+		return institution;
+	}
+
+	/**
+	 * Returns the institution where groupId = &#63; and institutionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param institutionId the institution ID
+	 * @return the matching institution, or <code>null</code> if a matching institution could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Institution fetchByG_I(long groupId, long institutionId)
+		throws SystemException {
+		return fetchByG_I(groupId, institutionId, true);
+	}
+
+	/**
+	 * Returns the institution where groupId = &#63; and institutionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param institutionId the institution ID
+	 * @param retrieveFromCache whether to use the finder cache
+	 * @return the matching institution, or <code>null</code> if a matching institution could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Institution fetchByG_I(long groupId, long institutionId,
+		boolean retrieveFromCache) throws SystemException {
+		Object[] finderArgs = new Object[] { groupId, institutionId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = FinderCacheUtil.getResult(FINDER_PATH_FETCH_BY_G_I,
+					finderArgs, this);
+		}
+
+		if (result instanceof Institution) {
+			Institution institution = (Institution)result;
+
+			if ((groupId != institution.getGroupId()) ||
+					(institutionId != institution.getInstitutionId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_INSTITUTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_I_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_I_INSTITUTIONID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(institutionId);
+
+				List<Institution> list = q.list();
+
+				if (list.isEmpty()) {
+					FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_I,
+						finderArgs, list);
+				}
+				else {
+					if ((list.size() > 1) && _log.isWarnEnabled()) {
+						_log.warn(
+							"InstitutionPersistenceImpl.fetchByG_I(long, long, boolean) with parameters (" +
+							StringUtil.merge(finderArgs) +
+							") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+					}
+
+					Institution institution = list.get(0);
+
+					result = institution;
+
+					cacheResult(institution);
+
+					if ((institution.getGroupId() != groupId) ||
+							(institution.getInstitutionId() != institutionId)) {
+						FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_I,
+							finderArgs, institution);
+					}
+				}
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_I,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Institution)result;
+		}
+	}
+
+	/**
+	 * Removes the institution where groupId = &#63; and institutionId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param institutionId the institution ID
+	 * @return the institution that was removed
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Institution removeByG_I(long groupId, long institutionId)
+		throws NoSuchInstitutionException, SystemException {
+		Institution institution = findByG_I(groupId, institutionId);
+
+		return remove(institution);
+	}
+
+	/**
+	 * Returns the number of institutions where groupId = &#63; and institutionId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param institutionId the institution ID
+	 * @return the number of matching institutions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByG_I(long groupId, long institutionId)
+		throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_I;
+
+		Object[] finderArgs = new Object[] { groupId, institutionId };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_INSTITUTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_I_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_I_INSTITUTIONID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(institutionId);
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_I_GROUPID_2 = "institution.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_I_INSTITUTIONID_2 = "institution.institutionId = ?";
 
 	public InstitutionPersistenceImpl() {
 		setModelClass(Institution.class);
@@ -9165,6 +9404,11 @@ public class InstitutionPersistenceImpl extends BasePersistenceImpl<Institution>
 	public void cacheResult(Institution institution) {
 		EntityCacheUtil.putResult(InstitutionModelImpl.ENTITY_CACHE_ENABLED,
 			InstitutionImpl.class, institution.getPrimaryKey(), institution);
+
+		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_I,
+			new Object[] {
+				institution.getGroupId(), institution.getInstitutionId()
+			}, institution);
 
 		institution.resetOriginalValues();
 	}
@@ -9222,6 +9466,8 @@ public class InstitutionPersistenceImpl extends BasePersistenceImpl<Institution>
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+
+		clearUniqueFindersCache(institution);
 	}
 
 	@Override
@@ -9232,6 +9478,58 @@ public class InstitutionPersistenceImpl extends BasePersistenceImpl<Institution>
 		for (Institution institution : institutions) {
 			EntityCacheUtil.removeResult(InstitutionModelImpl.ENTITY_CACHE_ENABLED,
 				InstitutionImpl.class, institution.getPrimaryKey());
+
+			clearUniqueFindersCache(institution);
+		}
+	}
+
+	protected void cacheUniqueFindersCache(Institution institution) {
+		if (institution.isNew()) {
+			Object[] args = new Object[] {
+					institution.getGroupId(), institution.getInstitutionId()
+				};
+
+			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_G_I, args,
+				Long.valueOf(1));
+			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_I, args,
+				institution);
+		}
+		else {
+			InstitutionModelImpl institutionModelImpl = (InstitutionModelImpl)institution;
+
+			if ((institutionModelImpl.getColumnBitmask() &
+					FINDER_PATH_FETCH_BY_G_I.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						institution.getGroupId(), institution.getInstitutionId()
+					};
+
+				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_G_I, args,
+					Long.valueOf(1));
+				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_I, args,
+					institution);
+			}
+		}
+	}
+
+	protected void clearUniqueFindersCache(Institution institution) {
+		InstitutionModelImpl institutionModelImpl = (InstitutionModelImpl)institution;
+
+		Object[] args = new Object[] {
+				institution.getGroupId(), institution.getInstitutionId()
+			};
+
+		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_I, args);
+		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_I, args);
+
+		if ((institutionModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_G_I.getColumnBitmask()) != 0) {
+			args = new Object[] {
+					institutionModelImpl.getOriginalGroupId(),
+					institutionModelImpl.getOriginalInstitutionId()
+				};
+
+			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_I, args);
+			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_I, args);
 		}
 	}
 
@@ -9711,6 +10009,9 @@ public class InstitutionPersistenceImpl extends BasePersistenceImpl<Institution>
 
 		EntityCacheUtil.putResult(InstitutionModelImpl.ENTITY_CACHE_ENABLED,
 			InstitutionImpl.class, institution.getPrimaryKey(), institution);
+
+		clearUniqueFindersCache(institution);
+		cacheUniqueFindersCache(institution);
 
 		return institution;
 	}

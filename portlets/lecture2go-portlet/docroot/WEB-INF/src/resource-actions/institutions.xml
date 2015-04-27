@@ -19,7 +19,7 @@
         <action-key>VIEW</action-key>
       </site-member-defaults>
       <guest-defaults>
-        
+
       </guest-defaults>
 
       <guest-unsupported>
@@ -42,6 +42,8 @@
             <action-key>EDIT_ROOT_INSTITUTION</action-key>
             <action-key>ADD_HOST_ENTRY</action-key>
             <action-key>EDIT_HOST_ENTRY</action-key>
+            <action-key>ADD_SERVER_TEMPLATE_ENTRY</action-key>
+            <action-key>EDIT_SERVER_TEMPLATE__ENTRY</action-key>
             <action-key>VIEW_ALL_INSTITUTIONS</action-key>
             <action-key>EDIT_ALL_INSTITUTIONS</action-key>
             <action-key>VIEW_OWN_INSTITUTIONS</action-key>
@@ -88,7 +90,7 @@
       </guest-unsupported>
     </permissions>
   </model-resource>
-  
+
 
 <model-resource>
     <model-name>de.uhh.l2g.plugins.model.Host</model-name>
@@ -113,7 +115,59 @@
             <action-key>DELETE</action-key>
         </guest-unsupported>
     </permissions>
-    
+
+</model-resource>
+
+<model-resource>
+    <model-name>de.uhh.l2g.plugins.model.ServerTemplate</model-name>
+    <portlet-ref>
+        <portlet-name>lg-admin-institution-management</portlet-name>
+    </portlet-ref>
+    <permissions>
+        <supports>
+            <action-key>DELETE</action-key>
+            <action-key>PERMISSIONS</action-key>
+            <action-key>UPDATE</action-key>
+            <action-key>VIEW</action-key>
+        </supports>
+        <site-member-defaults>
+        </site-member-defaults>
+        <guest-defaults>
+        </guest-defaults>
+        <guest-unsupported>
+         	<action-key>VIEW</action-key>
+            <action-key>UPDATE</action-key>
+            <action-key>PERMISSIONS</action-key>
+            <action-key>DELETE</action-key>
+        </guest-unsupported>
+    </permissions>
+
+</model-resource>
+
+<model-resource>
+    <model-name>de.uhh.l2g.plugins.model.Institution_Host</model-name>
+    <portlet-ref>
+        <portlet-name>lg-admin-institution-management</portlet-name>
+    </portlet-ref>
+    <permissions>
+        <supports>
+            <action-key>DELETE</action-key>
+            <action-key>PERMISSIONS</action-key>
+            <action-key>UPDATE</action-key>
+            <action-key>VIEW</action-key>
+        </supports>
+        <site-member-defaults>
+        </site-member-defaults>
+        <guest-defaults>
+        </guest-defaults>
+        <guest-unsupported>
+         	<action-key>VIEW</action-key>
+            <action-key>UPDATE</action-key>
+            <action-key>PERMISSIONS</action-key>
+            <action-key>DELETE</action-key>
+        </guest-unsupported>
+    </permissions>
+
 </model-resource>
 
 </resource-action-mapping>

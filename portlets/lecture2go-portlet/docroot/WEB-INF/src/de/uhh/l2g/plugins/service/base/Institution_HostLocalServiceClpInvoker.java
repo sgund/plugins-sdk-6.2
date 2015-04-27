@@ -118,9 +118,19 @@ public class Institution_HostLocalServiceClpInvoker {
 
 		_methodParameterTypes122 = new String[] { "long" };
 
-		_methodName123 = "getByHostId";
+		_methodName123 = "getByGroupIdAndInstitutionId";
 
-		_methodParameterTypes123 = new String[] { "long" };
+		_methodParameterTypes123 = new String[] { "long", "long" };
+
+		_methodName124 = "getByGroupIdAndHostId";
+
+		_methodParameterTypes124 = new String[] { "long", "long" };
+
+		_methodName126 = "addEntry";
+
+		_methodParameterTypes126 = new String[] {
+				"long", "long", "com.liferay.portal.service.ServiceContext"
+			};
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -231,7 +241,21 @@ public class Institution_HostLocalServiceClpInvoker {
 
 		if (_methodName123.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes123, parameterTypes)) {
-			return Institution_HostLocalServiceUtil.getByHostId(((Long)arguments[0]).longValue());
+			return Institution_HostLocalServiceUtil.getByGroupIdAndInstitutionId(((Long)arguments[0]).longValue(),
+				((Long)arguments[1]).longValue());
+		}
+
+		if (_methodName124.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes124, parameterTypes)) {
+			return Institution_HostLocalServiceUtil.getByGroupIdAndHostId(((Long)arguments[0]).longValue(),
+				((Long)arguments[1]).longValue());
+		}
+
+		if (_methodName126.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes126, parameterTypes)) {
+			return Institution_HostLocalServiceUtil.addEntry(((Long)arguments[0]).longValue(),
+				((Long)arguments[1]).longValue(),
+				(com.liferay.portal.service.ServiceContext)arguments[2]);
 		}
 
 		throw new UnsupportedOperationException();
@@ -277,4 +301,8 @@ public class Institution_HostLocalServiceClpInvoker {
 	private String[] _methodParameterTypes122;
 	private String _methodName123;
 	private String[] _methodParameterTypes123;
+	private String _methodName124;
+	private String[] _methodParameterTypes124;
+	private String _methodName126;
+	private String[] _methodParameterTypes126;
 }

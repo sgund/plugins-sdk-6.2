@@ -39,6 +39,8 @@ public class HostCacheModel implements CacheModel<Host>, Externalizable {
 
 		sb.append("{hostId=");
 		sb.append(hostId);
+		sb.append(", serverTemplateId=");
+		sb.append(serverTemplateId);
 		sb.append(", protocol=");
 		sb.append(protocol);
 		sb.append(", streamer=");
@@ -47,8 +49,6 @@ public class HostCacheModel implements CacheModel<Host>, Externalizable {
 		sb.append(port);
 		sb.append(", serverRoot=");
 		sb.append(serverRoot);
-		sb.append(", serverTemplate=");
-		sb.append(serverTemplate);
 		sb.append(", name=");
 		sb.append(name);
 		sb.append(", groupId=");
@@ -63,6 +63,7 @@ public class HostCacheModel implements CacheModel<Host>, Externalizable {
 		HostImpl hostImpl = new HostImpl();
 
 		hostImpl.setHostId(hostId);
+		hostImpl.setServerTemplateId(serverTemplateId);
 
 		if (protocol == null) {
 			hostImpl.setProtocol(StringPool.BLANK);
@@ -87,13 +88,6 @@ public class HostCacheModel implements CacheModel<Host>, Externalizable {
 			hostImpl.setServerRoot(serverRoot);
 		}
 
-		if (serverTemplate == null) {
-			hostImpl.setServerTemplate(StringPool.BLANK);
-		}
-		else {
-			hostImpl.setServerTemplate(serverTemplate);
-		}
-
 		if (name == null) {
 			hostImpl.setName(StringPool.BLANK);
 		}
@@ -111,11 +105,11 @@ public class HostCacheModel implements CacheModel<Host>, Externalizable {
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		hostId = objectInput.readLong();
+		serverTemplateId = objectInput.readLong();
 		protocol = objectInput.readUTF();
 		streamer = objectInput.readUTF();
 		port = objectInput.readInt();
 		serverRoot = objectInput.readUTF();
-		serverTemplate = objectInput.readUTF();
 		name = objectInput.readUTF();
 		groupId = objectInput.readLong();
 	}
@@ -124,6 +118,7 @@ public class HostCacheModel implements CacheModel<Host>, Externalizable {
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(hostId);
+		objectOutput.writeLong(serverTemplateId);
 
 		if (protocol == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
@@ -148,13 +143,6 @@ public class HostCacheModel implements CacheModel<Host>, Externalizable {
 			objectOutput.writeUTF(serverRoot);
 		}
 
-		if (serverTemplate == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(serverTemplate);
-		}
-
 		if (name == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
 		}
@@ -166,11 +154,11 @@ public class HostCacheModel implements CacheModel<Host>, Externalizable {
 	}
 
 	public long hostId;
+	public long serverTemplateId;
 	public String protocol;
 	public String streamer;
 	public int port;
 	public String serverRoot;
-	public String serverTemplate;
 	public String name;
 	public long groupId;
 }

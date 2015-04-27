@@ -113,6 +113,26 @@ public class ServerTemplateLocalServiceClpInvoker {
 		_methodName117 = "setBeanIdentifier";
 
 		_methodParameterTypes117 = new String[] { "java.lang.String" };
+
+		_methodName122 = "getById";
+
+		_methodParameterTypes122 = new String[] { "long" };
+
+		_methodName123 = "getByGroupId";
+
+		_methodParameterTypes123 = new String[] { "long" };
+
+		_methodName124 = "getDeviceSpecificByServerTemplateId";
+
+		_methodParameterTypes124 = new String[] { "long" };
+
+		_methodName126 = "addServerTemplate";
+
+		_methodParameterTypes126 = new String[] {
+				"java.lang.String", "int", "java.lang.String",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"long", "long", "com.liferay.portal.service.ServiceContext"
+			};
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -216,6 +236,32 @@ public class ServerTemplateLocalServiceClpInvoker {
 			return null;
 		}
 
+		if (_methodName122.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes122, parameterTypes)) {
+			return ServerTemplateLocalServiceUtil.getById(((Long)arguments[0]).longValue());
+		}
+
+		if (_methodName123.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes123, parameterTypes)) {
+			return ServerTemplateLocalServiceUtil.getByGroupId(((Long)arguments[0]).longValue());
+		}
+
+		if (_methodName124.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes124, parameterTypes)) {
+			return ServerTemplateLocalServiceUtil.getDeviceSpecificByServerTemplateId(((Long)arguments[0]).longValue());
+		}
+
+		if (_methodName126.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes126, parameterTypes)) {
+			return ServerTemplateLocalServiceUtil.addServerTemplate((java.lang.String)arguments[0],
+				((Integer)arguments[1]).intValue(),
+				(java.lang.String)arguments[2], (java.lang.String)arguments[3],
+				(java.lang.String)arguments[4], (java.lang.String)arguments[5],
+				((Long)arguments[6]).longValue(),
+				((Long)arguments[7]).longValue(),
+				(com.liferay.portal.service.ServiceContext)arguments[8]);
+		}
+
 		throw new UnsupportedOperationException();
 	}
 
@@ -255,4 +301,12 @@ public class ServerTemplateLocalServiceClpInvoker {
 	private String[] _methodParameterTypes116;
 	private String _methodName117;
 	private String[] _methodParameterTypes117;
+	private String _methodName122;
+	private String[] _methodParameterTypes122;
+	private String _methodName123;
+	private String[] _methodParameterTypes123;
+	private String _methodName124;
+	private String[] _methodParameterTypes124;
+	private String _methodName126;
+	private String[] _methodParameterTypes126;
 }

@@ -275,6 +275,36 @@ public class ServerTemplateLocalServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
+	public static de.uhh.l2g.plugins.model.ServerTemplate getById(
+		long institutionId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getById(institutionId);
+	}
+
+	public static java.util.List<de.uhh.l2g.plugins.model.ServerTemplate> getByGroupId(
+		long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getByGroupId(groupId);
+	}
+
+	public static boolean getDeviceSpecificByServerTemplateId(
+		long serverTemplateId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getDeviceSpecificByServerTemplateId(serverTemplateId);
+	}
+
+	public static de.uhh.l2g.plugins.model.ServerTemplate addServerTemplate(
+		java.lang.String name, int type, java.lang.String templateURL,
+		java.lang.String prefixURL, java.lang.String suffixURL,
+		java.lang.String secExt, long iosId, long androidId,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .addServerTemplate(name, type, templateURL, prefixURL,
+			suffixURL, secExt, iosId, androidId, serviceContext);
+	}
+
 	public static void clearService() {
 		_service = null;
 	}

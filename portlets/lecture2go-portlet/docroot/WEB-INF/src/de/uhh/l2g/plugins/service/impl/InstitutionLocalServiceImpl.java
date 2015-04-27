@@ -27,9 +27,11 @@ import com.liferay.portal.service.ServiceContext;
 import de.uhh.l2g.plugins.HostNameException;
 import de.uhh.l2g.plugins.HostServerTemplateException;
 import de.uhh.l2g.plugins.HostStreamerException;
+import de.uhh.l2g.plugins.NoSuchInstitutionException;
 import de.uhh.l2g.plugins.model.Host;
 import de.uhh.l2g.plugins.model.Institution;
 import de.uhh.l2g.plugins.service.InstitutionLocalServiceUtil;
+import de.uhh.l2g.plugins.service.Institution_HostLocalServiceUtil;
 import de.uhh.l2g.plugins.service.base.InstitutionLocalServiceBaseImpl;
 import de.uhh.l2g.plugins.service.persistence.InstitutionFinderUtil;
 
@@ -66,6 +68,10 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 
 	public List<Institution> getByGroupId(long groupId) throws SystemException {
 		return institutionPersistence.findByGroupId(groupId);
+	}
+
+	public Institution getByGroupIdAndId(long groupId, long institutionId) throws SystemException {
+		return institutionPersistence.fetchByG_I(groupId, institutionId);
 	}
 
 	public Institution getTopLevelByGroupId(long groupId) throws SystemException {
@@ -137,7 +143,7 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 
 	}
 
-	public Institution addInstitution(String name, String streamer, long parentId, ServiceContext serviceContext) throws SystemException, PortalException {
+	public Institution addInstitution(String name, long hostId, long parentId, ServiceContext serviceContext) throws SystemException, PortalException {
 
 		long groupId = serviceContext.getScopeGroupId();
 		long userId = serviceContext.getUserId();
@@ -154,11 +160,12 @@ public class InstitutionLocalServiceImpl extends InstitutionLocalServiceBaseImpl
 
 		institution.setName(name);
 		institution.setGroupId(0);
-		//institution.setStreamer(streamer);
 		institution.setParentId(parentId);
 		if (parentId > 0) institution.setLevel(parent.getLevel()+1);
 		else institution.setLevel(0);
 		institution.setExpandoBridgeAttributes(serviceContext);
+
+		Institution_HostLocalServiceUtil.addEntry(institutionId, hostId, serviceContext);
 
 		institutionPersistence.update(institution);
 

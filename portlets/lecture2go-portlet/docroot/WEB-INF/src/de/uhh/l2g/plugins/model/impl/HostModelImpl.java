@@ -58,15 +58,15 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 	public static final String TABLE_NAME = "LG_Host";
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "hostId", Types.BIGINT },
+			{ "serverTemplateId", Types.BIGINT },
 			{ "protocol", Types.VARCHAR },
 			{ "streamer", Types.VARCHAR },
 			{ "port", Types.INTEGER },
 			{ "serverRoot", Types.VARCHAR },
-			{ "serverTemplate", Types.VARCHAR },
 			{ "name", Types.VARCHAR },
 			{ "groupId", Types.BIGINT }
 		};
-	public static final String TABLE_SQL_CREATE = "create table LG_Host (hostId LONG not null primary key,protocol VARCHAR(75) null,streamer VARCHAR(75) null,port INTEGER,serverRoot VARCHAR(75) null,serverTemplate VARCHAR(75) null,name VARCHAR(75) null,groupId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table LG_Host (hostId LONG not null primary key,serverTemplateId LONG,protocol VARCHAR(75) null,streamer VARCHAR(75) null,port INTEGER,serverRoot VARCHAR(75) null,name VARCHAR(75) null,groupId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table LG_Host";
 	public static final String ORDER_BY_JPQL = " ORDER BY host.hostId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY LG_Host.hostId ASC";
@@ -125,11 +125,11 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("hostId", getHostId());
+		attributes.put("serverTemplateId", getServerTemplateId());
 		attributes.put("protocol", getProtocol());
 		attributes.put("streamer", getStreamer());
 		attributes.put("port", getPort());
 		attributes.put("serverRoot", getServerRoot());
-		attributes.put("serverTemplate", getServerTemplate());
 		attributes.put("name", getName());
 		attributes.put("groupId", getGroupId());
 
@@ -142,6 +142,12 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 
 		if (hostId != null) {
 			setHostId(hostId);
+		}
+
+		Long serverTemplateId = (Long)attributes.get("serverTemplateId");
+
+		if (serverTemplateId != null) {
+			setServerTemplateId(serverTemplateId);
 		}
 
 		String protocol = (String)attributes.get("protocol");
@@ -168,12 +174,6 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 			setServerRoot(serverRoot);
 		}
 
-		String serverTemplate = (String)attributes.get("serverTemplate");
-
-		if (serverTemplate != null) {
-			setServerTemplate(serverTemplate);
-		}
-
 		String name = (String)attributes.get("name");
 
 		if (name != null) {
@@ -194,7 +194,29 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 
 	@Override
 	public void setHostId(long hostId) {
+		_columnBitmask |= HOSTID_COLUMN_BITMASK;
+
+		if (!_setOriginalHostId) {
+			_setOriginalHostId = true;
+
+			_originalHostId = _hostId;
+		}
+
 		_hostId = hostId;
+	}
+
+	public long getOriginalHostId() {
+		return _originalHostId;
+	}
+
+	@Override
+	public long getServerTemplateId() {
+		return _serverTemplateId;
+	}
+
+	@Override
+	public void setServerTemplateId(long serverTemplateId) {
+		_serverTemplateId = serverTemplateId;
 	}
 
 	@Override
@@ -250,21 +272,6 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 	@Override
 	public void setServerRoot(String serverRoot) {
 		_serverRoot = serverRoot;
-	}
-
-	@Override
-	public String getServerTemplate() {
-		if (_serverTemplate == null) {
-			return StringPool.BLANK;
-		}
-		else {
-			return _serverTemplate;
-		}
-	}
-
-	@Override
-	public void setServerTemplate(String serverTemplate) {
-		_serverTemplate = serverTemplate;
 	}
 
 	@Override
@@ -336,11 +343,11 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 		HostImpl hostImpl = new HostImpl();
 
 		hostImpl.setHostId(getHostId());
+		hostImpl.setServerTemplateId(getServerTemplateId());
 		hostImpl.setProtocol(getProtocol());
 		hostImpl.setStreamer(getStreamer());
 		hostImpl.setPort(getPort());
 		hostImpl.setServerRoot(getServerRoot());
-		hostImpl.setServerTemplate(getServerTemplate());
 		hostImpl.setName(getName());
 		hostImpl.setGroupId(getGroupId());
 
@@ -395,6 +402,10 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 	public void resetOriginalValues() {
 		HostModelImpl hostModelImpl = this;
 
+		hostModelImpl._originalHostId = hostModelImpl._hostId;
+
+		hostModelImpl._setOriginalHostId = false;
+
 		hostModelImpl._originalGroupId = hostModelImpl._groupId;
 
 		hostModelImpl._setOriginalGroupId = false;
@@ -407,6 +418,8 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 		HostCacheModel hostCacheModel = new HostCacheModel();
 
 		hostCacheModel.hostId = getHostId();
+
+		hostCacheModel.serverTemplateId = getServerTemplateId();
 
 		hostCacheModel.protocol = getProtocol();
 
@@ -434,14 +447,6 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 			hostCacheModel.serverRoot = null;
 		}
 
-		hostCacheModel.serverTemplate = getServerTemplate();
-
-		String serverTemplate = hostCacheModel.serverTemplate;
-
-		if ((serverTemplate != null) && (serverTemplate.length() == 0)) {
-			hostCacheModel.serverTemplate = null;
-		}
-
 		hostCacheModel.name = getName();
 
 		String name = hostCacheModel.name;
@@ -461,6 +466,8 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 
 		sb.append("{hostId=");
 		sb.append(getHostId());
+		sb.append(", serverTemplateId=");
+		sb.append(getServerTemplateId());
 		sb.append(", protocol=");
 		sb.append(getProtocol());
 		sb.append(", streamer=");
@@ -469,8 +476,6 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 		sb.append(getPort());
 		sb.append(", serverRoot=");
 		sb.append(getServerRoot());
-		sb.append(", serverTemplate=");
-		sb.append(getServerTemplate());
 		sb.append(", name=");
 		sb.append(getName());
 		sb.append(", groupId=");
@@ -493,6 +498,10 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 		sb.append(getHostId());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>serverTemplateId</column-name><column-value><![CDATA[");
+		sb.append(getServerTemplateId());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>protocol</column-name><column-value><![CDATA[");
 		sb.append(getProtocol());
 		sb.append("]]></column-value></column>");
@@ -507,10 +516,6 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 		sb.append(
 			"<column><column-name>serverRoot</column-name><column-value><![CDATA[");
 		sb.append(getServerRoot());
-		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>serverTemplate</column-name><column-value><![CDATA[");
-		sb.append(getServerTemplate());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>name</column-name><column-value><![CDATA[");
@@ -529,11 +534,13 @@ public class HostModelImpl extends BaseModelImpl<Host> implements HostModel {
 	private static ClassLoader _classLoader = Host.class.getClassLoader();
 	private static Class<?>[] _escapedModelInterfaces = new Class[] { Host.class };
 	private long _hostId;
+	private long _originalHostId;
+	private boolean _setOriginalHostId;
+	private long _serverTemplateId;
 	private String _protocol;
 	private String _streamer;
 	private int _port;
 	private String _serverRoot;
-	private String _serverTemplate;
 	private String _name;
 	private long _groupId;
 	private long _originalGroupId;

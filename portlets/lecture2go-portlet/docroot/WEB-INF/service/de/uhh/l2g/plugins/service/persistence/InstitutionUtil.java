@@ -2974,6 +2974,80 @@ public class InstitutionUtil {
 	}
 
 	/**
+	* Returns the institution where groupId = &#63; and institutionId = &#63; or throws a {@link de.uhh.l2g.plugins.NoSuchInstitutionException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param institutionId the institution ID
+	* @return the matching institution
+	* @throws de.uhh.l2g.plugins.NoSuchInstitutionException if a matching institution could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static de.uhh.l2g.plugins.model.Institution findByG_I(long groupId,
+		long institutionId)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			de.uhh.l2g.plugins.NoSuchInstitutionException {
+		return getPersistence().findByG_I(groupId, institutionId);
+	}
+
+	/**
+	* Returns the institution where groupId = &#63; and institutionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param institutionId the institution ID
+	* @return the matching institution, or <code>null</code> if a matching institution could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static de.uhh.l2g.plugins.model.Institution fetchByG_I(
+		long groupId, long institutionId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().fetchByG_I(groupId, institutionId);
+	}
+
+	/**
+	* Returns the institution where groupId = &#63; and institutionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param institutionId the institution ID
+	* @param retrieveFromCache whether to use the finder cache
+	* @return the matching institution, or <code>null</code> if a matching institution could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static de.uhh.l2g.plugins.model.Institution fetchByG_I(
+		long groupId, long institutionId, boolean retrieveFromCache)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByG_I(groupId, institutionId, retrieveFromCache);
+	}
+
+	/**
+	* Removes the institution where groupId = &#63; and institutionId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param institutionId the institution ID
+	* @return the institution that was removed
+	* @throws SystemException if a system exception occurred
+	*/
+	public static de.uhh.l2g.plugins.model.Institution removeByG_I(
+		long groupId, long institutionId)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			de.uhh.l2g.plugins.NoSuchInstitutionException {
+		return getPersistence().removeByG_I(groupId, institutionId);
+	}
+
+	/**
+	* Returns the number of institutions where groupId = &#63; and institutionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param institutionId the institution ID
+	* @return the number of matching institutions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static int countByG_I(long groupId, long institutionId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().countByG_I(groupId, institutionId);
+	}
+
+	/**
 	* Caches the institution in the entity cache if it is enabled.
 	*
 	* @param institution the institution

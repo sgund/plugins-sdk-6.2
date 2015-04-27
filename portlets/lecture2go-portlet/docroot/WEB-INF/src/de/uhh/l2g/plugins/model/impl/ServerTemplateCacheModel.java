@@ -36,7 +36,7 @@ public class ServerTemplateCacheModel implements CacheModel<ServerTemplate>,
 	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{serverTemplateId=");
 		sb.append(serverTemplateId);
@@ -44,12 +44,14 @@ public class ServerTemplateCacheModel implements CacheModel<ServerTemplate>,
 		sb.append(groupId);
 		sb.append(", name=");
 		sb.append(name);
+		sb.append(", type=");
+		sb.append(type);
 		sb.append(", prefixURL=");
 		sb.append(prefixURL);
 		sb.append(", suffixURL=");
 		sb.append(suffixURL);
-		sb.append(", suffixExt=");
-		sb.append(suffixExt);
+		sb.append(", secExt=");
+		sb.append(secExt);
 		sb.append(", templateURL=");
 		sb.append(templateURL);
 		sb.append(", prefixFile=");
@@ -58,8 +60,8 @@ public class ServerTemplateCacheModel implements CacheModel<ServerTemplate>,
 		sb.append(suffixFile);
 		sb.append(", templateFile=");
 		sb.append(templateFile);
-		sb.append(", templateIOs=");
-		sb.append(templateIOs);
+		sb.append(", templateIOS=");
+		sb.append(templateIOS);
 		sb.append(", templateAndroid=");
 		sb.append(templateAndroid);
 		sb.append("}");
@@ -81,6 +83,8 @@ public class ServerTemplateCacheModel implements CacheModel<ServerTemplate>,
 			serverTemplateImpl.setName(name);
 		}
 
+		serverTemplateImpl.setType(type);
+
 		if (prefixURL == null) {
 			serverTemplateImpl.setPrefixURL(StringPool.BLANK);
 		}
@@ -95,11 +99,11 @@ public class ServerTemplateCacheModel implements CacheModel<ServerTemplate>,
 			serverTemplateImpl.setSuffixURL(suffixURL);
 		}
 
-		if (suffixExt == null) {
-			serverTemplateImpl.setSuffixExt(StringPool.BLANK);
+		if (secExt == null) {
+			serverTemplateImpl.setSecExt(StringPool.BLANK);
 		}
 		else {
-			serverTemplateImpl.setSuffixExt(suffixExt);
+			serverTemplateImpl.setSecExt(secExt);
 		}
 
 		if (templateURL == null) {
@@ -130,7 +134,7 @@ public class ServerTemplateCacheModel implements CacheModel<ServerTemplate>,
 			serverTemplateImpl.setTemplateFile(templateFile);
 		}
 
-		serverTemplateImpl.setTemplateIOs(templateIOs);
+		serverTemplateImpl.setTemplateIOS(templateIOS);
 		serverTemplateImpl.setTemplateAndroid(templateAndroid);
 
 		serverTemplateImpl.resetOriginalValues();
@@ -143,14 +147,15 @@ public class ServerTemplateCacheModel implements CacheModel<ServerTemplate>,
 		serverTemplateId = objectInput.readLong();
 		groupId = objectInput.readLong();
 		name = objectInput.readUTF();
+		type = objectInput.readInt();
 		prefixURL = objectInput.readUTF();
 		suffixURL = objectInput.readUTF();
-		suffixExt = objectInput.readUTF();
+		secExt = objectInput.readUTF();
 		templateURL = objectInput.readUTF();
 		prefixFile = objectInput.readUTF();
 		suffixFile = objectInput.readUTF();
 		templateFile = objectInput.readUTF();
-		templateIOs = objectInput.readLong();
+		templateIOS = objectInput.readLong();
 		templateAndroid = objectInput.readLong();
 	}
 
@@ -167,6 +172,8 @@ public class ServerTemplateCacheModel implements CacheModel<ServerTemplate>,
 			objectOutput.writeUTF(name);
 		}
 
+		objectOutput.writeInt(type);
+
 		if (prefixURL == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
 		}
@@ -181,11 +188,11 @@ public class ServerTemplateCacheModel implements CacheModel<ServerTemplate>,
 			objectOutput.writeUTF(suffixURL);
 		}
 
-		if (suffixExt == null) {
+		if (secExt == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
 		}
 		else {
-			objectOutput.writeUTF(suffixExt);
+			objectOutput.writeUTF(secExt);
 		}
 
 		if (templateURL == null) {
@@ -216,20 +223,21 @@ public class ServerTemplateCacheModel implements CacheModel<ServerTemplate>,
 			objectOutput.writeUTF(templateFile);
 		}
 
-		objectOutput.writeLong(templateIOs);
+		objectOutput.writeLong(templateIOS);
 		objectOutput.writeLong(templateAndroid);
 	}
 
 	public long serverTemplateId;
 	public long groupId;
 	public String name;
+	public int type;
 	public String prefixURL;
 	public String suffixURL;
-	public String suffixExt;
+	public String secExt;
 	public String templateURL;
 	public String prefixFile;
 	public String suffixFile;
 	public String templateFile;
-	public long templateIOs;
+	public long templateIOS;
 	public long templateAndroid;
 }

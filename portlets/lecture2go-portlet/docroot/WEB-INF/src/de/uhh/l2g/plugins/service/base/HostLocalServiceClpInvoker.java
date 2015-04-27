@@ -120,10 +120,22 @@ public class HostLocalServiceClpInvoker {
 
 		_methodParameterTypes124 = new String[] { "long" };
 
-		_methodName126 = "addHost";
+		_methodName125 = "getByTemplateConfiguredAndGroupId";
 
-		_methodParameterTypes126 = new String[] {
-				"java.lang.String", "java.lang.String", "java.lang.String",
+		_methodParameterTypes125 = new String[] { "long" };
+
+		_methodName126 = "getByG";
+
+		_methodParameterTypes126 = new String[] { "long" };
+
+		_methodName127 = "getByGroupIdAndHostId";
+
+		_methodParameterTypes127 = new String[] { "long", "long" };
+
+		_methodName129 = "addHost";
+
+		_methodParameterTypes129 = new String[] {
+				"java.lang.String", "java.lang.String", "long",
 				"java.lang.String", "java.lang.String", "int",
 				"com.liferay.portal.service.ServiceContext"
 			};
@@ -245,10 +257,27 @@ public class HostLocalServiceClpInvoker {
 			return HostLocalServiceUtil.getByGroupId(((Long)arguments[0]).longValue());
 		}
 
+		if (_methodName125.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes125, parameterTypes)) {
+			return HostLocalServiceUtil.getByTemplateConfiguredAndGroupId(((Long)arguments[0]).longValue());
+		}
+
 		if (_methodName126.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes126, parameterTypes)) {
+			return HostLocalServiceUtil.getByG(((Long)arguments[0]).longValue());
+		}
+
+		if (_methodName127.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes127, parameterTypes)) {
+			return HostLocalServiceUtil.getByGroupIdAndHostId(((Long)arguments[0]).longValue(),
+				((Long)arguments[1]).longValue());
+		}
+
+		if (_methodName129.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes129, parameterTypes)) {
 			return HostLocalServiceUtil.addHost((java.lang.String)arguments[0],
-				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
+				(java.lang.String)arguments[1],
+				((Long)arguments[2]).longValue(),
 				(java.lang.String)arguments[3], (java.lang.String)arguments[4],
 				((Integer)arguments[5]).intValue(),
 				(com.liferay.portal.service.ServiceContext)arguments[6]);
@@ -299,6 +328,12 @@ public class HostLocalServiceClpInvoker {
 	private String[] _methodParameterTypes123;
 	private String _methodName124;
 	private String[] _methodParameterTypes124;
+	private String _methodName125;
+	private String[] _methodParameterTypes125;
 	private String _methodName126;
 	private String[] _methodParameterTypes126;
+	private String _methodName127;
+	private String[] _methodParameterTypes127;
+	private String _methodName129;
+	private String[] _methodParameterTypes129;
 }

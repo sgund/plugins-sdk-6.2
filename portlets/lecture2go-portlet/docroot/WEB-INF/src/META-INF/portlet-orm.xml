@@ -20,11 +20,11 @@
 	<mapped-superclass class="de.uhh.l2g.plugins.model.impl.HostModelImpl">
 		<attributes>
 			<id name="hostId" />
+			<basic name="serverTemplateId" />
 			<basic name="protocol" />
 			<basic name="streamer" />
 			<basic name="port" />
 			<basic name="serverRoot" />
-			<basic name="serverTemplate" />
 			<basic name="name" />
 			<basic name="groupId" />
 			<transient name="modelAttributes" />
@@ -52,6 +52,7 @@
 			<id name="institutionHostId" />
 			<basic name="institutionId" />
 			<basic name="hostId" />
+			<basic name="groupId" />
 			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
 			<transient name="primaryKeyObj" />
@@ -209,14 +210,17 @@
 			<id name="serverTemplateId" />
 			<basic name="groupId" />
 			<basic name="name" />
+			<basic name="type">
+				<column name="TYPE_" />
+			</basic>
 			<basic name="prefixURL" />
 			<basic name="suffixURL" />
-			<basic name="suffixExt" />
+			<basic name="secExt" />
 			<basic name="templateURL" />
 			<basic name="prefixFile" />
 			<basic name="suffixFile" />
 			<basic name="templateFile" />
-			<basic name="templateIOs" />
+			<basic name="templateIOS" />
 			<basic name="templateAndroid" />
 			<transient name="modelAttributes" />
 			<transient name="primaryKey" />

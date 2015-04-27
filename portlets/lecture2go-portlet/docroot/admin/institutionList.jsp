@@ -4,6 +4,7 @@
 <%@ page import="de.uhh.l2g.plugins.model.Host" %>
 <%@ page import="de.uhh.l2g.plugins.service.InstitutionLocalServiceUtil" %>
 <%@ page import="de.uhh.l2g.plugins.service.HostLocalServiceUtil" %>
+<%@ page import="de.uhh.l2g.plugins.service.ServerTemplateLocalServiceUtil" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
@@ -19,17 +20,53 @@
 <portlet:actionURL name="addSubInstitutionEntry" var="addSubInstitutionEntryURL"></portlet:actionURL>
 <portlet:actionURL name="updateInstitutionEntry" var="updateInstitutionEntryURL"></portlet:actionURL>
 <portlet:actionURL name="updateSubInstitutionEntry" var="updateSubInstitutionEntryURL"></portlet:actionURL>
+<portlet:actionURL name="addServerEntry" var="addServerEntryURL"></portlet:actionURL>
 <portlet:actionURL name="updateServerEntry" var="updateServerEntryURL"></portlet:actionURL>
+<portlet:actionURL name="addServerTemplateEntry" var="addServerTemplateEntryURL"></portlet:actionURL>
+<portlet:actionURL name="updateServerTemplateEntry" var="updateServerTemplateEntryURL"></portlet:actionURL>
 <portlet:actionURL name="updateTopLevelInstitutionEntry" var="updateTopLevelInstitutionEntryURL"></portlet:actionURL>
+
+
+<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+<script type="text/javascript">
+
+	function toggleDevices() {
+	    	if($("#<portlet:namespace/>deviceSpecific").val() != "false") {
+	    		console.log("ON");
+	    		$("#<portlet:namespace />serverFieldsAndroid").show();
+	    		$("#<portlet:namespace />serverFieldsIOS").show();
+	    	}
+	    	else{
+	    		console.log("OFF");
+	    		$("#<portlet:namespace />serverFieldsAndroid").hide();
+	    		$("#<portlet:namespace />serverFieldsIOS").hide();
+	    	}
+	}
+
+	$(document).ready(function() {
+			$("#<portlet:namespace/>deviceSpecificCheckbox").change(toggleDevices);   // when the input changes
+			toggleDevices(); // when the page is loaded
+	});
+
+</script>
 
 <%
 long institutionId = Long.valueOf((Long) renderRequest.getAttribute("institutionId"));
 long hostId = Long.valueOf((Long) renderRequest.getAttribute("hostId"));
+long serverTemplateId = Long.valueOf((Long) renderRequest.getAttribute("serverTemplateId"));
+
+long groupId = 0;
+
+boolean deviceSpecificURLs = false;
+if (serverTemplateId > 0) deviceSpecificURLs = ServerTemplateLocalServiceUtil.getDeviceSpecificByServerTemplateId(serverTemplateId);
 
 PortletURL portletURL = renderResponse.createRenderURL();
 portletURL.setParameter("institutionId", institutionId+"");
 portletURL.setParameter("hostId", hostId+"");
+portletURL.setParameter("serverTemplateId", hostId+"");
+
 List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupIdAndParent(0,1);
+List<Host> hostList = HostLocalServiceUtil.getByTemplateGroupId(0);
 
 for (int i = 0; i < institutions.size(); i++) {
 	Institution curInstitution = (Institution) institutions.get(i);
@@ -45,29 +82,84 @@ for (int i = 0; i < institutions.size(); i++) {
 
 		<aui:fieldset>
 			<aui:input name="institution" label="Institution" required="true" inlineField="true"/>
-
-            <aui:input name="serverselect" label="Select Streaming Server" inlineField="true"></aui:input>
+            <aui:select name="serverselect" id="selecthost" label="Select Streaming Server" inlineField="true">
+			<%
+					for(Host host : hostList){
+			%>
+					<aui:option label="<%= host.getName() %>" value="<%= host.getHostId() %>"></aui:option>
+			<% } %>
+            </aui:select>
+            <aui:input name='institutionId' type='hidden' inlineField="true" value='<%= ParamUtil.getString(renderRequest, "institutionId") %>'/>
 			<aui:button type="submit" value="Add" ></aui:button>
 			<aui:button type="cancel" onClick="<%= viewURL.toString() %>"></aui:button>
         </aui:fieldset>
 
 </aui:form>
+<p></p>
 </liferay-ui:panel>
        <liferay-ui:panel title="Streaming Server Options" collapsible="true" id="serverSettings"
 		    	defaultState="open"
 		    	extended="<%= false %>"
 		    	persistState="<%= true %>">
-<aui:form action="<%= updateServerEntryURL %>" name="<portlet:namespace />fm" inlineLabel="true">
+				<aui:form action="<%= updateServerEntryURL %>" name="<portlet:namespace />fm" inlineLabel="true">
 				<aui:button-row>
 		 	    <aui:fieldset column="true">
 					<aui:input label="Server Name" name="name" required="true" inlineField="true"></aui:input>
 		 	        <aui:input label="Streaming Server Domain or IP" name="ip" inlineField="true"></aui:input>
 		 	        <aui:input label="HTTP Protocol" name="protocol" inlineField="true"></aui:input>
-		 	        <aui:input label="Server Template" name="template"></aui:input>
+		 	        <aui:input label="Server Template" name="template" inlineField="true"></aui:input>
 		 	        <aui:input name='hostId' type='hidden' inlineField="true" value='<%= ParamUtil.getString(renderRequest, "hostId") %>'/>
 		 	        <aui:button type="submit"></aui:button>
 					<aui:button type="cancel" onClick="<%= viewURL.toString() %>"></aui:button>
 		 	    </aui:fieldset>
+		 	    </aui:button-row>
+</aui:form>
+</liferay-ui:panel>
+
+<liferay-ui:panel title="Server Preset Configuration" collapsible="true" id="serverTemplates"
+		    	defaultState="open"
+		    	extended="<%= false %>"
+		    	persistState="<%= true %>">
+				<aui:form action="<%= updateServerTemplateEntryURL %>" name="<portlet:namespace />fm" inlineLabel="true">
+		 	    <aui:fieldset column="true">
+		 	    	<aui:input label="Use Device Specific Templates" type="checkbox" name="deviceSpecific"></aui:input>
+		 	    </aui:fieldset>
+		 	    <div id="<portlet:namespace />serverFieldsDefault" >
+			 	    <aui:fieldset column="true">
+						<aui:input label="Template Name" name="name" required="true" inlineField="true"></aui:input>
+			 	        <aui:input label="Prefix" name="prefixURL" inlineField="true"></aui:input>
+			 	        <aui:input label="Suffix" name="suffixURL" inlineField="true"></aui:input>
+			 	        <aui:input label="Extension" name="secExt" inlineField="true"></aui:input>
+			 	        <aui:input name='type' type='hidden' inlineField="true" value='0'/>
+			 	        <aui:input name='serverTemplateId' type='hidden' inlineField="true" value='<%= ParamUtil.getString(renderRequest, "serverTemplateId") %>'/>
+			 	        <aui:input label="URL Template String" required="true" name="templateURL"></aui:input>
+			 	    </aui:fieldset>
+		 	    </div>
+		 	    <div id="<portlet:namespace />serverFieldsAndroid" style="display: none">
+		 	    <aui:fieldset column="true">
+			 	        <aui:input label="Prefix" name="prefixURL" inlineField="true"></aui:input>
+			 	        <aui:input label="Suffix" name="suffixURL" inlineField="true"></aui:input>
+			 	        <aui:input label="Extension" name="secExt" inlineField="true"></aui:input>
+			 	        <aui:input name='type' type='hidden' inlineField="true" value='0'/>
+			 	        <aui:input name='serverTemplateId' type='hidden' inlineField="true" value='<%= ParamUtil.getString(renderRequest, "serverTemplateId") %>'/>
+			 	        <aui:input label="URL Template String" required="false" name="templateURL"></aui:input>
+			 	    </aui:fieldset>
+		 	    </div>
+		 	   <div id="<portlet:namespace />serverFieldsIOS" style="display: none">
+			 	    <aui:fieldset column="true">
+			 	        <aui:input label="Prefix" name="prefixURL" inlineField="true"></aui:input>
+			 	        <aui:input label="Suffix" name="suffixURL" inlineField="true"></aui:input>
+			 	        <aui:input label="Extension" name="secExt" inlineField="true"></aui:input>
+			 	        <aui:input name='type' type='hidden' inlineField="true" value='0'/>
+			 	        <aui:input name='serverTemplateId' type='hidden' inlineField="true" value='<%= ParamUtil.getString(renderRequest, "serverTemplateId") %>'/>
+			 	        <aui:input label="URL Template String" required="false" name="templateURL"></aui:input>
+		 	    </aui:fieldset>
+		 	    </div>
+		 	     <aui:fieldset column="true">
+		 	     </aui:fieldset>
+		 	     <aui:button-row>
+		 	     	<aui:button type="submit"></aui:button>
+					<aui:button type="cancel" onClick="<%= viewURL.toString() %>"></aui:button>
 		 	    </aui:button-row>
 </aui:form>
 </liferay-ui:panel>
@@ -127,7 +219,7 @@ deltaConfigurable="true">
  		</aui:form>
  		<aui:form action="<%= addSubInstitutionEntryURL %>" name="<portlet:namespace />fm">
  			<aui:fieldset>
-				<aui:input name="subinstitution" label="SubInstitution Name" inlineField="true" value = "<%= institution.getName() %>" />
+				<aui:input name="subinstitution" label="SubInstitution Name" inlineField="true" />
 				<aui:button type="submit" value="Add"></aui:button>
 			</aui:fieldset>
  		</aui:form>
@@ -186,3 +278,4 @@ deltaConfigurable="true">
     <liferay-ui:search-iterator searchContainer="<%= searchInstitutionContainer %>" />
 </liferay-ui:search-container>
 </liferay-ui:panel>
+

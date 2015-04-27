@@ -248,4 +248,25 @@ public interface ServerTemplateLocalService extends BaseLocalService,
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public de.uhh.l2g.plugins.model.ServerTemplate getById(long institutionId)
+		throws com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<de.uhh.l2g.plugins.model.ServerTemplate> getByGroupId(
+		long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public boolean getDeviceSpecificByServerTemplateId(long serverTemplateId)
+		throws com.liferay.portal.kernel.exception.SystemException;
+
+	public de.uhh.l2g.plugins.model.ServerTemplate addServerTemplate(
+		java.lang.String name, int type, java.lang.String templateURL,
+		java.lang.String prefixURL, java.lang.String suffixURL,
+		java.lang.String secExt, long iosId, long androidId,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
 }

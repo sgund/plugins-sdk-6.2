@@ -25,8 +25,10 @@ import com.liferay.portal.service.ServiceContext;
 import de.uhh.l2g.plugins.HostNameException;
 import de.uhh.l2g.plugins.HostServerTemplateException;
 import de.uhh.l2g.plugins.HostStreamerException;
+import de.uhh.l2g.plugins.NoSuchHostException;
 import de.uhh.l2g.plugins.model.Host;
 import de.uhh.l2g.plugins.model.Institution;
+import de.uhh.l2g.plugins.service.Institution_HostLocalServiceUtil;
 import de.uhh.l2g.plugins.service.base.HostLocalServiceBaseImpl;
 
 /**
@@ -51,9 +53,15 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 	 */
 
 
-	public List<Host> getByInstitution(long institutionId) throws SystemException {
-		// TODO Auto-generated method stub
-		return null;
+	public Host getByInstitution(long institutionId) throws SystemException{
+		Host h = null;
+		try {
+			h = Institution_HostLocalServiceUtil.getByInstitutionId(institutionId);
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return h;
 	}
 
 	public Host getByHostId(long hostId) throws SystemException{
@@ -64,7 +72,21 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 		return hostPersistence.findByGroupId(groupId);
 	}
 
-	protected void validate (String name, String streamer, String serverTemplate) throws PortalException {
+	public List<Host> getByTemplateConfiguredAndGroupId(long groupId) throws SystemException{
+		return hostPersistence.findByTemplateConfiguredAndGroupId(groupId);
+	}
+
+	public List<Host> getByG(long groupId) throws SystemException{
+		return hostPersistence.findByG(groupId);
+	}
+
+	public Host getByGroupIdAndHostId(long groupId, long hostId) throws SystemException{
+		return hostPersistence.fetchByG_H(groupId, hostId);
+	}
+
+
+
+	protected void validate (String name, String streamer, long serverTemplateId) throws PortalException {
 
 		if (Validator.isNull(name)) {
 	       throw new HostNameException();
@@ -74,12 +96,12 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 	       throw new HostStreamerException();
 	     }
 
-	     if (Validator.isNull(serverTemplate)) {
+	     if (Validator.isNull(serverTemplateId)) {
 	       throw new HostServerTemplateException();
 	     }
 	}
 
-	public Host addHost(String name, String streamer, String serverTemplate,
+	public Host addHost(String name, String streamLocation, long serverTemplateId,
 			String protocol, String serverRoot, int port,
 			ServiceContext serviceContext) throws SystemException, PortalException {
 
@@ -88,7 +110,7 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
-		validate(name,streamer,serverTemplate);
+		validate(name,streamLocation,serverTemplateId);
 
 
 		long hostId = counterLocalService.increment();
@@ -96,8 +118,8 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 		Host host = hostPersistence.create(hostId);
 
 		host.setName(name);
-		host.setServerTemplate(serverTemplate);
-		host.setStreamer(streamer);
+		host.setServerTemplateId(serverTemplateId);
+		host.setStreamer(streamLocation);
 		host.setProtocol(protocol);
 		host.setServerRoot(serverRoot);
 		host.setPort(port);

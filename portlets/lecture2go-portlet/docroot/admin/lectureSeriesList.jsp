@@ -53,9 +53,9 @@
 										if(f.getKey().equals(institutionId.toString())){
 											%>
 											<aui:option value='<%=f.getKey()%>' selected="true"><%=f.getValue()%></aui:option>
-											<%}else{%>
+										<%}else{%>
 											<aui:option value='<%=f.getKey()%>'><%=f.getValue()%></aui:option>
-											<%}
+										<%}
 								}%>
 							</aui:select>
 						</aui:form>

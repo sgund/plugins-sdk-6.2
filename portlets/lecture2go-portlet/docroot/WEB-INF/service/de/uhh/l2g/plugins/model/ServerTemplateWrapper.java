@@ -52,14 +52,15 @@ public class ServerTemplateWrapper implements ServerTemplate,
 		attributes.put("serverTemplateId", getServerTemplateId());
 		attributes.put("groupId", getGroupId());
 		attributes.put("name", getName());
+		attributes.put("type", getType());
 		attributes.put("prefixURL", getPrefixURL());
 		attributes.put("suffixURL", getSuffixURL());
-		attributes.put("suffixExt", getSuffixExt());
+		attributes.put("secExt", getSecExt());
 		attributes.put("templateURL", getTemplateURL());
 		attributes.put("prefixFile", getPrefixFile());
 		attributes.put("suffixFile", getSuffixFile());
 		attributes.put("templateFile", getTemplateFile());
-		attributes.put("templateIOs", getTemplateIOs());
+		attributes.put("templateIOS", getTemplateIOS());
 		attributes.put("templateAndroid", getTemplateAndroid());
 
 		return attributes;
@@ -85,6 +86,12 @@ public class ServerTemplateWrapper implements ServerTemplate,
 			setName(name);
 		}
 
+		Integer type = (Integer)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
+		}
+
 		String prefixURL = (String)attributes.get("prefixURL");
 
 		if (prefixURL != null) {
@@ -97,10 +104,10 @@ public class ServerTemplateWrapper implements ServerTemplate,
 			setSuffixURL(suffixURL);
 		}
 
-		String suffixExt = (String)attributes.get("suffixExt");
+		String secExt = (String)attributes.get("secExt");
 
-		if (suffixExt != null) {
-			setSuffixExt(suffixExt);
+		if (secExt != null) {
+			setSecExt(secExt);
 		}
 
 		String templateURL = (String)attributes.get("templateURL");
@@ -127,10 +134,10 @@ public class ServerTemplateWrapper implements ServerTemplate,
 			setTemplateFile(templateFile);
 		}
 
-		Long templateIOs = (Long)attributes.get("templateIOs");
+		Long templateIOS = (Long)attributes.get("templateIOS");
 
-		if (templateIOs != null) {
-			setTemplateIOs(templateIOs);
+		if (templateIOS != null) {
+			setTemplateIOS(templateIOS);
 		}
 
 		Long templateAndroid = (Long)attributes.get("templateAndroid");
@@ -221,6 +228,26 @@ public class ServerTemplateWrapper implements ServerTemplate,
 	}
 
 	/**
+	* Returns the type of this server template.
+	*
+	* @return the type of this server template
+	*/
+	@Override
+	public int getType() {
+		return _serverTemplate.getType();
+	}
+
+	/**
+	* Sets the type of this server template.
+	*
+	* @param type the type of this server template
+	*/
+	@Override
+	public void setType(int type) {
+		_serverTemplate.setType(type);
+	}
+
+	/**
 	* Returns the prefix u r l of this server template.
 	*
 	* @return the prefix u r l of this server template
@@ -261,23 +288,23 @@ public class ServerTemplateWrapper implements ServerTemplate,
 	}
 
 	/**
-	* Returns the suffix ext of this server template.
+	* Returns the sec ext of this server template.
 	*
-	* @return the suffix ext of this server template
+	* @return the sec ext of this server template
 	*/
 	@Override
-	public java.lang.String getSuffixExt() {
-		return _serverTemplate.getSuffixExt();
+	public java.lang.String getSecExt() {
+		return _serverTemplate.getSecExt();
 	}
 
 	/**
-	* Sets the suffix ext of this server template.
+	* Sets the sec ext of this server template.
 	*
-	* @param suffixExt the suffix ext of this server template
+	* @param secExt the sec ext of this server template
 	*/
 	@Override
-	public void setSuffixExt(java.lang.String suffixExt) {
-		_serverTemplate.setSuffixExt(suffixExt);
+	public void setSecExt(java.lang.String secExt) {
+		_serverTemplate.setSecExt(secExt);
 	}
 
 	/**
@@ -361,23 +388,23 @@ public class ServerTemplateWrapper implements ServerTemplate,
 	}
 
 	/**
-	* Returns the template i os of this server template.
+	* Returns the template i o s of this server template.
 	*
-	* @return the template i os of this server template
+	* @return the template i o s of this server template
 	*/
 	@Override
-	public long getTemplateIOs() {
-		return _serverTemplate.getTemplateIOs();
+	public long getTemplateIOS() {
+		return _serverTemplate.getTemplateIOS();
 	}
 
 	/**
-	* Sets the template i os of this server template.
+	* Sets the template i o s of this server template.
 	*
-	* @param templateIOs the template i os of this server template
+	* @param templateIOS the template i o s of this server template
 	*/
 	@Override
-	public void setTemplateIOs(long templateIOs) {
-		_serverTemplate.setTemplateIOs(templateIOs);
+	public void setTemplateIOS(long templateIOS) {
+		_serverTemplate.setTemplateIOS(templateIOS);
 	}
 
 	/**

@@ -84,12 +84,13 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 				"value.object.column.bitmask.enabled.de.uhh.l2g.plugins.model.Institution"),
 			true);
 	public static long GROUPID_COLUMN_BITMASK = 1L;
-	public static long LEVEL_COLUMN_BITMASK = 2L;
-	public static long NAME_COLUMN_BITMASK = 4L;
-	public static long PARENTID_COLUMN_BITMASK = 8L;
-	public static long SORT_COLUMN_BITMASK = 16L;
-	public static long TYP_COLUMN_BITMASK = 32L;
-	public static long WWW_COLUMN_BITMASK = 64L;
+	public static long INSTITUTIONID_COLUMN_BITMASK = 2L;
+	public static long LEVEL_COLUMN_BITMASK = 4L;
+	public static long NAME_COLUMN_BITMASK = 8L;
+	public static long PARENTID_COLUMN_BITMASK = 16L;
+	public static long SORT_COLUMN_BITMASK = 32L;
+	public static long TYP_COLUMN_BITMASK = 64L;
+	public static long WWW_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.de.uhh.l2g.plugins.model.Institution"));
 
@@ -200,7 +201,19 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 
 	@Override
 	public void setInstitutionId(long institutionId) {
+		_columnBitmask |= INSTITUTIONID_COLUMN_BITMASK;
+
+		if (!_setOriginalInstitutionId) {
+			_setOriginalInstitutionId = true;
+
+			_originalInstitutionId = _institutionId;
+		}
+
 		_institutionId = institutionId;
+	}
+
+	public long getOriginalInstitutionId() {
+		return _originalInstitutionId;
 	}
 
 	@Override
@@ -463,6 +476,10 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 	public void resetOriginalValues() {
 		InstitutionModelImpl institutionModelImpl = this;
 
+		institutionModelImpl._originalInstitutionId = institutionModelImpl._institutionId;
+
+		institutionModelImpl._setOriginalInstitutionId = false;
+
 		institutionModelImpl._originalParentId = institutionModelImpl._parentId;
 
 		institutionModelImpl._setOriginalParentId = false;
@@ -605,6 +622,8 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 			Institution.class
 		};
 	private long _institutionId;
+	private long _originalInstitutionId;
+	private boolean _setOriginalInstitutionId;
 	private long _parentId;
 	private long _originalParentId;
 	private boolean _setOriginalParentId;

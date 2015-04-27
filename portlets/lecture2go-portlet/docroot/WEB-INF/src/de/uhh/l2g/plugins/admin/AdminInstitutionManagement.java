@@ -13,7 +13,6 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.springframework.web.util.*;
-import org.springframework.web.util.UriTemplate;
 
 import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -39,11 +38,13 @@ import de.uhh.l2g.plugins.model.Coordinator;
 import de.uhh.l2g.plugins.model.Institution;
 import de.uhh.l2g.plugins.model.Host;
 import de.uhh.l2g.plugins.model.Producer;
+import de.uhh.l2g.plugins.model.ServerTemplate;
 import de.uhh.l2g.plugins.service.CoordinatorLocalServiceUtil;
 import de.uhh.l2g.plugins.service.HostLocalServiceUtil;
 import de.uhh.l2g.plugins.service.InstitutionLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Institution_HostLocalServiceUtil;
 import de.uhh.l2g.plugins.service.ProducerLocalServiceUtil;
+import de.uhh.l2g.plugins.service.ServerTemplateLocalServiceUtil;
 import de.uhh.l2g.plugins.service.persistence.InstitutionPersistence;
 
 public class AdminInstitutionManagement extends MVCPortlet {
@@ -57,29 +58,44 @@ public class AdminInstitutionManagement extends MVCPortlet {
 			         Institution.class.getName(), renderRequest);
 
 			long groupId = serviceContext.getScopeGroupId();
+			groupId = 0;
 
 			long institutionId = ParamUtil.getLong(renderRequest, "institutionId");
 			long hostId = ParamUtil.getLong(renderRequest, "hostId");
+			long serverTemplateId = ParamUtil.getLong(renderRequest, "serverTemplateId");
+
+			long defaultHostId = 0;
+			long defaultServerTemplateId = 0;
 
 
 		    List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(0);
-		    List<Host> host = HostLocalServiceUtil.getByGroupId(0);
+		    List<Host> host = HostLocalServiceUtil.getByTemplateConfiguredAndGroupId(groupId);
+		    List<ServerTemplate> serverTemplate = ServerTemplateLocalServiceUtil.getByGroupId(0);
 
 		    System.out.println(institutionId+" "+groupId+" "+institutions.toString());
 		    System.out.println(hostId+" "+groupId+" "+host.toString());
 
+		    //Add default server template if empty
+		    if (serverTemplate.size() == 0) {
+		    	ServerTemplate defaultServerTemplate = ServerTemplateLocalServiceUtil.addServerTemplate("HTTP", 0, "{Protocol}://{ServerURL}/{L2GO_FILEPATH}/{Filename}.{Ext}", "", "", "", 0,0 , serviceContext);
+		    	SessionMessages.add(renderRequest, "entryAdded");
+		    	defaultServerTemplateId = defaultServerTemplate.getServerTemplateId();
+		    }
+
+		    //Add default host if empty
+		    if (host.size() == 0) {
+		    	Host defaultHost = HostLocalServiceUtil.addHost("Default", "localhost", defaultServerTemplateId ,"HTTP", "", 80, serviceContext);
+		    	SessionMessages.add(renderRequest, "entryAdded");
+		    	defaultHostId = defaultHost.getHostId();
+		    }
+
 		    //new Top Level Institution if empty
 		    if (institutions.size() == 0) {
-		    	Institution institution = InstitutionLocalServiceUtil.addInstitution("Main", "default",new Long(0), serviceContext);
+		    	Institution institution = InstitutionLocalServiceUtil.addInstitution("Main", 0 ,new Long(0), serviceContext);
 		    	SessionMessages.add(renderRequest, "entryAdded");
 		    	institutionId = institution.getInstitutionId();
 		    }
 
-		    if (host.size() == 0) {
-		    	Host default_host = HostLocalServiceUtil.addHost("Default", "localhost", "Local Webserver","HTTP", "", 80, serviceContext);
-		    	SessionMessages.add(renderRequest, "entryAdded");
-		    	hostId = default_host.getHostId();
-		    }
 
 		    if (!(institutionId > 0)) {
 		    	institutionId = institutions.get(0).getInstitutionId();
@@ -87,7 +103,7 @@ public class AdminInstitutionManagement extends MVCPortlet {
 
 		    renderRequest.setAttribute("institutionId", institutionId);
 		    renderRequest.setAttribute("hostId", hostId);
-
+		    renderRequest.setAttribute("serverTemplateId", serverTemplateId);
 
 		    } catch (Exception e) {
 		    	throw new PortletException(e);
@@ -101,16 +117,17 @@ public class AdminInstitutionManagement extends MVCPortlet {
 	public void addInstitutionEntry(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
 
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+		try {
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
 		         Institution.class.getName(), request);
 
-	    String name = ParamUtil.getString(request, "institution");
-	    String streamer = ParamUtil.getString(request, "serverselect");
-	    Long parent = ParamUtil.getLong(request, "parent");
+			String name = ParamUtil.getString(request, "institution");
+			long hostId = ParamUtil.getLong(request, "serverselect");
+			long parent = ParamUtil.getLong(request, "parent");
 
-	    try {
+
 	         InstitutionLocalServiceUtil.addInstitution(
-	              name, streamer, parent, serviceContext);
+	              name, hostId, parent, serviceContext);
 
 	         SessionMessages.add(request, "entryAdded");
 
@@ -136,12 +153,12 @@ public class AdminInstitutionManagement extends MVCPortlet {
 					Institution.class.getName(), request);
 
 			String name = ParamUtil.getString(request, "institution");
-			String streamer = ParamUtil.getString(request, "serverselect");
-			Long parent = ParamUtil.getLong(request, "parent");
+			long hostId = ParamUtil.getLong(request, "serverselect");
+			long parent = ParamUtil.getLong(request, "parent");
 
 			try {
 				InstitutionLocalServiceUtil.addInstitution(
-						name, streamer, parent, serviceContext);
+						name, hostId, parent, serviceContext);
 
 				SessionMessages.add(request, "entryAdded");
 
@@ -165,12 +182,12 @@ public class AdminInstitutionManagement extends MVCPortlet {
 			         Institution.class.getName(), request);
 
 		    String name = ParamUtil.getString(request, "institution");
-		    String streamer = ParamUtil.getString(request, "serverselect");
-		    Long parent = ParamUtil.getLong(request, "parent");
+			long hostId = ParamUtil.getLong(request, "serverselect");
+			long parent = ParamUtil.getLong(request, "parent");
 
-		    try {
-		         InstitutionLocalServiceUtil.addInstitution(
-		              name, streamer, parent, serviceContext);
+			try {
+				InstitutionLocalServiceUtil.addInstitution(
+						name, hostId, parent, serviceContext);
 
 		         SessionMessages.add(request, "entryAdded");
 
@@ -197,13 +214,12 @@ public class AdminInstitutionManagement extends MVCPortlet {
 				Institution.class.getName(), request);
 
 		String name = ParamUtil.getString(request, "institution");
-		String streamer = ParamUtil.getString(request, "serverselect");
-		Long parent = ParamUtil.getLong(request, "parent");
+		long hostId = ParamUtil.getLong(request, "serverselect");
+		long parent = ParamUtil.getLong(request, "parent");
 
-
-	    try {
-	         InstitutionLocalServiceUtil.addInstitution(
-	              name, streamer, parent, serviceContext);
+		try {
+			InstitutionLocalServiceUtil.addInstitution(
+					name, hostId, parent, serviceContext);
 
 			SessionMessages.add(request, "entryAdded");
 
@@ -229,12 +245,12 @@ public void viewStreamingServerList(ActionRequest request, ActionResponse respon
 	         Institution.class.getName(), request);
 
     String name = ParamUtil.getString(request, "institution");
-    String streamer = ParamUtil.getString(request, "serverselect");
-    Long parent = ParamUtil.getLong(request, "parent");
+	long hostId = ParamUtil.getLong(request, "serverselect");
+	long parent = ParamUtil.getLong(request, "parent");
 
-    try {
-         InstitutionLocalServiceUtil.addInstitution(
-              name, streamer, parent, serviceContext);
+	try {
+		InstitutionLocalServiceUtil.addInstitution(
+				name, hostId, parent, serviceContext);
 
          SessionMessages.add(request, "entryAdded");
 

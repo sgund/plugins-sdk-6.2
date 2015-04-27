@@ -76,14 +76,15 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 		attributes.put("serverTemplateId", getServerTemplateId());
 		attributes.put("groupId", getGroupId());
 		attributes.put("name", getName());
+		attributes.put("type", getType());
 		attributes.put("prefixURL", getPrefixURL());
 		attributes.put("suffixURL", getSuffixURL());
-		attributes.put("suffixExt", getSuffixExt());
+		attributes.put("secExt", getSecExt());
 		attributes.put("templateURL", getTemplateURL());
 		attributes.put("prefixFile", getPrefixFile());
 		attributes.put("suffixFile", getSuffixFile());
 		attributes.put("templateFile", getTemplateFile());
-		attributes.put("templateIOs", getTemplateIOs());
+		attributes.put("templateIOS", getTemplateIOS());
 		attributes.put("templateAndroid", getTemplateAndroid());
 
 		return attributes;
@@ -109,6 +110,12 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 			setName(name);
 		}
 
+		Integer type = (Integer)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
+		}
+
 		String prefixURL = (String)attributes.get("prefixURL");
 
 		if (prefixURL != null) {
@@ -121,10 +128,10 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 			setSuffixURL(suffixURL);
 		}
 
-		String suffixExt = (String)attributes.get("suffixExt");
+		String secExt = (String)attributes.get("secExt");
 
-		if (suffixExt != null) {
-			setSuffixExt(suffixExt);
+		if (secExt != null) {
+			setSecExt(secExt);
 		}
 
 		String templateURL = (String)attributes.get("templateURL");
@@ -151,10 +158,10 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 			setTemplateFile(templateFile);
 		}
 
-		Long templateIOs = (Long)attributes.get("templateIOs");
+		Long templateIOS = (Long)attributes.get("templateIOS");
 
-		if (templateIOs != null) {
-			setTemplateIOs(templateIOs);
+		if (templateIOS != null) {
+			setTemplateIOS(templateIOS);
 		}
 
 		Long templateAndroid = (Long)attributes.get("templateAndroid");
@@ -235,6 +242,29 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 	}
 
 	@Override
+	public int getType() {
+		return _type;
+	}
+
+	@Override
+	public void setType(int type) {
+		_type = type;
+
+		if (_serverTemplateRemoteModel != null) {
+			try {
+				Class<?> clazz = _serverTemplateRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setType", int.class);
+
+				method.invoke(_serverTemplateRemoteModel, type);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
 	public String getPrefixURL() {
 		return _prefixURL;
 	}
@@ -281,21 +311,21 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 	}
 
 	@Override
-	public String getSuffixExt() {
-		return _suffixExt;
+	public String getSecExt() {
+		return _secExt;
 	}
 
 	@Override
-	public void setSuffixExt(String suffixExt) {
-		_suffixExt = suffixExt;
+	public void setSecExt(String secExt) {
+		_secExt = secExt;
 
 		if (_serverTemplateRemoteModel != null) {
 			try {
 				Class<?> clazz = _serverTemplateRemoteModel.getClass();
 
-				Method method = clazz.getMethod("setSuffixExt", String.class);
+				Method method = clazz.getMethod("setSecExt", String.class);
 
-				method.invoke(_serverTemplateRemoteModel, suffixExt);
+				method.invoke(_serverTemplateRemoteModel, secExt);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -396,21 +426,21 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 	}
 
 	@Override
-	public long getTemplateIOs() {
-		return _templateIOs;
+	public long getTemplateIOS() {
+		return _templateIOS;
 	}
 
 	@Override
-	public void setTemplateIOs(long templateIOs) {
-		_templateIOs = templateIOs;
+	public void setTemplateIOS(long templateIOS) {
+		_templateIOS = templateIOS;
 
 		if (_serverTemplateRemoteModel != null) {
 			try {
 				Class<?> clazz = _serverTemplateRemoteModel.getClass();
 
-				Method method = clazz.getMethod("setTemplateIOs", long.class);
+				Method method = clazz.getMethod("setTemplateIOS", long.class);
 
-				method.invoke(_serverTemplateRemoteModel, templateIOs);
+				method.invoke(_serverTemplateRemoteModel, templateIOS);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -515,14 +545,15 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 		clone.setServerTemplateId(getServerTemplateId());
 		clone.setGroupId(getGroupId());
 		clone.setName(getName());
+		clone.setType(getType());
 		clone.setPrefixURL(getPrefixURL());
 		clone.setSuffixURL(getSuffixURL());
-		clone.setSuffixExt(getSuffixExt());
+		clone.setSecExt(getSecExt());
 		clone.setTemplateURL(getTemplateURL());
 		clone.setPrefixFile(getPrefixFile());
 		clone.setSuffixFile(getSuffixFile());
 		clone.setTemplateFile(getTemplateFile());
-		clone.setTemplateIOs(getTemplateIOs());
+		clone.setTemplateIOS(getTemplateIOS());
 		clone.setTemplateAndroid(getTemplateAndroid());
 
 		return clone;
@@ -572,7 +603,7 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{serverTemplateId=");
 		sb.append(getServerTemplateId());
@@ -580,12 +611,14 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 		sb.append(getGroupId());
 		sb.append(", name=");
 		sb.append(getName());
+		sb.append(", type=");
+		sb.append(getType());
 		sb.append(", prefixURL=");
 		sb.append(getPrefixURL());
 		sb.append(", suffixURL=");
 		sb.append(getSuffixURL());
-		sb.append(", suffixExt=");
-		sb.append(getSuffixExt());
+		sb.append(", secExt=");
+		sb.append(getSecExt());
 		sb.append(", templateURL=");
 		sb.append(getTemplateURL());
 		sb.append(", prefixFile=");
@@ -594,8 +627,8 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 		sb.append(getSuffixFile());
 		sb.append(", templateFile=");
 		sb.append(getTemplateFile());
-		sb.append(", templateIOs=");
-		sb.append(getTemplateIOs());
+		sb.append(", templateIOS=");
+		sb.append(getTemplateIOS());
 		sb.append(", templateAndroid=");
 		sb.append(getTemplateAndroid());
 		sb.append("}");
@@ -605,7 +638,7 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(40);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("<model><model-name>");
 		sb.append("de.uhh.l2g.plugins.model.ServerTemplate");
@@ -624,6 +657,10 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 		sb.append(getName());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>type</column-name><column-value><![CDATA[");
+		sb.append(getType());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>prefixURL</column-name><column-value><![CDATA[");
 		sb.append(getPrefixURL());
 		sb.append("]]></column-value></column>");
@@ -632,8 +669,8 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 		sb.append(getSuffixURL());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>suffixExt</column-name><column-value><![CDATA[");
-		sb.append(getSuffixExt());
+			"<column><column-name>secExt</column-name><column-value><![CDATA[");
+		sb.append(getSecExt());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>templateURL</column-name><column-value><![CDATA[");
@@ -652,8 +689,8 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 		sb.append(getTemplateFile());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>templateIOs</column-name><column-value><![CDATA[");
-		sb.append(getTemplateIOs());
+			"<column><column-name>templateIOS</column-name><column-value><![CDATA[");
+		sb.append(getTemplateIOS());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>templateAndroid</column-name><column-value><![CDATA[");
@@ -668,14 +705,15 @@ public class ServerTemplateClp extends BaseModelImpl<ServerTemplate>
 	private long _serverTemplateId;
 	private long _groupId;
 	private String _name;
+	private int _type;
 	private String _prefixURL;
 	private String _suffixURL;
-	private String _suffixExt;
+	private String _secExt;
 	private String _templateURL;
 	private String _prefixFile;
 	private String _suffixFile;
 	private String _templateFile;
-	private long _templateIOs;
+	private long _templateIOS;
 	private long _templateAndroid;
 	private BaseModel<?> _serverTemplateRemoteModel;
 }

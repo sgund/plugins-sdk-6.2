@@ -35,11 +35,11 @@
 		<id name="hostId" type="long">
 			<generator class="increment" />
 		</id>
+		<property name="serverTemplateId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="protocol" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="streamer" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="port" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="serverRoot" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="serverTemplate" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
@@ -63,6 +63,7 @@
 		</id>
 		<property name="institutionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="hostId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="de.uhh.l2g.plugins.model.impl.LastvideolistImpl" table="LG_Lastvideolist">
 		<cache usage="read-write" />
@@ -186,14 +187,15 @@
 		</id>
 		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="type" type="com.liferay.portal.dao.orm.hibernate.IntegerType" column="type_" />
 		<property name="prefixURL" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="suffixURL" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="suffixExt" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="secExt" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="templateURL" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="prefixFile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="suffixFile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="templateFile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="templateIOs" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="templateIOS" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="templateAndroid" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="de.uhh.l2g.plugins.model.impl.SysImpl" table="LG_Sys">
