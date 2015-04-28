@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -271,10 +271,10 @@ public class VideoLocalServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
-	public static de.uhh.l2g.plugins.model.Video getLatestVideoForLectureseries(
-		java.lang.Long lectureseriesId, int begin, int end) {
+	public static de.uhh.l2g.plugins.model.Video getLatestOpenAccessVideoForLectureseries(
+		java.lang.Long lectureseriesId) {
 		return getService()
-				   .getLatestVideoForLectureseries(lectureseriesId, begin, end);
+				   .getLatestOpenAccessVideoForLectureseries(lectureseriesId);
 	}
 
 	public static int unlinkLectureseriesFromVideos(
@@ -282,10 +282,10 @@ public class VideoLocalServiceUtil {
 		return getService().unlinkLectureseriesFromVideos(lectureseriesId);
 	}
 
-	public static java.util.List<de.uhh.l2g.plugins.model.Video> getByInstitution(
-		java.lang.Long institutionId)
+	public static java.util.List<de.uhh.l2g.plugins.model.Video> getByRootInstitution(
+		java.lang.Long rootInstitutionId)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		return getService().getByInstitution(institutionId);
+		return getService().getByRootInstitution(rootInstitutionId);
 	}
 
 	public static java.util.List<de.uhh.l2g.plugins.model.Video> getByFilename(
@@ -343,6 +343,16 @@ public class VideoLocalServiceUtil {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .getByLectureseriesAndOpenaccess(lectureseriesId, openAccess);
+	}
+
+	public static java.util.List<de.uhh.l2g.plugins.model.Video> getFilteredByInstitutionParentInstitutionTermCategoryCreator(
+		java.lang.Long institutionId, java.lang.Long parentInstitutionId,
+		java.util.ArrayList<java.lang.Long> termIds,
+		java.util.ArrayList<java.lang.Long> categoryIds,
+		java.util.ArrayList<java.lang.Long> creatorIds) {
+		return getService()
+				   .getFilteredByInstitutionParentInstitutionTermCategoryCreator(institutionId,
+			parentInstitutionId, termIds, categoryIds, creatorIds);
 	}
 
 	public static void clearService() {

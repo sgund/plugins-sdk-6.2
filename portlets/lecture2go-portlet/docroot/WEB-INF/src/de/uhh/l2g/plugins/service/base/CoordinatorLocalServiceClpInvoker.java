@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -106,17 +106,17 @@ public class CoordinatorLocalServiceClpInvoker {
 				"de.uhh.l2g.plugins.model.Coordinator"
 			};
 
-		_methodName112 = "getBeanIdentifier";
+		_methodName146 = "getBeanIdentifier";
 
-		_methodParameterTypes112 = new String[] {  };
+		_methodParameterTypes146 = new String[] {  };
 
-		_methodName113 = "setBeanIdentifier";
+		_methodName147 = "setBeanIdentifier";
 
-		_methodParameterTypes113 = new String[] { "java.lang.String" };
+		_methodParameterTypes147 = new String[] { "java.lang.String" };
 
-		_methodName119 = "getAllCoordinators";
+		_methodName153 = "getAllCoordinators";
 
-		_methodParameterTypes119 = new String[] { "int", "int" };
+		_methodParameterTypes153 = new String[] { "int", "int" };
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -208,20 +208,20 @@ public class CoordinatorLocalServiceClpInvoker {
 			return CoordinatorLocalServiceUtil.updateCoordinator((de.uhh.l2g.plugins.model.Coordinator)arguments[0]);
 		}
 
-		if (_methodName112.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes112, parameterTypes)) {
+		if (_methodName146.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes146, parameterTypes)) {
 			return CoordinatorLocalServiceUtil.getBeanIdentifier();
 		}
 
-		if (_methodName113.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes113, parameterTypes)) {
+		if (_methodName147.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes147, parameterTypes)) {
 			CoordinatorLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
 
 			return null;
 		}
 
-		if (_methodName119.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes119, parameterTypes)) {
+		if (_methodName153.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes153, parameterTypes)) {
 			return CoordinatorLocalServiceUtil.getAllCoordinators(((Integer)arguments[0]).intValue(),
 				((Integer)arguments[1]).intValue());
 		}
@@ -261,10 +261,10 @@ public class CoordinatorLocalServiceClpInvoker {
 	private String[] _methodParameterTypes14;
 	private String _methodName15;
 	private String[] _methodParameterTypes15;
-	private String _methodName112;
-	private String[] _methodParameterTypes112;
-	private String _methodName113;
-	private String[] _methodParameterTypes113;
-	private String _methodName119;
-	private String[] _methodParameterTypes119;
+	private String _methodName146;
+	private String[] _methodParameterTypes146;
+	private String _methodName147;
+	private String[] _methodParameterTypes147;
+	private String _methodName153;
+	private String[] _methodParameterTypes153;
 }

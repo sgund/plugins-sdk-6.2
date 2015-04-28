@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -273,6 +273,11 @@ public class VideohitlistLocalServiceUtil {
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable {
 		return getService().invokeMethod(name, parameterTypes, arguments);
+	}
+
+	public static void deleteByVideoId(java.lang.Long videoId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getService().deleteByVideoId(videoId);
 	}
 
 	public static void clearService() {

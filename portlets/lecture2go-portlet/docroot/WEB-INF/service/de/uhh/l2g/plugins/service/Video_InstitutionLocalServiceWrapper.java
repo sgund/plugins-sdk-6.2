@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -309,6 +309,13 @@ public class Video_InstitutionLocalServiceWrapper
 	public java.util.List<de.uhh.l2g.plugins.model.Video_Institution> getByInstitution(
 		java.lang.Long institutionId) {
 		return _video_InstitutionLocalService.getByInstitution(institutionId);
+	}
+
+	@Override
+	public java.util.List<de.uhh.l2g.plugins.model.Video_Institution> getByVideoAndInstitution(
+		java.lang.Long videoId, java.lang.Long institutionId) {
+		return _video_InstitutionLocalService.getByVideoAndInstitution(videoId,
+			institutionId);
 	}
 
 	/**

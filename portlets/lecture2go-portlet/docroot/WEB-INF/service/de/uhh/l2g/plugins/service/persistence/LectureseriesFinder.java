@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,11 +20,18 @@ package de.uhh.l2g.plugins.service.persistence;
 public interface LectureseriesFinder {
 	public java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findAllLectureseriesWhithPassword();
 
+	public java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findAllLectureseriesForVideo(
+		de.uhh.l2g.plugins.model.Video video);
+
 	public java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findAllLectureseriesWhithOpenaccessVideos();
 
-	public java.util.List<java.lang.String> findAllSemesters(int begin, int end);
+	public java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findFilteredByInstitutionParentInstitutionTermCategoryCreator(
+		java.lang.Long institutionId, java.lang.Long parentInstitutionId,
+		java.util.ArrayList<java.lang.Long> termIds,
+		java.util.ArrayList<java.lang.Long> categoryIds,
+		java.util.ArrayList<java.lang.Long> creatorIds);
 
-	public java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findeFilteredByApprovedSemesterFacultyProducer(
-		java.lang.Integer approved, java.lang.String semester,
+	public java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findFilteredByApprovedSemesterFacultyProducer(
+		java.lang.Integer approved, java.lang.Long termId,
 		java.lang.Long facultyId, java.lang.Long producerId);
 }

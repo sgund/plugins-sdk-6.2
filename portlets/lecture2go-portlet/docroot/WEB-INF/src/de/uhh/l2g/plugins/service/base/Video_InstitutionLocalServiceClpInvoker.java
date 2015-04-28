@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -106,29 +106,35 @@ public class Video_InstitutionLocalServiceClpInvoker {
 				"de.uhh.l2g.plugins.model.Video_Institution"
 			};
 
-		_methodName112 = "getBeanIdentifier";
+		_methodName146 = "getBeanIdentifier";
 
-		_methodParameterTypes112 = new String[] {  };
+		_methodParameterTypes146 = new String[] {  };
 
-		_methodName113 = "setBeanIdentifier";
+		_methodName147 = "setBeanIdentifier";
 
-		_methodParameterTypes113 = new String[] { "java.lang.String" };
+		_methodParameterTypes147 = new String[] { "java.lang.String" };
 
-		_methodName118 = "removeByVideoId";
+		_methodName152 = "removeByVideoId";
 
-		_methodParameterTypes118 = new String[] { "java.lang.Long" };
+		_methodParameterTypes152 = new String[] { "java.lang.Long" };
 
-		_methodName119 = "removeByInstitutionId";
+		_methodName153 = "removeByInstitutionId";
 
-		_methodParameterTypes119 = new String[] { "java.lang.Long" };
+		_methodParameterTypes153 = new String[] { "java.lang.Long" };
 
-		_methodName120 = "getByVideo";
+		_methodName154 = "getByVideo";
 
-		_methodParameterTypes120 = new String[] { "java.lang.Long" };
+		_methodParameterTypes154 = new String[] { "java.lang.Long" };
 
-		_methodName121 = "getByInstitution";
+		_methodName155 = "getByInstitution";
 
-		_methodParameterTypes121 = new String[] { "java.lang.Long" };
+		_methodParameterTypes155 = new String[] { "java.lang.Long" };
+
+		_methodName156 = "getByVideoAndInstitution";
+
+		_methodParameterTypes156 = new String[] {
+				"java.lang.Long", "java.lang.Long"
+			};
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -220,36 +226,42 @@ public class Video_InstitutionLocalServiceClpInvoker {
 			return Video_InstitutionLocalServiceUtil.updateVideo_Institution((de.uhh.l2g.plugins.model.Video_Institution)arguments[0]);
 		}
 
-		if (_methodName112.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes112, parameterTypes)) {
+		if (_methodName146.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes146, parameterTypes)) {
 			return Video_InstitutionLocalServiceUtil.getBeanIdentifier();
 		}
 
-		if (_methodName113.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes113, parameterTypes)) {
+		if (_methodName147.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes147, parameterTypes)) {
 			Video_InstitutionLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
 
 			return null;
 		}
 
-		if (_methodName118.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes118, parameterTypes)) {
+		if (_methodName152.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes152, parameterTypes)) {
 			return Video_InstitutionLocalServiceUtil.removeByVideoId((java.lang.Long)arguments[0]);
 		}
 
-		if (_methodName119.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes119, parameterTypes)) {
+		if (_methodName153.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes153, parameterTypes)) {
 			return Video_InstitutionLocalServiceUtil.removeByInstitutionId((java.lang.Long)arguments[0]);
 		}
 
-		if (_methodName120.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes120, parameterTypes)) {
+		if (_methodName154.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes154, parameterTypes)) {
 			return Video_InstitutionLocalServiceUtil.getByVideo((java.lang.Long)arguments[0]);
 		}
 
-		if (_methodName121.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes121, parameterTypes)) {
+		if (_methodName155.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes155, parameterTypes)) {
 			return Video_InstitutionLocalServiceUtil.getByInstitution((java.lang.Long)arguments[0]);
+		}
+
+		if (_methodName156.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes156, parameterTypes)) {
+			return Video_InstitutionLocalServiceUtil.getByVideoAndInstitution((java.lang.Long)arguments[0],
+				(java.lang.Long)arguments[1]);
 		}
 
 		throw new UnsupportedOperationException();
@@ -287,16 +299,18 @@ public class Video_InstitutionLocalServiceClpInvoker {
 	private String[] _methodParameterTypes14;
 	private String _methodName15;
 	private String[] _methodParameterTypes15;
-	private String _methodName112;
-	private String[] _methodParameterTypes112;
-	private String _methodName113;
-	private String[] _methodParameterTypes113;
-	private String _methodName118;
-	private String[] _methodParameterTypes118;
-	private String _methodName119;
-	private String[] _methodParameterTypes119;
-	private String _methodName120;
-	private String[] _methodParameterTypes120;
-	private String _methodName121;
-	private String[] _methodParameterTypes121;
+	private String _methodName146;
+	private String[] _methodParameterTypes146;
+	private String _methodName147;
+	private String[] _methodParameterTypes147;
+	private String _methodName152;
+	private String[] _methodParameterTypes152;
+	private String _methodName153;
+	private String[] _methodParameterTypes153;
+	private String _methodName154;
+	private String[] _methodParameterTypes154;
+	private String _methodName155;
+	private String[] _methodParameterTypes155;
+	private String _methodName156;
+	private String[] _methodParameterTypes156;
 }

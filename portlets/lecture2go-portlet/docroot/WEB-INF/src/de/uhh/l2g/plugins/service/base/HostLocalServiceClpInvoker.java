@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -100,25 +100,25 @@ public class HostLocalServiceClpInvoker {
 
 		_methodParameterTypes15 = new String[] { "de.uhh.l2g.plugins.model.Host" };
 
-		_methodName112 = "getBeanIdentifier";
+		_methodName146 = "getBeanIdentifier";
 
-		_methodParameterTypes112 = new String[] {  };
+		_methodParameterTypes146 = new String[] {  };
 
-		_methodName113 = "setBeanIdentifier";
+		_methodName147 = "setBeanIdentifier";
 
-		_methodParameterTypes113 = new String[] { "java.lang.String" };
+		_methodParameterTypes147 = new String[] { "java.lang.String" };
 
-		_methodName118 = "getByInstitution";
+		_methodName152 = "getByInstitution";
 
-		_methodParameterTypes118 = new String[] { "long" };
+		_methodParameterTypes152 = new String[] { "long" };
 
-		_methodName119 = "getByHostId";
+		_methodName153 = "getByHostId";
 
-		_methodParameterTypes119 = new String[] { "long" };
+		_methodParameterTypes153 = new String[] { "long" };
 
-		_methodName121 = "addHost";
+		_methodName155 = "addHost";
 
-		_methodParameterTypes121 = new String[] {
+		_methodParameterTypes155 = new String[] {
 				"long", "java.lang.String", "java.lang.String",
 				"java.lang.String", "java.lang.String", "java.lang.String",
 				"int", "com.liferay.portal.service.ServiceContext"
@@ -214,30 +214,30 @@ public class HostLocalServiceClpInvoker {
 			return HostLocalServiceUtil.updateHost((de.uhh.l2g.plugins.model.Host)arguments[0]);
 		}
 
-		if (_methodName112.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes112, parameterTypes)) {
+		if (_methodName146.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes146, parameterTypes)) {
 			return HostLocalServiceUtil.getBeanIdentifier();
 		}
 
-		if (_methodName113.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes113, parameterTypes)) {
+		if (_methodName147.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes147, parameterTypes)) {
 			HostLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
 
 			return null;
 		}
 
-		if (_methodName118.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes118, parameterTypes)) {
+		if (_methodName152.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes152, parameterTypes)) {
 			return HostLocalServiceUtil.getByInstitution(((Long)arguments[0]).longValue());
 		}
 
-		if (_methodName119.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes119, parameterTypes)) {
+		if (_methodName153.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes153, parameterTypes)) {
 			return HostLocalServiceUtil.getByHostId(((Long)arguments[0]).longValue());
 		}
 
-		if (_methodName121.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes121, parameterTypes)) {
+		if (_methodName155.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes155, parameterTypes)) {
 			return HostLocalServiceUtil.addHost(((Long)arguments[0]).longValue(),
 				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
 				(java.lang.String)arguments[3], (java.lang.String)arguments[4],
@@ -281,14 +281,14 @@ public class HostLocalServiceClpInvoker {
 	private String[] _methodParameterTypes14;
 	private String _methodName15;
 	private String[] _methodParameterTypes15;
-	private String _methodName112;
-	private String[] _methodParameterTypes112;
-	private String _methodName113;
-	private String[] _methodParameterTypes113;
-	private String _methodName118;
-	private String[] _methodParameterTypes118;
-	private String _methodName119;
-	private String[] _methodParameterTypes119;
-	private String _methodName121;
-	private String[] _methodParameterTypes121;
+	private String _methodName146;
+	private String[] _methodParameterTypes146;
+	private String _methodName147;
+	private String[] _methodParameterTypes147;
+	private String _methodName152;
+	private String[] _methodParameterTypes152;
+	private String _methodName153;
+	private String[] _methodParameterTypes153;
+	private String _methodName155;
+	private String[] _methodParameterTypes155;
 }

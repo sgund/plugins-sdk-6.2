@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -106,27 +106,31 @@ public class Lectureseries_InstitutionLocalServiceClpInvoker {
 				"de.uhh.l2g.plugins.model.Lectureseries_Institution"
 			};
 
-		_methodName112 = "getBeanIdentifier";
+		_methodName146 = "getBeanIdentifier";
 
-		_methodParameterTypes112 = new String[] {  };
+		_methodParameterTypes146 = new String[] {  };
 
-		_methodName113 = "setBeanIdentifier";
+		_methodName147 = "setBeanIdentifier";
 
-		_methodParameterTypes113 = new String[] { "java.lang.String" };
+		_methodParameterTypes147 = new String[] { "java.lang.String" };
 
-		_methodName118 = "removeByLectureseriesId";
+		_methodName152 = "removeByLectureseriesId";
 
-		_methodParameterTypes118 = new String[] { "java.lang.Long" };
+		_methodParameterTypes152 = new String[] { "java.lang.Long" };
 
-		_methodName119 = "removeByacilityId";
+		_methodName153 = "removeByacilityId";
 
-		_methodParameterTypes119 = new String[] { "java.lang.Long" };
+		_methodParameterTypes153 = new String[] { "java.lang.Long" };
 
-		_methodName120 = "institutionAssignedToLectureseries";
+		_methodName154 = "institutionAssignedToLectureseries";
 
-		_methodParameterTypes120 = new String[] {
+		_methodParameterTypes154 = new String[] {
 				"de.uhh.l2g.plugins.model.Lectureseries_Institution"
 			};
+
+		_methodName155 = "getByLectureseries";
+
+		_methodParameterTypes155 = new String[] { "long" };
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -218,31 +222,36 @@ public class Lectureseries_InstitutionLocalServiceClpInvoker {
 			return Lectureseries_InstitutionLocalServiceUtil.updateLectureseries_Institution((de.uhh.l2g.plugins.model.Lectureseries_Institution)arguments[0]);
 		}
 
-		if (_methodName112.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes112, parameterTypes)) {
+		if (_methodName146.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes146, parameterTypes)) {
 			return Lectureseries_InstitutionLocalServiceUtil.getBeanIdentifier();
 		}
 
-		if (_methodName113.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes113, parameterTypes)) {
+		if (_methodName147.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes147, parameterTypes)) {
 			Lectureseries_InstitutionLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
 
 			return null;
 		}
 
-		if (_methodName118.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes118, parameterTypes)) {
+		if (_methodName152.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes152, parameterTypes)) {
 			return Lectureseries_InstitutionLocalServiceUtil.removeByLectureseriesId((java.lang.Long)arguments[0]);
 		}
 
-		if (_methodName119.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes119, parameterTypes)) {
+		if (_methodName153.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes153, parameterTypes)) {
 			return Lectureseries_InstitutionLocalServiceUtil.removeByacilityId((java.lang.Long)arguments[0]);
 		}
 
-		if (_methodName120.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes120, parameterTypes)) {
+		if (_methodName154.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes154, parameterTypes)) {
 			return Lectureseries_InstitutionLocalServiceUtil.institutionAssignedToLectureseries((de.uhh.l2g.plugins.model.Lectureseries_Institution)arguments[0]);
+		}
+
+		if (_methodName155.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes155, parameterTypes)) {
+			return Lectureseries_InstitutionLocalServiceUtil.getByLectureseries(((Long)arguments[0]).longValue());
 		}
 
 		throw new UnsupportedOperationException();
@@ -280,14 +289,16 @@ public class Lectureseries_InstitutionLocalServiceClpInvoker {
 	private String[] _methodParameterTypes14;
 	private String _methodName15;
 	private String[] _methodParameterTypes15;
-	private String _methodName112;
-	private String[] _methodParameterTypes112;
-	private String _methodName113;
-	private String[] _methodParameterTypes113;
-	private String _methodName118;
-	private String[] _methodParameterTypes118;
-	private String _methodName119;
-	private String[] _methodParameterTypes119;
-	private String _methodName120;
-	private String[] _methodParameterTypes120;
+	private String _methodName146;
+	private String[] _methodParameterTypes146;
+	private String _methodName147;
+	private String[] _methodParameterTypes147;
+	private String _methodName152;
+	private String[] _methodParameterTypes152;
+	private String _methodName153;
+	private String[] _methodParameterTypes153;
+	private String _methodName154;
+	private String[] _methodParameterTypes154;
+	private String _methodName155;
+	private String[] _methodParameterTypes155;
 }

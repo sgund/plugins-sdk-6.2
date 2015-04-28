@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.CalendarUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -49,6 +50,7 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -87,69 +89,67 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	public static final FinderPath FINDER_PATH_COUNT_ALL = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
 			LectureseriesModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll", new String[0]);
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_SEMESTER = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_TERM = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
 			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
 			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-			"findBySemester",
+			"findByTerm",
 			new String[] {
-				String.class.getName(),
+				Long.class.getName(),
 				
 			Integer.class.getName(), Integer.class.getName(),
 				OrderByComparator.class.getName()
 			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SEMESTER =
-		new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_TERM = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
 			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
 			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-			"findBySemester", new String[] { String.class.getName() },
-			LectureseriesModelImpl.SEMESTERNAME_COLUMN_BITMASK |
+			"findByTerm", new String[] { Long.class.getName() },
+			LectureseriesModelImpl.TERMID_COLUMN_BITMASK |
 			LectureseriesModelImpl.NAME_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_SEMESTER = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+	public static final FinderPath FINDER_PATH_COUNT_BY_TERM = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
 			LectureseriesModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBySemester",
-			new String[] { String.class.getName() });
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByTerm",
+			new String[] { Long.class.getName() });
 
 	/**
-	 * Returns all the lectureserieses where semesterName = &#63;.
+	 * Returns all the lectureserieses where termId = &#63;.
 	 *
-	 * @param semesterName the semester name
+	 * @param termId the term ID
 	 * @return the matching lectureserieses
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Lectureseries> findBySemester(String semesterName)
+	public List<Lectureseries> findByTerm(long termId)
 		throws SystemException {
-		return findBySemester(semesterName, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
+		return findByTerm(termId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	/**
-	 * Returns a range of all the lectureserieses where semesterName = &#63;.
+	 * Returns a range of all the lectureserieses where termId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link de.uhh.l2g.plugins.model.impl.LectureseriesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
-	 * @param semesterName the semester name
+	 * @param termId the term ID
 	 * @param start the lower bound of the range of lectureserieses
 	 * @param end the upper bound of the range of lectureserieses (not inclusive)
 	 * @return the range of matching lectureserieses
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Lectureseries> findBySemester(String semesterName, int start,
-		int end) throws SystemException {
-		return findBySemester(semesterName, start, end, null);
+	public List<Lectureseries> findByTerm(long termId, int start, int end)
+		throws SystemException {
+		return findByTerm(termId, start, end, null);
 	}
 
 	/**
-	 * Returns an ordered range of all the lectureserieses where semesterName = &#63;.
+	 * Returns an ordered range of all the lectureserieses where termId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link de.uhh.l2g.plugins.model.impl.LectureseriesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
-	 * @param semesterName the semester name
+	 * @param termId the term ID
 	 * @param start the lower bound of the range of lectureserieses
 	 * @param end the upper bound of the range of lectureserieses (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
@@ -157,8 +157,8 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Lectureseries> findBySemester(String semesterName, int start,
-		int end, OrderByComparator orderByComparator) throws SystemException {
+	public List<Lectureseries> findByTerm(long termId, int start, int end,
+		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -166,16 +166,12 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
 				(orderByComparator == null)) {
 			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SEMESTER;
-			finderArgs = new Object[] { semesterName };
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_TERM;
+			finderArgs = new Object[] { termId };
 		}
 		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_SEMESTER;
-			finderArgs = new Object[] {
-					semesterName,
-					
-					start, end, orderByComparator
-				};
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_TERM;
+			finderArgs = new Object[] { termId, start, end, orderByComparator };
 		}
 
 		List<Lectureseries> list = (List<Lectureseries>)FinderCacheUtil.getResult(finderPath,
@@ -183,8 +179,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		if ((list != null) && !list.isEmpty()) {
 			for (Lectureseries lectureseries : list) {
-				if (!Validator.equals(semesterName,
-							lectureseries.getSemesterName())) {
+				if ((termId != lectureseries.getTermId())) {
 					list = null;
 
 					break;
@@ -205,19 +200,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 			query.append(_SQL_SELECT_LECTURESERIES_WHERE);
 
-			boolean bindSemesterName = false;
-
-			if (semesterName == null) {
-				query.append(_FINDER_COLUMN_SEMESTER_SEMESTERNAME_1);
-			}
-			else if (semesterName.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_SEMESTER_SEMESTERNAME_3);
-			}
-			else {
-				bindSemesterName = true;
-
-				query.append(_FINDER_COLUMN_SEMESTER_SEMESTERNAME_2);
-			}
+			query.append(_FINDER_COLUMN_TERM_TERMID_2);
 
 			if (orderByComparator != null) {
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
@@ -239,9 +222,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (bindSemesterName) {
-					qPos.add(semesterName);
-				}
+				qPos.add(termId);
 
 				if (!pagination) {
 					list = (List<Lectureseries>)QueryUtil.list(q, getDialect(),
@@ -274,19 +255,19 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Returns the first lectureseries in the ordered set where semesterName = &#63;.
+	 * Returns the first lectureseries in the ordered set where termId = &#63;.
 	 *
-	 * @param semesterName the semester name
+	 * @param termId the term ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching lectureseries
 	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a matching lectureseries could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Lectureseries findBySemester_First(String semesterName,
+	public Lectureseries findByTerm_First(long termId,
 		OrderByComparator orderByComparator)
 		throws NoSuchLectureseriesException, SystemException {
-		Lectureseries lectureseries = fetchBySemester_First(semesterName,
+		Lectureseries lectureseries = fetchByTerm_First(termId,
 				orderByComparator);
 
 		if (lectureseries != null) {
@@ -297,8 +278,8 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
 
-		msg.append("semesterName=");
-		msg.append(semesterName);
+		msg.append("termId=");
+		msg.append(termId);
 
 		msg.append(StringPool.CLOSE_CURLY_BRACE);
 
@@ -306,18 +287,17 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Returns the first lectureseries in the ordered set where semesterName = &#63;.
+	 * Returns the first lectureseries in the ordered set where termId = &#63;.
 	 *
-	 * @param semesterName the semester name
+	 * @param termId the term ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching lectureseries, or <code>null</code> if a matching lectureseries could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Lectureseries fetchBySemester_First(String semesterName,
+	public Lectureseries fetchByTerm_First(long termId,
 		OrderByComparator orderByComparator) throws SystemException {
-		List<Lectureseries> list = findBySemester(semesterName, 0, 1,
-				orderByComparator);
+		List<Lectureseries> list = findByTerm(termId, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -327,20 +307,19 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Returns the last lectureseries in the ordered set where semesterName = &#63;.
+	 * Returns the last lectureseries in the ordered set where termId = &#63;.
 	 *
-	 * @param semesterName the semester name
+	 * @param termId the term ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching lectureseries
 	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a matching lectureseries could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Lectureseries findBySemester_Last(String semesterName,
+	public Lectureseries findByTerm_Last(long termId,
 		OrderByComparator orderByComparator)
 		throws NoSuchLectureseriesException, SystemException {
-		Lectureseries lectureseries = fetchBySemester_Last(semesterName,
-				orderByComparator);
+		Lectureseries lectureseries = fetchByTerm_Last(termId, orderByComparator);
 
 		if (lectureseries != null) {
 			return lectureseries;
@@ -350,8 +329,8 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
 
-		msg.append("semesterName=");
-		msg.append(semesterName);
+		msg.append("termId=");
+		msg.append(termId);
 
 		msg.append(StringPool.CLOSE_CURLY_BRACE);
 
@@ -359,24 +338,24 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Returns the last lectureseries in the ordered set where semesterName = &#63;.
+	 * Returns the last lectureseries in the ordered set where termId = &#63;.
 	 *
-	 * @param semesterName the semester name
+	 * @param termId the term ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching lectureseries, or <code>null</code> if a matching lectureseries could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Lectureseries fetchBySemester_Last(String semesterName,
+	public Lectureseries fetchByTerm_Last(long termId,
 		OrderByComparator orderByComparator) throws SystemException {
-		int count = countBySemester(semesterName);
+		int count = countByTerm(termId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Lectureseries> list = findBySemester(semesterName, count - 1,
-				count, orderByComparator);
+		List<Lectureseries> list = findByTerm(termId, count - 1, count,
+				orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -386,18 +365,18 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Returns the lectureserieses before and after the current lectureseries in the ordered set where semesterName = &#63;.
+	 * Returns the lectureserieses before and after the current lectureseries in the ordered set where termId = &#63;.
 	 *
 	 * @param lectureseriesId the primary key of the current lectureseries
-	 * @param semesterName the semester name
+	 * @param termId the term ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next lectureseries
 	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a lectureseries with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Lectureseries[] findBySemester_PrevAndNext(long lectureseriesId,
-		String semesterName, OrderByComparator orderByComparator)
+	public Lectureseries[] findByTerm_PrevAndNext(long lectureseriesId,
+		long termId, OrderByComparator orderByComparator)
 		throws NoSuchLectureseriesException, SystemException {
 		Lectureseries lectureseries = findByPrimaryKey(lectureseriesId);
 
@@ -408,13 +387,13 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 			Lectureseries[] array = new LectureseriesImpl[3];
 
-			array[0] = getBySemester_PrevAndNext(session, lectureseries,
-					semesterName, orderByComparator, true);
+			array[0] = getByTerm_PrevAndNext(session, lectureseries, termId,
+					orderByComparator, true);
 
 			array[1] = lectureseries;
 
-			array[2] = getBySemester_PrevAndNext(session, lectureseries,
-					semesterName, orderByComparator, false);
+			array[2] = getByTerm_PrevAndNext(session, lectureseries, termId,
+					orderByComparator, false);
 
 			return array;
 		}
@@ -426,8 +405,8 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 		}
 	}
 
-	protected Lectureseries getBySemester_PrevAndNext(Session session,
-		Lectureseries lectureseries, String semesterName,
+	protected Lectureseries getByTerm_PrevAndNext(Session session,
+		Lectureseries lectureseries, long termId,
 		OrderByComparator orderByComparator, boolean previous) {
 		StringBundler query = null;
 
@@ -441,19 +420,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		query.append(_SQL_SELECT_LECTURESERIES_WHERE);
 
-		boolean bindSemesterName = false;
-
-		if (semesterName == null) {
-			query.append(_FINDER_COLUMN_SEMESTER_SEMESTERNAME_1);
-		}
-		else if (semesterName.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_SEMESTER_SEMESTERNAME_3);
-		}
-		else {
-			bindSemesterName = true;
-
-			query.append(_FINDER_COLUMN_SEMESTER_SEMESTERNAME_2);
-		}
+		query.append(_FINDER_COLUMN_TERM_TERMID_2);
 
 		if (orderByComparator != null) {
 			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
@@ -523,9 +490,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (bindSemesterName) {
-			qPos.add(semesterName);
-		}
+		qPos.add(termId);
 
 		if (orderByComparator != null) {
 			Object[] values = orderByComparator.getOrderByConditionValues(lectureseries);
@@ -546,31 +511,31 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Removes all the lectureserieses where semesterName = &#63; from the database.
+	 * Removes all the lectureserieses where termId = &#63; from the database.
 	 *
-	 * @param semesterName the semester name
+	 * @param termId the term ID
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public void removeBySemester(String semesterName) throws SystemException {
-		for (Lectureseries lectureseries : findBySemester(semesterName,
+	public void removeByTerm(long termId) throws SystemException {
+		for (Lectureseries lectureseries : findByTerm(termId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(lectureseries);
 		}
 	}
 
 	/**
-	 * Returns the number of lectureserieses where semesterName = &#63;.
+	 * Returns the number of lectureserieses where termId = &#63;.
 	 *
-	 * @param semesterName the semester name
+	 * @param termId the term ID
 	 * @return the number of matching lectureserieses
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int countBySemester(String semesterName) throws SystemException {
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_SEMESTER;
+	public int countByTerm(long termId) throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_TERM;
 
-		Object[] finderArgs = new Object[] { semesterName };
+		Object[] finderArgs = new Object[] { termId };
 
 		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
 				this);
@@ -580,19 +545,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 			query.append(_SQL_COUNT_LECTURESERIES_WHERE);
 
-			boolean bindSemesterName = false;
-
-			if (semesterName == null) {
-				query.append(_FINDER_COLUMN_SEMESTER_SEMESTERNAME_1);
-			}
-			else if (semesterName.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_SEMESTER_SEMESTERNAME_3);
-			}
-			else {
-				bindSemesterName = true;
-
-				query.append(_FINDER_COLUMN_SEMESTER_SEMESTERNAME_2);
-			}
+			query.append(_FINDER_COLUMN_TERM_TERMID_2);
 
 			String sql = query.toString();
 
@@ -605,9 +558,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (bindSemesterName) {
-					qPos.add(semesterName);
-				}
+				qPos.add(termId);
 
 				count = (Long)q.uniqueResult();
 
@@ -626,9 +577,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_SEMESTER_SEMESTERNAME_1 = "lectureseries.semesterName IS NULL";
-	private static final String _FINDER_COLUMN_SEMESTER_SEMESTERNAME_2 = "lectureseries.semesterName = ?";
-	private static final String _FINDER_COLUMN_SEMESTER_SEMESTERNAME_3 = "(lectureseries.semesterName IS NULL OR lectureseries.semesterName = '')";
+	private static final String _FINDER_COLUMN_TERM_TERMID_2 = "lectureseries.termId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_LANGUAGE = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
 			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
 			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
@@ -2240,7 +2189,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 			"findByCategory",
 			new String[] {
-				String.class.getName(),
+				Long.class.getName(),
 				
 			Integer.class.getName(), Integer.class.getName(),
 				OrderByComparator.class.getName()
@@ -2249,55 +2198,55 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 		new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
 			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
 			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-			"findByCategory", new String[] { String.class.getName() },
-			LectureseriesModelImpl.EVENTCATEGORY_COLUMN_BITMASK |
+			"findByCategory", new String[] { Long.class.getName() },
+			LectureseriesModelImpl.CATEGORYID_COLUMN_BITMASK |
 			LectureseriesModelImpl.NAME_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_CATEGORY = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
 			LectureseriesModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByCategory",
-			new String[] { String.class.getName() });
+			new String[] { Long.class.getName() });
 
 	/**
-	 * Returns all the lectureserieses where eventCategory = &#63;.
+	 * Returns all the lectureserieses where categoryId = &#63;.
 	 *
-	 * @param eventCategory the event category
+	 * @param categoryId the category ID
 	 * @return the matching lectureserieses
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Lectureseries> findByCategory(String eventCategory)
+	public List<Lectureseries> findByCategory(long categoryId)
 		throws SystemException {
-		return findByCategory(eventCategory, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
+		return findByCategory(categoryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
 	}
 
 	/**
-	 * Returns a range of all the lectureserieses where eventCategory = &#63;.
+	 * Returns a range of all the lectureserieses where categoryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link de.uhh.l2g.plugins.model.impl.LectureseriesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
-	 * @param eventCategory the event category
+	 * @param categoryId the category ID
 	 * @param start the lower bound of the range of lectureserieses
 	 * @param end the upper bound of the range of lectureserieses (not inclusive)
 	 * @return the range of matching lectureserieses
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Lectureseries> findByCategory(String eventCategory, int start,
+	public List<Lectureseries> findByCategory(long categoryId, int start,
 		int end) throws SystemException {
-		return findByCategory(eventCategory, start, end, null);
+		return findByCategory(categoryId, start, end, null);
 	}
 
 	/**
-	 * Returns an ordered range of all the lectureserieses where eventCategory = &#63;.
+	 * Returns an ordered range of all the lectureserieses where categoryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link de.uhh.l2g.plugins.model.impl.LectureseriesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
-	 * @param eventCategory the event category
+	 * @param categoryId the category ID
 	 * @param start the lower bound of the range of lectureserieses
 	 * @param end the upper bound of the range of lectureserieses (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
@@ -2305,7 +2254,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Lectureseries> findByCategory(String eventCategory, int start,
+	public List<Lectureseries> findByCategory(long categoryId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
 		FinderPath finderPath = null;
@@ -2315,15 +2264,11 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 				(orderByComparator == null)) {
 			pagination = false;
 			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_CATEGORY;
-			finderArgs = new Object[] { eventCategory };
+			finderArgs = new Object[] { categoryId };
 		}
 		else {
 			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_CATEGORY;
-			finderArgs = new Object[] {
-					eventCategory,
-					
-					start, end, orderByComparator
-				};
+			finderArgs = new Object[] { categoryId, start, end, orderByComparator };
 		}
 
 		List<Lectureseries> list = (List<Lectureseries>)FinderCacheUtil.getResult(finderPath,
@@ -2331,8 +2276,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		if ((list != null) && !list.isEmpty()) {
 			for (Lectureseries lectureseries : list) {
-				if (!Validator.equals(eventCategory,
-							lectureseries.getEventCategory())) {
+				if ((categoryId != lectureseries.getCategoryId())) {
 					list = null;
 
 					break;
@@ -2353,19 +2297,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 			query.append(_SQL_SELECT_LECTURESERIES_WHERE);
 
-			boolean bindEventCategory = false;
-
-			if (eventCategory == null) {
-				query.append(_FINDER_COLUMN_CATEGORY_EVENTCATEGORY_1);
-			}
-			else if (eventCategory.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_CATEGORY_EVENTCATEGORY_3);
-			}
-			else {
-				bindEventCategory = true;
-
-				query.append(_FINDER_COLUMN_CATEGORY_EVENTCATEGORY_2);
-			}
+			query.append(_FINDER_COLUMN_CATEGORY_CATEGORYID_2);
 
 			if (orderByComparator != null) {
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
@@ -2387,9 +2319,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (bindEventCategory) {
-					qPos.add(eventCategory);
-				}
+				qPos.add(categoryId);
 
 				if (!pagination) {
 					list = (List<Lectureseries>)QueryUtil.list(q, getDialect(),
@@ -2422,19 +2352,19 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Returns the first lectureseries in the ordered set where eventCategory = &#63;.
+	 * Returns the first lectureseries in the ordered set where categoryId = &#63;.
 	 *
-	 * @param eventCategory the event category
+	 * @param categoryId the category ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching lectureseries
 	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a matching lectureseries could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Lectureseries findByCategory_First(String eventCategory,
+	public Lectureseries findByCategory_First(long categoryId,
 		OrderByComparator orderByComparator)
 		throws NoSuchLectureseriesException, SystemException {
-		Lectureseries lectureseries = fetchByCategory_First(eventCategory,
+		Lectureseries lectureseries = fetchByCategory_First(categoryId,
 				orderByComparator);
 
 		if (lectureseries != null) {
@@ -2445,8 +2375,8 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
 
-		msg.append("eventCategory=");
-		msg.append(eventCategory);
+		msg.append("categoryId=");
+		msg.append(categoryId);
 
 		msg.append(StringPool.CLOSE_CURLY_BRACE);
 
@@ -2454,17 +2384,17 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Returns the first lectureseries in the ordered set where eventCategory = &#63;.
+	 * Returns the first lectureseries in the ordered set where categoryId = &#63;.
 	 *
-	 * @param eventCategory the event category
+	 * @param categoryId the category ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching lectureseries, or <code>null</code> if a matching lectureseries could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Lectureseries fetchByCategory_First(String eventCategory,
+	public Lectureseries fetchByCategory_First(long categoryId,
 		OrderByComparator orderByComparator) throws SystemException {
-		List<Lectureseries> list = findByCategory(eventCategory, 0, 1,
+		List<Lectureseries> list = findByCategory(categoryId, 0, 1,
 				orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -2475,19 +2405,19 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Returns the last lectureseries in the ordered set where eventCategory = &#63;.
+	 * Returns the last lectureseries in the ordered set where categoryId = &#63;.
 	 *
-	 * @param eventCategory the event category
+	 * @param categoryId the category ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching lectureseries
 	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a matching lectureseries could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Lectureseries findByCategory_Last(String eventCategory,
+	public Lectureseries findByCategory_Last(long categoryId,
 		OrderByComparator orderByComparator)
 		throws NoSuchLectureseriesException, SystemException {
-		Lectureseries lectureseries = fetchByCategory_Last(eventCategory,
+		Lectureseries lectureseries = fetchByCategory_Last(categoryId,
 				orderByComparator);
 
 		if (lectureseries != null) {
@@ -2498,8 +2428,8 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
 
-		msg.append("eventCategory=");
-		msg.append(eventCategory);
+		msg.append("categoryId=");
+		msg.append(categoryId);
 
 		msg.append(StringPool.CLOSE_CURLY_BRACE);
 
@@ -2507,24 +2437,24 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Returns the last lectureseries in the ordered set where eventCategory = &#63;.
+	 * Returns the last lectureseries in the ordered set where categoryId = &#63;.
 	 *
-	 * @param eventCategory the event category
+	 * @param categoryId the category ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching lectureseries, or <code>null</code> if a matching lectureseries could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Lectureseries fetchByCategory_Last(String eventCategory,
+	public Lectureseries fetchByCategory_Last(long categoryId,
 		OrderByComparator orderByComparator) throws SystemException {
-		int count = countByCategory(eventCategory);
+		int count = countByCategory(categoryId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Lectureseries> list = findByCategory(eventCategory, count - 1,
-				count, orderByComparator);
+		List<Lectureseries> list = findByCategory(categoryId, count - 1, count,
+				orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -2534,10 +2464,10 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Returns the lectureserieses before and after the current lectureseries in the ordered set where eventCategory = &#63;.
+	 * Returns the lectureserieses before and after the current lectureseries in the ordered set where categoryId = &#63;.
 	 *
 	 * @param lectureseriesId the primary key of the current lectureseries
-	 * @param eventCategory the event category
+	 * @param categoryId the category ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next lectureseries
 	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a lectureseries with the primary key could not be found
@@ -2545,7 +2475,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	 */
 	@Override
 	public Lectureseries[] findByCategory_PrevAndNext(long lectureseriesId,
-		String eventCategory, OrderByComparator orderByComparator)
+		long categoryId, OrderByComparator orderByComparator)
 		throws NoSuchLectureseriesException, SystemException {
 		Lectureseries lectureseries = findByPrimaryKey(lectureseriesId);
 
@@ -2557,12 +2487,12 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 			Lectureseries[] array = new LectureseriesImpl[3];
 
 			array[0] = getByCategory_PrevAndNext(session, lectureseries,
-					eventCategory, orderByComparator, true);
+					categoryId, orderByComparator, true);
 
 			array[1] = lectureseries;
 
 			array[2] = getByCategory_PrevAndNext(session, lectureseries,
-					eventCategory, orderByComparator, false);
+					categoryId, orderByComparator, false);
 
 			return array;
 		}
@@ -2575,7 +2505,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	protected Lectureseries getByCategory_PrevAndNext(Session session,
-		Lectureseries lectureseries, String eventCategory,
+		Lectureseries lectureseries, long categoryId,
 		OrderByComparator orderByComparator, boolean previous) {
 		StringBundler query = null;
 
@@ -2589,19 +2519,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		query.append(_SQL_SELECT_LECTURESERIES_WHERE);
 
-		boolean bindEventCategory = false;
-
-		if (eventCategory == null) {
-			query.append(_FINDER_COLUMN_CATEGORY_EVENTCATEGORY_1);
-		}
-		else if (eventCategory.equals(StringPool.BLANK)) {
-			query.append(_FINDER_COLUMN_CATEGORY_EVENTCATEGORY_3);
-		}
-		else {
-			bindEventCategory = true;
-
-			query.append(_FINDER_COLUMN_CATEGORY_EVENTCATEGORY_2);
-		}
+		query.append(_FINDER_COLUMN_CATEGORY_CATEGORYID_2);
 
 		if (orderByComparator != null) {
 			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
@@ -2671,9 +2589,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (bindEventCategory) {
-			qPos.add(eventCategory);
-		}
+		qPos.add(categoryId);
 
 		if (orderByComparator != null) {
 			Object[] values = orderByComparator.getOrderByConditionValues(lectureseries);
@@ -2694,32 +2610,31 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	}
 
 	/**
-	 * Removes all the lectureserieses where eventCategory = &#63; from the database.
+	 * Removes all the lectureserieses where categoryId = &#63; from the database.
 	 *
-	 * @param eventCategory the event category
+	 * @param categoryId the category ID
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public void removeByCategory(String eventCategory)
-		throws SystemException {
-		for (Lectureseries lectureseries : findByCategory(eventCategory,
+	public void removeByCategory(long categoryId) throws SystemException {
+		for (Lectureseries lectureseries : findByCategory(categoryId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(lectureseries);
 		}
 	}
 
 	/**
-	 * Returns the number of lectureserieses where eventCategory = &#63;.
+	 * Returns the number of lectureserieses where categoryId = &#63;.
 	 *
-	 * @param eventCategory the event category
+	 * @param categoryId the category ID
 	 * @return the number of matching lectureserieses
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int countByCategory(String eventCategory) throws SystemException {
+	public int countByCategory(long categoryId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_CATEGORY;
 
-		Object[] finderArgs = new Object[] { eventCategory };
+		Object[] finderArgs = new Object[] { categoryId };
 
 		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
 				this);
@@ -2729,19 +2644,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 			query.append(_SQL_COUNT_LECTURESERIES_WHERE);
 
-			boolean bindEventCategory = false;
-
-			if (eventCategory == null) {
-				query.append(_FINDER_COLUMN_CATEGORY_EVENTCATEGORY_1);
-			}
-			else if (eventCategory.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_CATEGORY_EVENTCATEGORY_3);
-			}
-			else {
-				bindEventCategory = true;
-
-				query.append(_FINDER_COLUMN_CATEGORY_EVENTCATEGORY_2);
-			}
+			query.append(_FINDER_COLUMN_CATEGORY_CATEGORYID_2);
 
 			String sql = query.toString();
 
@@ -2754,9 +2657,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (bindEventCategory) {
-					qPos.add(eventCategory);
-				}
+				qPos.add(categoryId);
 
 				count = (Long)q.uniqueResult();
 
@@ -2775,9 +2676,7 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_CATEGORY_EVENTCATEGORY_1 = "lectureseries.eventCategory IS NULL";
-	private static final String _FINDER_COLUMN_CATEGORY_EVENTCATEGORY_2 = "lectureseries.eventCategory = ?";
-	private static final String _FINDER_COLUMN_CATEGORY_EVENTCATEGORY_3 = "(lectureseries.eventCategory IS NULL OR lectureseries.eventCategory = '')";
+	private static final String _FINDER_COLUMN_CATEGORY_CATEGORYID_2 = "lectureseries.categoryId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_NAME = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
 			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
 			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
@@ -4877,6 +4776,1629 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 	private static final String _FINDER_COLUMN_PASSWORD_PASSWORD_1 = "lectureseries.password IS NULL";
 	private static final String _FINDER_COLUMN_PASSWORD_PASSWORD_2 = "lectureseries.password = ?";
 	private static final String _FINDER_COLUMN_PASSWORD_PASSWORD_3 = "(lectureseries.password IS NULL OR lectureseries.password = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_LATESTOPENACCESSVIDEO =
+		new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
+			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByLatestOpenAccessVideo",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTOPENACCESSVIDEO =
+		new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
+			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByLatestOpenAccessVideo",
+			new String[] { Long.class.getName() },
+			LectureseriesModelImpl.LATESTOPENACCESSVIDEOID_COLUMN_BITMASK |
+			LectureseriesModelImpl.NAME_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_LATESTOPENACCESSVIDEO = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+			LectureseriesModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByLatestOpenAccessVideo",
+			new String[] { Long.class.getName() });
+
+	/**
+	 * Returns all the lectureserieses where latestOpenAccessVideoId = &#63;.
+	 *
+	 * @param latestOpenAccessVideoId the latest open access video ID
+	 * @return the matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Lectureseries> findByLatestOpenAccessVideo(
+		long latestOpenAccessVideoId) throws SystemException {
+		return findByLatestOpenAccessVideo(latestOpenAccessVideoId,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the lectureserieses where latestOpenAccessVideoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link de.uhh.l2g.plugins.model.impl.LectureseriesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param latestOpenAccessVideoId the latest open access video ID
+	 * @param start the lower bound of the range of lectureserieses
+	 * @param end the upper bound of the range of lectureserieses (not inclusive)
+	 * @return the range of matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Lectureseries> findByLatestOpenAccessVideo(
+		long latestOpenAccessVideoId, int start, int end)
+		throws SystemException {
+		return findByLatestOpenAccessVideo(latestOpenAccessVideoId, start, end,
+			null);
+	}
+
+	/**
+	 * Returns an ordered range of all the lectureserieses where latestOpenAccessVideoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link de.uhh.l2g.plugins.model.impl.LectureseriesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param latestOpenAccessVideoId the latest open access video ID
+	 * @param start the lower bound of the range of lectureserieses
+	 * @param end the upper bound of the range of lectureserieses (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Lectureseries> findByLatestOpenAccessVideo(
+		long latestOpenAccessVideoId, int start, int end,
+		OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTOPENACCESSVIDEO;
+			finderArgs = new Object[] { latestOpenAccessVideoId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_LATESTOPENACCESSVIDEO;
+			finderArgs = new Object[] {
+					latestOpenAccessVideoId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Lectureseries> list = (List<Lectureseries>)FinderCacheUtil.getResult(finderPath,
+				finderArgs, this);
+
+		if ((list != null) && !list.isEmpty()) {
+			for (Lectureseries lectureseries : list) {
+				if ((latestOpenAccessVideoId != lectureseries.getLatestOpenAccessVideoId())) {
+					list = null;
+
+					break;
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 3));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_LECTURESERIES_WHERE);
+
+			query.append(_FINDER_COLUMN_LATESTOPENACCESSVIDEO_LATESTOPENACCESSVIDEOID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(LectureseriesModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(latestOpenAccessVideoId);
+
+				if (!pagination) {
+					list = (List<Lectureseries>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = new UnmodifiableList<Lectureseries>(list);
+				}
+				else {
+					list = (List<Lectureseries>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first lectureseries in the ordered set where latestOpenAccessVideoId = &#63;.
+	 *
+	 * @param latestOpenAccessVideoId the latest open access video ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching lectureseries
+	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries findByLatestOpenAccessVideo_First(
+		long latestOpenAccessVideoId, OrderByComparator orderByComparator)
+		throws NoSuchLectureseriesException, SystemException {
+		Lectureseries lectureseries = fetchByLatestOpenAccessVideo_First(latestOpenAccessVideoId,
+				orderByComparator);
+
+		if (lectureseries != null) {
+			return lectureseries;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("latestOpenAccessVideoId=");
+		msg.append(latestOpenAccessVideoId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchLectureseriesException(msg.toString());
+	}
+
+	/**
+	 * Returns the first lectureseries in the ordered set where latestOpenAccessVideoId = &#63;.
+	 *
+	 * @param latestOpenAccessVideoId the latest open access video ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching lectureseries, or <code>null</code> if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries fetchByLatestOpenAccessVideo_First(
+		long latestOpenAccessVideoId, OrderByComparator orderByComparator)
+		throws SystemException {
+		List<Lectureseries> list = findByLatestOpenAccessVideo(latestOpenAccessVideoId,
+				0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last lectureseries in the ordered set where latestOpenAccessVideoId = &#63;.
+	 *
+	 * @param latestOpenAccessVideoId the latest open access video ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching lectureseries
+	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries findByLatestOpenAccessVideo_Last(
+		long latestOpenAccessVideoId, OrderByComparator orderByComparator)
+		throws NoSuchLectureseriesException, SystemException {
+		Lectureseries lectureseries = fetchByLatestOpenAccessVideo_Last(latestOpenAccessVideoId,
+				orderByComparator);
+
+		if (lectureseries != null) {
+			return lectureseries;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("latestOpenAccessVideoId=");
+		msg.append(latestOpenAccessVideoId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchLectureseriesException(msg.toString());
+	}
+
+	/**
+	 * Returns the last lectureseries in the ordered set where latestOpenAccessVideoId = &#63;.
+	 *
+	 * @param latestOpenAccessVideoId the latest open access video ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching lectureseries, or <code>null</code> if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries fetchByLatestOpenAccessVideo_Last(
+		long latestOpenAccessVideoId, OrderByComparator orderByComparator)
+		throws SystemException {
+		int count = countByLatestOpenAccessVideo(latestOpenAccessVideoId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Lectureseries> list = findByLatestOpenAccessVideo(latestOpenAccessVideoId,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the lectureserieses before and after the current lectureseries in the ordered set where latestOpenAccessVideoId = &#63;.
+	 *
+	 * @param lectureseriesId the primary key of the current lectureseries
+	 * @param latestOpenAccessVideoId the latest open access video ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next lectureseries
+	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a lectureseries with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries[] findByLatestOpenAccessVideo_PrevAndNext(
+		long lectureseriesId, long latestOpenAccessVideoId,
+		OrderByComparator orderByComparator)
+		throws NoSuchLectureseriesException, SystemException {
+		Lectureseries lectureseries = findByPrimaryKey(lectureseriesId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Lectureseries[] array = new LectureseriesImpl[3];
+
+			array[0] = getByLatestOpenAccessVideo_PrevAndNext(session,
+					lectureseries, latestOpenAccessVideoId, orderByComparator,
+					true);
+
+			array[1] = lectureseries;
+
+			array[2] = getByLatestOpenAccessVideo_PrevAndNext(session,
+					lectureseries, latestOpenAccessVideoId, orderByComparator,
+					false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Lectureseries getByLatestOpenAccessVideo_PrevAndNext(
+		Session session, Lectureseries lectureseries,
+		long latestOpenAccessVideoId, OrderByComparator orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByFields().length * 6));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_LECTURESERIES_WHERE);
+
+		query.append(_FINDER_COLUMN_LATESTOPENACCESSVIDEO_LATESTOPENACCESSVIDEOID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(LectureseriesModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(latestOpenAccessVideoId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(lectureseries);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Lectureseries> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the lectureserieses where latestOpenAccessVideoId = &#63; from the database.
+	 *
+	 * @param latestOpenAccessVideoId the latest open access video ID
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public void removeByLatestOpenAccessVideo(long latestOpenAccessVideoId)
+		throws SystemException {
+		for (Lectureseries lectureseries : findByLatestOpenAccessVideo(
+				latestOpenAccessVideoId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null)) {
+			remove(lectureseries);
+		}
+	}
+
+	/**
+	 * Returns the number of lectureserieses where latestOpenAccessVideoId = &#63;.
+	 *
+	 * @param latestOpenAccessVideoId the latest open access video ID
+	 * @return the number of matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByLatestOpenAccessVideo(long latestOpenAccessVideoId)
+		throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_LATESTOPENACCESSVIDEO;
+
+		Object[] finderArgs = new Object[] { latestOpenAccessVideoId };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_LECTURESERIES_WHERE);
+
+			query.append(_FINDER_COLUMN_LATESTOPENACCESSVIDEO_LATESTOPENACCESSVIDEOID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(latestOpenAccessVideoId);
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_LATESTOPENACCESSVIDEO_LATESTOPENACCESSVIDEOID_2 =
+		"lectureseries.latestOpenAccessVideoId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_LATESTVIDEOUPLOADDATE =
+		new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
+			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByLatestVideoUploadDate",
+			new String[] {
+				Date.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTVIDEOUPLOADDATE =
+		new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
+			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByLatestVideoUploadDate",
+			new String[] { Date.class.getName() },
+			LectureseriesModelImpl.LATESTVIDEOUPLOADDATE_COLUMN_BITMASK |
+			LectureseriesModelImpl.NAME_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_LATESTVIDEOUPLOADDATE = new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+			LectureseriesModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByLatestVideoUploadDate",
+			new String[] { Date.class.getName() });
+
+	/**
+	 * Returns all the lectureserieses where latestVideoUploadDate = &#63;.
+	 *
+	 * @param latestVideoUploadDate the latest video upload date
+	 * @return the matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Lectureseries> findByLatestVideoUploadDate(
+		Date latestVideoUploadDate) throws SystemException {
+		return findByLatestVideoUploadDate(latestVideoUploadDate,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the lectureserieses where latestVideoUploadDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link de.uhh.l2g.plugins.model.impl.LectureseriesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param latestVideoUploadDate the latest video upload date
+	 * @param start the lower bound of the range of lectureserieses
+	 * @param end the upper bound of the range of lectureserieses (not inclusive)
+	 * @return the range of matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Lectureseries> findByLatestVideoUploadDate(
+		Date latestVideoUploadDate, int start, int end)
+		throws SystemException {
+		return findByLatestVideoUploadDate(latestVideoUploadDate, start, end,
+			null);
+	}
+
+	/**
+	 * Returns an ordered range of all the lectureserieses where latestVideoUploadDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link de.uhh.l2g.plugins.model.impl.LectureseriesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param latestVideoUploadDate the latest video upload date
+	 * @param start the lower bound of the range of lectureserieses
+	 * @param end the upper bound of the range of lectureserieses (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Lectureseries> findByLatestVideoUploadDate(
+		Date latestVideoUploadDate, int start, int end,
+		OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTVIDEOUPLOADDATE;
+			finderArgs = new Object[] { latestVideoUploadDate };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_LATESTVIDEOUPLOADDATE;
+			finderArgs = new Object[] {
+					latestVideoUploadDate,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Lectureseries> list = (List<Lectureseries>)FinderCacheUtil.getResult(finderPath,
+				finderArgs, this);
+
+		if ((list != null) && !list.isEmpty()) {
+			for (Lectureseries lectureseries : list) {
+				if (!Validator.equals(latestVideoUploadDate,
+							lectureseries.getLatestVideoUploadDate())) {
+					list = null;
+
+					break;
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 3));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_LECTURESERIES_WHERE);
+
+			boolean bindLatestVideoUploadDate = false;
+
+			if (latestVideoUploadDate == null) {
+				query.append(_FINDER_COLUMN_LATESTVIDEOUPLOADDATE_LATESTVIDEOUPLOADDATE_1);
+			}
+			else {
+				bindLatestVideoUploadDate = true;
+
+				query.append(_FINDER_COLUMN_LATESTVIDEOUPLOADDATE_LATESTVIDEOUPLOADDATE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(LectureseriesModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindLatestVideoUploadDate) {
+					qPos.add(CalendarUtil.getTimestamp(latestVideoUploadDate));
+				}
+
+				if (!pagination) {
+					list = (List<Lectureseries>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = new UnmodifiableList<Lectureseries>(list);
+				}
+				else {
+					list = (List<Lectureseries>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first lectureseries in the ordered set where latestVideoUploadDate = &#63;.
+	 *
+	 * @param latestVideoUploadDate the latest video upload date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching lectureseries
+	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries findByLatestVideoUploadDate_First(
+		Date latestVideoUploadDate, OrderByComparator orderByComparator)
+		throws NoSuchLectureseriesException, SystemException {
+		Lectureseries lectureseries = fetchByLatestVideoUploadDate_First(latestVideoUploadDate,
+				orderByComparator);
+
+		if (lectureseries != null) {
+			return lectureseries;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("latestVideoUploadDate=");
+		msg.append(latestVideoUploadDate);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchLectureseriesException(msg.toString());
+	}
+
+	/**
+	 * Returns the first lectureseries in the ordered set where latestVideoUploadDate = &#63;.
+	 *
+	 * @param latestVideoUploadDate the latest video upload date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching lectureseries, or <code>null</code> if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries fetchByLatestVideoUploadDate_First(
+		Date latestVideoUploadDate, OrderByComparator orderByComparator)
+		throws SystemException {
+		List<Lectureseries> list = findByLatestVideoUploadDate(latestVideoUploadDate,
+				0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last lectureseries in the ordered set where latestVideoUploadDate = &#63;.
+	 *
+	 * @param latestVideoUploadDate the latest video upload date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching lectureseries
+	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries findByLatestVideoUploadDate_Last(
+		Date latestVideoUploadDate, OrderByComparator orderByComparator)
+		throws NoSuchLectureseriesException, SystemException {
+		Lectureseries lectureseries = fetchByLatestVideoUploadDate_Last(latestVideoUploadDate,
+				orderByComparator);
+
+		if (lectureseries != null) {
+			return lectureseries;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("latestVideoUploadDate=");
+		msg.append(latestVideoUploadDate);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchLectureseriesException(msg.toString());
+	}
+
+	/**
+	 * Returns the last lectureseries in the ordered set where latestVideoUploadDate = &#63;.
+	 *
+	 * @param latestVideoUploadDate the latest video upload date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching lectureseries, or <code>null</code> if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries fetchByLatestVideoUploadDate_Last(
+		Date latestVideoUploadDate, OrderByComparator orderByComparator)
+		throws SystemException {
+		int count = countByLatestVideoUploadDate(latestVideoUploadDate);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Lectureseries> list = findByLatestVideoUploadDate(latestVideoUploadDate,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the lectureserieses before and after the current lectureseries in the ordered set where latestVideoUploadDate = &#63;.
+	 *
+	 * @param lectureseriesId the primary key of the current lectureseries
+	 * @param latestVideoUploadDate the latest video upload date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next lectureseries
+	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a lectureseries with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries[] findByLatestVideoUploadDate_PrevAndNext(
+		long lectureseriesId, Date latestVideoUploadDate,
+		OrderByComparator orderByComparator)
+		throws NoSuchLectureseriesException, SystemException {
+		Lectureseries lectureseries = findByPrimaryKey(lectureseriesId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Lectureseries[] array = new LectureseriesImpl[3];
+
+			array[0] = getByLatestVideoUploadDate_PrevAndNext(session,
+					lectureseries, latestVideoUploadDate, orderByComparator,
+					true);
+
+			array[1] = lectureseries;
+
+			array[2] = getByLatestVideoUploadDate_PrevAndNext(session,
+					lectureseries, latestVideoUploadDate, orderByComparator,
+					false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Lectureseries getByLatestVideoUploadDate_PrevAndNext(
+		Session session, Lectureseries lectureseries,
+		Date latestVideoUploadDate, OrderByComparator orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByFields().length * 6));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_LECTURESERIES_WHERE);
+
+		boolean bindLatestVideoUploadDate = false;
+
+		if (latestVideoUploadDate == null) {
+			query.append(_FINDER_COLUMN_LATESTVIDEOUPLOADDATE_LATESTVIDEOUPLOADDATE_1);
+		}
+		else {
+			bindLatestVideoUploadDate = true;
+
+			query.append(_FINDER_COLUMN_LATESTVIDEOUPLOADDATE_LATESTVIDEOUPLOADDATE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(LectureseriesModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindLatestVideoUploadDate) {
+			qPos.add(CalendarUtil.getTimestamp(latestVideoUploadDate));
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(lectureseries);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Lectureseries> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the lectureserieses where latestVideoUploadDate = &#63; from the database.
+	 *
+	 * @param latestVideoUploadDate the latest video upload date
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public void removeByLatestVideoUploadDate(Date latestVideoUploadDate)
+		throws SystemException {
+		for (Lectureseries lectureseries : findByLatestVideoUploadDate(
+				latestVideoUploadDate, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null)) {
+			remove(lectureseries);
+		}
+	}
+
+	/**
+	 * Returns the number of lectureserieses where latestVideoUploadDate = &#63;.
+	 *
+	 * @param latestVideoUploadDate the latest video upload date
+	 * @return the number of matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByLatestVideoUploadDate(Date latestVideoUploadDate)
+		throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_LATESTVIDEOUPLOADDATE;
+
+		Object[] finderArgs = new Object[] { latestVideoUploadDate };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_LECTURESERIES_WHERE);
+
+			boolean bindLatestVideoUploadDate = false;
+
+			if (latestVideoUploadDate == null) {
+				query.append(_FINDER_COLUMN_LATESTVIDEOUPLOADDATE_LATESTVIDEOUPLOADDATE_1);
+			}
+			else {
+				bindLatestVideoUploadDate = true;
+
+				query.append(_FINDER_COLUMN_LATESTVIDEOUPLOADDATE_LATESTVIDEOUPLOADDATE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindLatestVideoUploadDate) {
+					qPos.add(CalendarUtil.getTimestamp(latestVideoUploadDate));
+				}
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_LATESTVIDEOUPLOADDATE_LATESTVIDEOUPLOADDATE_1 =
+		"lectureseries.latestVideoUploadDate IS NULL";
+	private static final String _FINDER_COLUMN_LATESTVIDEOUPLOADDATE_LATESTVIDEOUPLOADDATE_2 =
+		"lectureseries.latestVideoUploadDate = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_LATESTVIDEOGENERATIONDATE =
+		new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
+			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByLatestVideoGenerationDate",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTVIDEOGENERATIONDATE =
+		new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+			LectureseriesModelImpl.FINDER_CACHE_ENABLED,
+			LectureseriesImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByLatestVideoGenerationDate",
+			new String[] { String.class.getName() },
+			LectureseriesModelImpl.LATESTVIDEOGENERATIONDATE_COLUMN_BITMASK |
+			LectureseriesModelImpl.NAME_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_LATESTVIDEOGENERATIONDATE =
+		new FinderPath(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
+			LectureseriesModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByLatestVideoGenerationDate",
+			new String[] { String.class.getName() });
+
+	/**
+	 * Returns all the lectureserieses where latestVideoGenerationDate = &#63;.
+	 *
+	 * @param latestVideoGenerationDate the latest video generation date
+	 * @return the matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Lectureseries> findByLatestVideoGenerationDate(
+		String latestVideoGenerationDate) throws SystemException {
+		return findByLatestVideoGenerationDate(latestVideoGenerationDate,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the lectureserieses where latestVideoGenerationDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link de.uhh.l2g.plugins.model.impl.LectureseriesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param latestVideoGenerationDate the latest video generation date
+	 * @param start the lower bound of the range of lectureserieses
+	 * @param end the upper bound of the range of lectureserieses (not inclusive)
+	 * @return the range of matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Lectureseries> findByLatestVideoGenerationDate(
+		String latestVideoGenerationDate, int start, int end)
+		throws SystemException {
+		return findByLatestVideoGenerationDate(latestVideoGenerationDate,
+			start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the lectureserieses where latestVideoGenerationDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link de.uhh.l2g.plugins.model.impl.LectureseriesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param latestVideoGenerationDate the latest video generation date
+	 * @param start the lower bound of the range of lectureserieses
+	 * @param end the upper bound of the range of lectureserieses (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Lectureseries> findByLatestVideoGenerationDate(
+		String latestVideoGenerationDate, int start, int end,
+		OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTVIDEOGENERATIONDATE;
+			finderArgs = new Object[] { latestVideoGenerationDate };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_LATESTVIDEOGENERATIONDATE;
+			finderArgs = new Object[] {
+					latestVideoGenerationDate,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Lectureseries> list = (List<Lectureseries>)FinderCacheUtil.getResult(finderPath,
+				finderArgs, this);
+
+		if ((list != null) && !list.isEmpty()) {
+			for (Lectureseries lectureseries : list) {
+				if (!Validator.equals(latestVideoGenerationDate,
+							lectureseries.getLatestVideoGenerationDate())) {
+					list = null;
+
+					break;
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 3));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_LECTURESERIES_WHERE);
+
+			boolean bindLatestVideoGenerationDate = false;
+
+			if (latestVideoGenerationDate == null) {
+				query.append(_FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_1);
+			}
+			else if (latestVideoGenerationDate.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_3);
+			}
+			else {
+				bindLatestVideoGenerationDate = true;
+
+				query.append(_FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(LectureseriesModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindLatestVideoGenerationDate) {
+					qPos.add(latestVideoGenerationDate);
+				}
+
+				if (!pagination) {
+					list = (List<Lectureseries>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = new UnmodifiableList<Lectureseries>(list);
+				}
+				else {
+					list = (List<Lectureseries>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first lectureseries in the ordered set where latestVideoGenerationDate = &#63;.
+	 *
+	 * @param latestVideoGenerationDate the latest video generation date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching lectureseries
+	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries findByLatestVideoGenerationDate_First(
+		String latestVideoGenerationDate, OrderByComparator orderByComparator)
+		throws NoSuchLectureseriesException, SystemException {
+		Lectureseries lectureseries = fetchByLatestVideoGenerationDate_First(latestVideoGenerationDate,
+				orderByComparator);
+
+		if (lectureseries != null) {
+			return lectureseries;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("latestVideoGenerationDate=");
+		msg.append(latestVideoGenerationDate);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchLectureseriesException(msg.toString());
+	}
+
+	/**
+	 * Returns the first lectureseries in the ordered set where latestVideoGenerationDate = &#63;.
+	 *
+	 * @param latestVideoGenerationDate the latest video generation date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching lectureseries, or <code>null</code> if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries fetchByLatestVideoGenerationDate_First(
+		String latestVideoGenerationDate, OrderByComparator orderByComparator)
+		throws SystemException {
+		List<Lectureseries> list = findByLatestVideoGenerationDate(latestVideoGenerationDate,
+				0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last lectureseries in the ordered set where latestVideoGenerationDate = &#63;.
+	 *
+	 * @param latestVideoGenerationDate the latest video generation date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching lectureseries
+	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries findByLatestVideoGenerationDate_Last(
+		String latestVideoGenerationDate, OrderByComparator orderByComparator)
+		throws NoSuchLectureseriesException, SystemException {
+		Lectureseries lectureseries = fetchByLatestVideoGenerationDate_Last(latestVideoGenerationDate,
+				orderByComparator);
+
+		if (lectureseries != null) {
+			return lectureseries;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("latestVideoGenerationDate=");
+		msg.append(latestVideoGenerationDate);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchLectureseriesException(msg.toString());
+	}
+
+	/**
+	 * Returns the last lectureseries in the ordered set where latestVideoGenerationDate = &#63;.
+	 *
+	 * @param latestVideoGenerationDate the latest video generation date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching lectureseries, or <code>null</code> if a matching lectureseries could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries fetchByLatestVideoGenerationDate_Last(
+		String latestVideoGenerationDate, OrderByComparator orderByComparator)
+		throws SystemException {
+		int count = countByLatestVideoGenerationDate(latestVideoGenerationDate);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Lectureseries> list = findByLatestVideoGenerationDate(latestVideoGenerationDate,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the lectureserieses before and after the current lectureseries in the ordered set where latestVideoGenerationDate = &#63;.
+	 *
+	 * @param lectureseriesId the primary key of the current lectureseries
+	 * @param latestVideoGenerationDate the latest video generation date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next lectureseries
+	 * @throws de.uhh.l2g.plugins.NoSuchLectureseriesException if a lectureseries with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Lectureseries[] findByLatestVideoGenerationDate_PrevAndNext(
+		long lectureseriesId, String latestVideoGenerationDate,
+		OrderByComparator orderByComparator)
+		throws NoSuchLectureseriesException, SystemException {
+		Lectureseries lectureseries = findByPrimaryKey(lectureseriesId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Lectureseries[] array = new LectureseriesImpl[3];
+
+			array[0] = getByLatestVideoGenerationDate_PrevAndNext(session,
+					lectureseries, latestVideoGenerationDate,
+					orderByComparator, true);
+
+			array[1] = lectureseries;
+
+			array[2] = getByLatestVideoGenerationDate_PrevAndNext(session,
+					lectureseries, latestVideoGenerationDate,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Lectureseries getByLatestVideoGenerationDate_PrevAndNext(
+		Session session, Lectureseries lectureseries,
+		String latestVideoGenerationDate, OrderByComparator orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByFields().length * 6));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_LECTURESERIES_WHERE);
+
+		boolean bindLatestVideoGenerationDate = false;
+
+		if (latestVideoGenerationDate == null) {
+			query.append(_FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_1);
+		}
+		else if (latestVideoGenerationDate.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_3);
+		}
+		else {
+			bindLatestVideoGenerationDate = true;
+
+			query.append(_FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(LectureseriesModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindLatestVideoGenerationDate) {
+			qPos.add(latestVideoGenerationDate);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(lectureseries);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Lectureseries> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the lectureserieses where latestVideoGenerationDate = &#63; from the database.
+	 *
+	 * @param latestVideoGenerationDate the latest video generation date
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public void removeByLatestVideoGenerationDate(
+		String latestVideoGenerationDate) throws SystemException {
+		for (Lectureseries lectureseries : findByLatestVideoGenerationDate(
+				latestVideoGenerationDate, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(lectureseries);
+		}
+	}
+
+	/**
+	 * Returns the number of lectureserieses where latestVideoGenerationDate = &#63;.
+	 *
+	 * @param latestVideoGenerationDate the latest video generation date
+	 * @return the number of matching lectureserieses
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByLatestVideoGenerationDate(
+		String latestVideoGenerationDate) throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_LATESTVIDEOGENERATIONDATE;
+
+		Object[] finderArgs = new Object[] { latestVideoGenerationDate };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_LECTURESERIES_WHERE);
+
+			boolean bindLatestVideoGenerationDate = false;
+
+			if (latestVideoGenerationDate == null) {
+				query.append(_FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_1);
+			}
+			else if (latestVideoGenerationDate.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_3);
+			}
+			else {
+				bindLatestVideoGenerationDate = true;
+
+				query.append(_FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindLatestVideoGenerationDate) {
+					qPos.add(latestVideoGenerationDate);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_1 =
+		"lectureseries.latestVideoGenerationDate IS NULL";
+	private static final String _FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_2 =
+		"lectureseries.latestVideoGenerationDate = ?";
+	private static final String _FINDER_COLUMN_LATESTVIDEOGENERATIONDATE_LATESTVIDEOGENERATIONDATE_3 =
+		"(lectureseries.latestVideoGenerationDate IS NULL OR lectureseries.latestVideoGenerationDate = '')";
 
 	public LectureseriesPersistenceImpl() {
 		setModelClass(Lectureseries.class);
@@ -5105,19 +6627,19 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		else {
 			if ((lectureseriesModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SEMESTER.getColumnBitmask()) != 0) {
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_TERM.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						lectureseriesModelImpl.getOriginalSemesterName()
+						lectureseriesModelImpl.getOriginalTermId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_SEMESTER, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SEMESTER,
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_TERM, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_TERM,
 					args);
 
-				args = new Object[] { lectureseriesModelImpl.getSemesterName() };
+				args = new Object[] { lectureseriesModelImpl.getTermId() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_SEMESTER, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SEMESTER,
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_TERM, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_TERM,
 					args);
 			}
 
@@ -5175,14 +6697,14 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 			if ((lectureseriesModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_CATEGORY.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						lectureseriesModelImpl.getOriginalEventCategory()
+						lectureseriesModelImpl.getOriginalCategoryId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_CATEGORY, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_CATEGORY,
 					args);
 
-				args = new Object[] { lectureseriesModelImpl.getEventCategory() };
+				args = new Object[] { lectureseriesModelImpl.getCategoryId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_CATEGORY, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_CATEGORY,
@@ -5256,6 +6778,69 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_PASSWORD,
 					args);
 			}
+
+			if ((lectureseriesModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTOPENACCESSVIDEO.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						lectureseriesModelImpl.getOriginalLatestOpenAccessVideoId()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_LATESTOPENACCESSVIDEO,
+					args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTOPENACCESSVIDEO,
+					args);
+
+				args = new Object[] {
+						lectureseriesModelImpl.getLatestOpenAccessVideoId()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_LATESTOPENACCESSVIDEO,
+					args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTOPENACCESSVIDEO,
+					args);
+			}
+
+			if ((lectureseriesModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTVIDEOUPLOADDATE.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						lectureseriesModelImpl.getOriginalLatestVideoUploadDate()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_LATESTVIDEOUPLOADDATE,
+					args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTVIDEOUPLOADDATE,
+					args);
+
+				args = new Object[] {
+						lectureseriesModelImpl.getLatestVideoUploadDate()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_LATESTVIDEOUPLOADDATE,
+					args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTVIDEOUPLOADDATE,
+					args);
+			}
+
+			if ((lectureseriesModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTVIDEOGENERATIONDATE.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						lectureseriesModelImpl.getOriginalLatestVideoGenerationDate()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_LATESTVIDEOGENERATIONDATE,
+					args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTVIDEOGENERATIONDATE,
+					args);
+
+				args = new Object[] {
+						lectureseriesModelImpl.getLatestVideoGenerationDate()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_LATESTVIDEOGENERATIONDATE,
+					args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LATESTVIDEOGENERATIONDATE,
+					args);
+			}
 		}
 
 		EntityCacheUtil.putResult(LectureseriesModelImpl.ENTITY_CACHE_ENABLED,
@@ -5277,17 +6862,19 @@ public class LectureseriesPersistenceImpl extends BasePersistenceImpl<Lectureser
 
 		lectureseriesImpl.setNumber(lectureseries.getNumber());
 		lectureseriesImpl.setEventType(lectureseries.getEventType());
-		lectureseriesImpl.setEventCategory(lectureseries.getEventCategory());
+		lectureseriesImpl.setCategoryId(lectureseries.getCategoryId());
 		lectureseriesImpl.setName(lectureseries.getName());
 		lectureseriesImpl.setShortDesc(lectureseries.getShortDesc());
-		lectureseriesImpl.setSemesterName(lectureseries.getSemesterName());
+		lectureseriesImpl.setTermId(lectureseries.getTermId());
 		lectureseriesImpl.setLanguage(lectureseries.getLanguage());
 		lectureseriesImpl.setFacultyName(lectureseries.getFacultyName());
-		lectureseriesImpl.setInstructorsString(lectureseries.getInstructorsString());
 		lectureseriesImpl.setLectureseriesId(lectureseries.getLectureseriesId());
 		lectureseriesImpl.setPassword(lectureseries.getPassword());
 		lectureseriesImpl.setApproved(lectureseries.getApproved());
 		lectureseriesImpl.setLongDesc(lectureseries.getLongDesc());
+		lectureseriesImpl.setLatestOpenAccessVideoId(lectureseries.getLatestOpenAccessVideoId());
+		lectureseriesImpl.setLatestVideoUploadDate(lectureseries.getLatestVideoUploadDate());
+		lectureseriesImpl.setLatestVideoGenerationDate(lectureseries.getLatestVideoGenerationDate());
 
 		return lectureseriesImpl;
 	}

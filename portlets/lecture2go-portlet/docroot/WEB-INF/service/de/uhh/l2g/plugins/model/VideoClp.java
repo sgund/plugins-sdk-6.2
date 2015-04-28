@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,6 +16,7 @@ package de.uhh.l2g.plugins.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
@@ -75,7 +76,6 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 
 		attributes.put("videoId", getVideoId());
 		attributes.put("title", getTitle());
-		attributes.put("tags", getTags());
 		attributes.put("lectureseriesId", getLectureseriesId());
 		attributes.put("producerId", getProducerId());
 		attributes.put("containerFormat", getContainerFormat());
@@ -94,6 +94,9 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 		attributes.put("permittedToSegment", getPermittedToSegment());
 		attributes.put("rootInstitutionId", getRootInstitutionId());
 		attributes.put("citation2go", getCitation2go());
+		attributes.put("termId", getTermId());
+		attributes.put("videoCreatorId", getVideoCreatorId());
+		attributes.put("tags", getTags());
 
 		return attributes;
 	}
@@ -110,12 +113,6 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 
 		if (title != null) {
 			setTitle(title);
-		}
-
-		String tags = (String)attributes.get("tags");
-
-		if (tags != null) {
-			setTags(tags);
 		}
 
 		Long lectureseriesId = (Long)attributes.get("lectureseriesId");
@@ -226,6 +223,24 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 		if (citation2go != null) {
 			setCitation2go(citation2go);
 		}
+
+		Long termId = (Long)attributes.get("termId");
+
+		if (termId != null) {
+			setTermId(termId);
+		}
+
+		Long videoCreatorId = (Long)attributes.get("videoCreatorId");
+
+		if (videoCreatorId != null) {
+			setVideoCreatorId(videoCreatorId);
+		}
+
+		String tags = (String)attributes.get("tags");
+
+		if (tags != null) {
+			setTags(tags);
+		}
 	}
 
 	@Override
@@ -267,29 +282,6 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 				Method method = clazz.getMethod("setTitle", String.class);
 
 				method.invoke(_videoRemoteModel, title);
-			}
-			catch (Exception e) {
-				throw new UnsupportedOperationException(e);
-			}
-		}
-	}
-
-	@Override
-	public String getTags() {
-		return _tags;
-	}
-
-	@Override
-	public void setTags(String tags) {
-		_tags = tags;
-
-		if (_videoRemoteModel != null) {
-			try {
-				Class<?> clazz = _videoRemoteModel.getClass();
-
-				Method method = clazz.getMethod("setTags", String.class);
-
-				method.invoke(_videoRemoteModel, tags);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -708,6 +700,75 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 				Method method = clazz.getMethod("setCitation2go", int.class);
 
 				method.invoke(_videoRemoteModel, citation2go);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public long getTermId() {
+		return _termId;
+	}
+
+	@Override
+	public void setTermId(long termId) {
+		_termId = termId;
+
+		if (_videoRemoteModel != null) {
+			try {
+				Class<?> clazz = _videoRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTermId", long.class);
+
+				method.invoke(_videoRemoteModel, termId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public long getVideoCreatorId() {
+		return _videoCreatorId;
+	}
+
+	@Override
+	public void setVideoCreatorId(long videoCreatorId) {
+		_videoCreatorId = videoCreatorId;
+
+		if (_videoRemoteModel != null) {
+			try {
+				Class<?> clazz = _videoRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setVideoCreatorId", long.class);
+
+				method.invoke(_videoRemoteModel, videoCreatorId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public String getTags() {
+		return _tags;
+	}
+
+	@Override
+	public void setTags(String tags) {
+		_tags = tags;
+
+		if (_videoRemoteModel != null) {
+			try {
+				Class<?> clazz = _videoRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTags", String.class);
+
+				method.invoke(_videoRemoteModel, tags);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -1629,7 +1690,6 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 
 		clone.setVideoId(getVideoId());
 		clone.setTitle(getTitle());
-		clone.setTags(getTags());
 		clone.setLectureseriesId(getLectureseriesId());
 		clone.setProducerId(getProducerId());
 		clone.setContainerFormat(getContainerFormat());
@@ -1648,6 +1708,9 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 		clone.setPermittedToSegment(getPermittedToSegment());
 		clone.setRootInstitutionId(getRootInstitutionId());
 		clone.setCitation2go(getCitation2go());
+		clone.setTermId(getTermId());
+		clone.setVideoCreatorId(getVideoCreatorId());
+		clone.setTags(getTags());
 
 		return clone;
 	}
@@ -1665,6 +1728,14 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 		else {
 			value = 0;
 		}
+
+		value = value * -1;
+
+		if (value != 0) {
+			return value;
+		}
+
+		value = DateUtil.compareTo(getUploadDate(), video.getUploadDate());
 
 		value = value * -1;
 
@@ -1697,10 +1768,6 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 		}
 	}
 
-	public Class<?> getClpSerializerClass() {
-		return _clpSerializerClass;
-	}
-
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
@@ -1708,14 +1775,12 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{videoId=");
 		sb.append(getVideoId());
 		sb.append(", title=");
 		sb.append(getTitle());
-		sb.append(", tags=");
-		sb.append(getTags());
 		sb.append(", lectureseriesId=");
 		sb.append(getLectureseriesId());
 		sb.append(", producerId=");
@@ -1752,6 +1817,12 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 		sb.append(getRootInstitutionId());
 		sb.append(", citation2go=");
 		sb.append(getCitation2go());
+		sb.append(", termId=");
+		sb.append(getTermId());
+		sb.append(", videoCreatorId=");
+		sb.append(getVideoCreatorId());
+		sb.append(", tags=");
+		sb.append(getTags());
 		sb.append("}");
 
 		return sb.toString();
@@ -1759,7 +1830,7 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(73);
 
 		sb.append("<model><model-name>");
 		sb.append("de.uhh.l2g.plugins.model.Video");
@@ -1772,10 +1843,6 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 		sb.append(
 			"<column><column-name>title</column-name><column-value><![CDATA[");
 		sb.append(getTitle());
-		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>tags</column-name><column-value><![CDATA[");
-		sb.append(getTags());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>lectureseriesId</column-name><column-value><![CDATA[");
@@ -1849,6 +1916,18 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 			"<column><column-name>citation2go</column-name><column-value><![CDATA[");
 		sb.append(getCitation2go());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>termId</column-name><column-value><![CDATA[");
+		sb.append(getTermId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>videoCreatorId</column-name><column-value><![CDATA[");
+		sb.append(getVideoCreatorId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>tags</column-name><column-value><![CDATA[");
+		sb.append(getTags());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1857,7 +1936,6 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 
 	private long _videoId;
 	private String _title;
-	private String _tags;
 	private long _lectureseriesId;
 	private long _producerId;
 	private String _containerFormat;
@@ -1876,6 +1954,8 @@ public class VideoClp extends BaseModelImpl<Video> implements Video {
 	private int _permittedToSegment;
 	private long _rootInstitutionId;
 	private int _citation2go;
+	private long _termId;
+	private long _videoCreatorId;
+	private String _tags;
 	private BaseModel<?> _videoRemoteModel;
-	private Class<?> _clpSerializerClass = de.uhh.l2g.plugins.service.ClpSerializer.class;
 }

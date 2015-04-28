@@ -5,12 +5,12 @@
 	List<Producer> producers = new ArrayList<Producer>();
 	
 	List<Lectureseries> tempLectureseriesList = new ArrayList();
-	List<String> semesters = LectureseriesLocalServiceUtil.getAllSemesters(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+	List<Term> semesters = TermLocalServiceUtil.getAllSemesters(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
 	
 	Long institutionId = ServletRequestUtils.getLongParameter(request, "institutionId", 0);
 	
 	Long producerId = ServletRequestUtils.getLongParameter(request, "producerId", 0);
-	String semesterId = ServletRequestUtils.getStringParameter(request, "semesterId", "");
+	Long semesterId = ServletRequestUtils.getLongParameter(request, "semesterId", 0);
 	Integer statusId = ServletRequestUtils.getIntParameter(request, "statusId", 0);
 	
 	PortletURL portletURL = renderResponse.createRenderURL();
@@ -92,11 +92,11 @@
 							<aui:select name="semesterId" label="select-semester" onChange="submit();">
 								<aui:option value="">select-semester</aui:option>
 								<%for (int i = 0; i < semesters.size(); i++) {
-										if(semesters.get(i).equals(semesterId)){
+										if(semesterId==semesters.get(i).getTermId()){
 											%>
-											<aui:option value='<%=semesters.get(i)%>' selected="true"><%=semesters.get(i)%></aui:option>
+											<aui:option value='<%=semesters.get(i).getTermId()%>' selected="true"><%=semesters.get(i).getPrefix()+"&nbsp;"+semesters.get(i).getYear()%></aui:option>
 											<%}else{%>
-											<aui:option value='<%=semesters.get(i)%>'><%=semesters.get(i)%></aui:option>
+											<aui:option value='<%=semesters.get(i).getTermId()%>'><%=semesters.get(i).getPrefix()+"&nbsp;"+semesters.get(i).getYear()%></aui:option>
 											<%}					
 								}%>
 							</aui:select>
@@ -128,7 +128,11 @@
 		</aui:layout>
 		<aui:layout>
 			<aui:row>
-				<aui:button value="add-new-lectureseries" href="<%=addLectureseriesURL%>"/>
+				
+			<a href="<%=addLectureseriesURL.toString()%>">
+			    add-new-lectureseries <span class="icon-large icon-plus-sign"/>
+			</a>
+		
 			</aui:row>
 		</aui:layout>
 </aui:fieldset>

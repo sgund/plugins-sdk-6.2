@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,6 @@ package de.uhh.l2g.plugins.service;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -53,7 +52,6 @@ public interface VideoLocalService extends BaseLocalService,
 	* @return the video that was added
 	* @throws SystemException if a system exception occurred
 	*/
-	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.REINDEX)
 	public de.uhh.l2g.plugins.model.Video addVideo(
 		de.uhh.l2g.plugins.model.Video video)
 		throws com.liferay.portal.kernel.exception.SystemException;
@@ -74,7 +72,6 @@ public interface VideoLocalService extends BaseLocalService,
 	* @throws PortalException if a video with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
-	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.DELETE)
 	public de.uhh.l2g.plugins.model.Video deleteVideo(long videoId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
@@ -86,7 +83,6 @@ public interface VideoLocalService extends BaseLocalService,
 	* @return the video that was removed
 	* @throws SystemException if a system exception occurred
 	*/
-	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.DELETE)
 	public de.uhh.l2g.plugins.model.Video deleteVideo(
 		de.uhh.l2g.plugins.model.Video video)
 		throws com.liferay.portal.kernel.exception.SystemException;
@@ -225,7 +221,6 @@ public interface VideoLocalService extends BaseLocalService,
 	* @return the video that was updated
 	* @throws SystemException if a system exception occurred
 	*/
-	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.REINDEX)
 	public de.uhh.l2g.plugins.model.Video updateVideo(
 		de.uhh.l2g.plugins.model.Video video)
 		throws com.liferay.portal.kernel.exception.SystemException;
@@ -250,14 +245,14 @@ public interface VideoLocalService extends BaseLocalService,
 		throws java.lang.Throwable;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public de.uhh.l2g.plugins.model.Video getLatestVideoForLectureseries(
-		java.lang.Long lectureseriesId, int begin, int end);
+	public de.uhh.l2g.plugins.model.Video getLatestOpenAccessVideoForLectureseries(
+		java.lang.Long lectureseriesId);
 
 	public int unlinkLectureseriesFromVideos(java.lang.Long lectureseriesId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.util.List<de.uhh.l2g.plugins.model.Video> getByInstitution(
-		java.lang.Long institutionId)
+	public java.util.List<de.uhh.l2g.plugins.model.Video> getByRootInstitution(
+		java.lang.Long rootInstitutionId)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -301,4 +296,11 @@ public interface VideoLocalService extends BaseLocalService,
 	public java.util.List<de.uhh.l2g.plugins.model.Video> getByLectureseriesAndOpenaccess(
 		java.lang.Long lectureseriesId, int openAccess)
 		throws com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<de.uhh.l2g.plugins.model.Video> getFilteredByInstitutionParentInstitutionTermCategoryCreator(
+		java.lang.Long institutionId, java.lang.Long parentInstitutionId,
+		java.util.ArrayList<java.lang.Long> termIds,
+		java.util.ArrayList<java.lang.Long> categoryIds,
+		java.util.ArrayList<java.lang.Long> creatorIds);
 }

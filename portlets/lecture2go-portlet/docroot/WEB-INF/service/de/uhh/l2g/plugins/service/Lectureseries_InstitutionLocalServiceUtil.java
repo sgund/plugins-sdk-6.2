@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -294,6 +294,12 @@ public class Lectureseries_InstitutionLocalServiceUtil {
 	public static boolean institutionAssignedToLectureseries(
 		de.uhh.l2g.plugins.model.Lectureseries_Institution lf) {
 		return getService().institutionAssignedToLectureseries(lf);
+	}
+
+	public static java.util.List<de.uhh.l2g.plugins.model.Lectureseries_Institution> getByLectureseries(
+		long lectureseriesId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getByLectureseries(lectureseriesId);
 	}
 
 	public static void clearService() {

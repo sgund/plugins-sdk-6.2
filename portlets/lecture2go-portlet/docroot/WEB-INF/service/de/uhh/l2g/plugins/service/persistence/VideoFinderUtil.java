@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,9 +26,20 @@ public class VideoFinderUtil {
 		return getFinder().unlinkLectureseriesFromVideos(lectureseriesId);
 	}
 
-	public static de.uhh.l2g.plugins.model.Video findLatestVideoForLectureseries(
+	public static de.uhh.l2g.plugins.model.Video findLatestOpenAccessVideoForLectureseries(
 		java.lang.Long lectureseriesId) {
-		return getFinder().findLatestVideoForLectureseries(lectureseriesId);
+		return getFinder()
+				   .findLatestOpenAccessVideoForLectureseries(lectureseriesId);
+	}
+
+	public static java.util.List<de.uhh.l2g.plugins.model.Video> findFilteredByInstitutionParentInstitutionTermCategoryCreator(
+		java.lang.Long institutionId, java.lang.Long parentInstitutionId,
+		java.util.ArrayList<java.lang.Long> termIds,
+		java.util.ArrayList<java.lang.Long> categoryIds,
+		java.util.ArrayList<java.lang.Long> creatorIds) {
+		return getFinder()
+				   .findFilteredByInstitutionParentInstitutionTermCategoryCreator(institutionId,
+			parentInstitutionId, termIds, categoryIds, creatorIds);
 	}
 
 	public static java.util.List<de.uhh.l2g.plugins.model.Video> findLatestVideos() {

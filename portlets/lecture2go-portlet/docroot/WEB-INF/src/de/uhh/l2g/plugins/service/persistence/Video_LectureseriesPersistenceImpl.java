@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -1371,6 +1371,7 @@ public class Video_LectureseriesPersistenceImpl extends BasePersistenceImpl<Vide
 		video_LectureseriesImpl.setVideoLectureseriesId(video_Lectureseries.getVideoLectureseriesId());
 		video_LectureseriesImpl.setVideoId(video_Lectureseries.getVideoId());
 		video_LectureseriesImpl.setLectureseriesId(video_Lectureseries.getLectureseriesId());
+		video_LectureseriesImpl.setOpenAccess(video_Lectureseries.getOpenAccess());
 
 		return video_LectureseriesImpl;
 	}

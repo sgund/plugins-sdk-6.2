@@ -68,11 +68,16 @@
 <%@ page import="de.uhh.l2g.plugins.service.Producer_LectureseriesLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.service.Lectureseries_InstitutionLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.service.VideoLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.service.Video_CategoryLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.service.Video_InstitutionLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.service.CoordinatorLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.service.LicenseLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.service.SegmentLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.NoSuchMetadataException"%>
 <%@ page import="de.uhh.l2g.plugins.service.MetadataLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.model.Term"%>
+<%@ page import="de.uhh.l2g.plugins.model.Creator"%>
+<%@ page import="de.uhh.l2g.plugins.model.Category"%>
 <%@ page import="de.uhh.l2g.plugins.model.Producer"%>
 <%@ page import="de.uhh.l2g.plugins.model.Segment"%>
 <%@ page import="de.uhh.l2g.plugins.model.Institution"%>
@@ -85,10 +90,14 @@
 <%@ page import="de.uhh.l2g.plugins.model.impl.MetadataImpl"%>
 <%@ page import="de.uhh.l2g.plugins.model.Metadata"%>
 <%@ page import="de.uhh.l2g.plugins.model.impl.VideoImpl"%>
+<%@ page import="de.uhh.l2g.plugins.model.Video_Institution"%>
 <%@ page import="de.uhh.l2g.plugins.model.impl.ProducerImpl"%>
 <%@ page import="de.uhh.l2g.plugins.model.impl.LicenseImpl"%>
 <%@ page import="de.uhh.l2g.plugins.util.Security"%>
 <%@ page import="de.uhh.l2g.plugins.service.HostLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.service.TermLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.service.CategoryLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.service.CreatorLocalServiceUtil"%>
 
 <%@ page import="de.uhh.l2g.plugins.util.Lecture2GoRoleChecker"%>
 

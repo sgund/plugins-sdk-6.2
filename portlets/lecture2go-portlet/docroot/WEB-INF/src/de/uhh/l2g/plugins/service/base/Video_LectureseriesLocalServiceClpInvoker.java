@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -106,21 +106,25 @@ public class Video_LectureseriesLocalServiceClpInvoker {
 				"de.uhh.l2g.plugins.model.Video_Lectureseries"
 			};
 
-		_methodName112 = "getBeanIdentifier";
+		_methodName146 = "getBeanIdentifier";
 
-		_methodParameterTypes112 = new String[] {  };
+		_methodParameterTypes146 = new String[] {  };
 
-		_methodName113 = "setBeanIdentifier";
+		_methodName147 = "setBeanIdentifier";
 
-		_methodParameterTypes113 = new String[] { "java.lang.String" };
+		_methodParameterTypes147 = new String[] { "java.lang.String" };
 
-		_methodName118 = "removeByLectureseriesId";
+		_methodName152 = "removeByLectureseriesId";
 
-		_methodParameterTypes118 = new String[] { "java.lang.Long" };
+		_methodParameterTypes152 = new String[] { "java.lang.Long" };
 
-		_methodName119 = "removeByVideoId";
+		_methodName153 = "removeByVideoId";
 
-		_methodParameterTypes119 = new String[] { "java.lang.Long" };
+		_methodParameterTypes153 = new String[] { "java.lang.Long" };
+
+		_methodName154 = "updateOpenAccessByVideo";
+
+		_methodParameterTypes154 = new String[] { "de.uhh.l2g.plugins.model.Video" };
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -212,26 +216,31 @@ public class Video_LectureseriesLocalServiceClpInvoker {
 			return Video_LectureseriesLocalServiceUtil.updateVideo_Lectureseries((de.uhh.l2g.plugins.model.Video_Lectureseries)arguments[0]);
 		}
 
-		if (_methodName112.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes112, parameterTypes)) {
+		if (_methodName146.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes146, parameterTypes)) {
 			return Video_LectureseriesLocalServiceUtil.getBeanIdentifier();
 		}
 
-		if (_methodName113.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes113, parameterTypes)) {
+		if (_methodName147.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes147, parameterTypes)) {
 			Video_LectureseriesLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
 
 			return null;
 		}
 
-		if (_methodName118.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes118, parameterTypes)) {
+		if (_methodName152.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes152, parameterTypes)) {
 			return Video_LectureseriesLocalServiceUtil.removeByLectureseriesId((java.lang.Long)arguments[0]);
 		}
 
-		if (_methodName119.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes119, parameterTypes)) {
+		if (_methodName153.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes153, parameterTypes)) {
 			return Video_LectureseriesLocalServiceUtil.removeByVideoId((java.lang.Long)arguments[0]);
+		}
+
+		if (_methodName154.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes154, parameterTypes)) {
+			return Video_LectureseriesLocalServiceUtil.updateOpenAccessByVideo((de.uhh.l2g.plugins.model.Video)arguments[0]);
 		}
 
 		throw new UnsupportedOperationException();
@@ -269,12 +278,14 @@ public class Video_LectureseriesLocalServiceClpInvoker {
 	private String[] _methodParameterTypes14;
 	private String _methodName15;
 	private String[] _methodParameterTypes15;
-	private String _methodName112;
-	private String[] _methodParameterTypes112;
-	private String _methodName113;
-	private String[] _methodParameterTypes113;
-	private String _methodName118;
-	private String[] _methodParameterTypes118;
-	private String _methodName119;
-	private String[] _methodParameterTypes119;
+	private String _methodName146;
+	private String[] _methodParameterTypes146;
+	private String _methodName147;
+	private String[] _methodParameterTypes147;
+	private String _methodName152;
+	private String[] _methodParameterTypes152;
+	private String _methodName153;
+	private String[] _methodParameterTypes153;
+	private String _methodName154;
+	private String[] _methodParameterTypes154;
 }

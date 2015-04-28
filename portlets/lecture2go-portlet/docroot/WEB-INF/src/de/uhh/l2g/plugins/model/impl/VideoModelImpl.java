@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,7 @@
 package de.uhh.l2g.plugins.model.impl;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -60,7 +61,6 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "videoId", Types.BIGINT },
 			{ "title", Types.VARCHAR },
-			{ "tags", Types.VARCHAR },
 			{ "lectureseriesId", Types.BIGINT },
 			{ "producerId", Types.BIGINT },
 			{ "containerFormat", Types.VARCHAR },
@@ -78,12 +78,15 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 			{ "uploadDate", Types.TIMESTAMP },
 			{ "permittedToSegment", Types.INTEGER },
 			{ "rootInstitutionId", Types.BIGINT },
-			{ "citation2go", Types.INTEGER }
+			{ "citation2go", Types.INTEGER },
+			{ "termId", Types.BIGINT },
+			{ "videoCreatorId", Types.BIGINT },
+			{ "tags", Types.VARCHAR }
 		};
-	public static final String TABLE_SQL_CREATE = "create table LG_Video (videoId LONG not null primary key,title VARCHAR(75) null,tags VARCHAR(75) null,lectureseriesId LONG,producerId LONG,containerFormat VARCHAR(75) null,filename VARCHAR(75) null,resolution VARCHAR(75) null,duration VARCHAR(75) null,hostId LONG,fileSize VARCHAR(75) null,generationDate VARCHAR(75) null,openAccess INTEGER,downloadLink INTEGER,metadataId LONG,surl VARCHAR(75) null,hits LONG,uploadDate DATE null,permittedToSegment INTEGER,rootInstitutionId LONG,citation2go INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table LG_Video (videoId LONG not null primary key,title VARCHAR(75) null,lectureseriesId LONG,producerId LONG,containerFormat VARCHAR(75) null,filename VARCHAR(75) null,resolution VARCHAR(75) null,duration VARCHAR(75) null,hostId LONG,fileSize VARCHAR(75) null,generationDate VARCHAR(75) null,openAccess INTEGER,downloadLink INTEGER,metadataId LONG,surl VARCHAR(75) null,hits LONG,uploadDate DATE null,permittedToSegment INTEGER,rootInstitutionId LONG,citation2go INTEGER,termId LONG,videoCreatorId LONG,tags VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table LG_Video";
-	public static final String ORDER_BY_JPQL = " ORDER BY video.videoId DESC";
-	public static final String ORDER_BY_SQL = " ORDER BY LG_Video.videoId DESC";
+	public static final String ORDER_BY_JPQL = " ORDER BY video.videoId DESC, video.uploadDate DESC";
+	public static final String ORDER_BY_SQL = " ORDER BY LG_Video.videoId DESC, LG_Video.uploadDate DESC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -102,7 +105,8 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 	public static long OPENACCESS_COLUMN_BITMASK = 8L;
 	public static long PRODUCERID_COLUMN_BITMASK = 16L;
 	public static long ROOTINSTITUTIONID_COLUMN_BITMASK = 32L;
-	public static long VIDEOID_COLUMN_BITMASK = 64L;
+	public static long UPLOADDATE_COLUMN_BITMASK = 64L;
+	public static long VIDEOID_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.de.uhh.l2g.plugins.model.Video"));
 
@@ -145,7 +149,6 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 
 		attributes.put("videoId", getVideoId());
 		attributes.put("title", getTitle());
-		attributes.put("tags", getTags());
 		attributes.put("lectureseriesId", getLectureseriesId());
 		attributes.put("producerId", getProducerId());
 		attributes.put("containerFormat", getContainerFormat());
@@ -164,6 +167,9 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 		attributes.put("permittedToSegment", getPermittedToSegment());
 		attributes.put("rootInstitutionId", getRootInstitutionId());
 		attributes.put("citation2go", getCitation2go());
+		attributes.put("termId", getTermId());
+		attributes.put("videoCreatorId", getVideoCreatorId());
+		attributes.put("tags", getTags());
 
 		return attributes;
 	}
@@ -180,12 +186,6 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 
 		if (title != null) {
 			setTitle(title);
-		}
-
-		String tags = (String)attributes.get("tags");
-
-		if (tags != null) {
-			setTags(tags);
 		}
 
 		Long lectureseriesId = (Long)attributes.get("lectureseriesId");
@@ -296,6 +296,24 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 		if (citation2go != null) {
 			setCitation2go(citation2go);
 		}
+
+		Long termId = (Long)attributes.get("termId");
+
+		if (termId != null) {
+			setTermId(termId);
+		}
+
+		Long videoCreatorId = (Long)attributes.get("videoCreatorId");
+
+		if (videoCreatorId != null) {
+			setVideoCreatorId(videoCreatorId);
+		}
+
+		String tags = (String)attributes.get("tags");
+
+		if (tags != null) {
+			setTags(tags);
+		}
 	}
 
 	@Override
@@ -323,21 +341,6 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 	@Override
 	public void setTitle(String title) {
 		_title = title;
-	}
-
-	@Override
-	public String getTags() {
-		if (_tags == null) {
-			return StringPool.BLANK;
-		}
-		else {
-			return _tags;
-		}
-	}
-
-	@Override
-	public void setTags(String tags) {
-		_tags = tags;
 	}
 
 	@Override
@@ -580,7 +583,17 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 
 	@Override
 	public void setUploadDate(Date uploadDate) {
+		_columnBitmask = -1L;
+
+		if (_originalUploadDate == null) {
+			_originalUploadDate = _uploadDate;
+		}
+
 		_uploadDate = uploadDate;
+	}
+
+	public Date getOriginalUploadDate() {
+		return _originalUploadDate;
 	}
 
 	@Override
@@ -625,6 +638,41 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 		_citation2go = citation2go;
 	}
 
+	@Override
+	public long getTermId() {
+		return _termId;
+	}
+
+	@Override
+	public void setTermId(long termId) {
+		_termId = termId;
+	}
+
+	@Override
+	public long getVideoCreatorId() {
+		return _videoCreatorId;
+	}
+
+	@Override
+	public void setVideoCreatorId(long videoCreatorId) {
+		_videoCreatorId = videoCreatorId;
+	}
+
+	@Override
+	public String getTags() {
+		if (_tags == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _tags;
+		}
+	}
+
+	@Override
+	public void setTags(String tags) {
+		_tags = tags;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -658,7 +706,6 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 
 		videoImpl.setVideoId(getVideoId());
 		videoImpl.setTitle(getTitle());
-		videoImpl.setTags(getTags());
 		videoImpl.setLectureseriesId(getLectureseriesId());
 		videoImpl.setProducerId(getProducerId());
 		videoImpl.setContainerFormat(getContainerFormat());
@@ -677,6 +724,9 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 		videoImpl.setPermittedToSegment(getPermittedToSegment());
 		videoImpl.setRootInstitutionId(getRootInstitutionId());
 		videoImpl.setCitation2go(getCitation2go());
+		videoImpl.setTermId(getTermId());
+		videoImpl.setVideoCreatorId(getVideoCreatorId());
+		videoImpl.setTags(getTags());
 
 		videoImpl.resetOriginalValues();
 
@@ -696,6 +746,14 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 		else {
 			value = 0;
 		}
+
+		value = value * -1;
+
+		if (value != 0) {
+			return value;
+		}
+
+		value = DateUtil.compareTo(getUploadDate(), video.getUploadDate());
 
 		value = value * -1;
 
@@ -755,6 +813,8 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 
 		videoModelImpl._setOriginalDownloadLink = false;
 
+		videoModelImpl._originalUploadDate = videoModelImpl._uploadDate;
+
 		videoModelImpl._originalRootInstitutionId = videoModelImpl._rootInstitutionId;
 
 		videoModelImpl._setOriginalRootInstitutionId = false;
@@ -774,14 +834,6 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 
 		if ((title != null) && (title.length() == 0)) {
 			videoCacheModel.title = null;
-		}
-
-		videoCacheModel.tags = getTags();
-
-		String tags = videoCacheModel.tags;
-
-		if ((tags != null) && (tags.length() == 0)) {
-			videoCacheModel.tags = null;
 		}
 
 		videoCacheModel.lectureseriesId = getLectureseriesId();
@@ -869,19 +921,29 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 
 		videoCacheModel.citation2go = getCitation2go();
 
+		videoCacheModel.termId = getTermId();
+
+		videoCacheModel.videoCreatorId = getVideoCreatorId();
+
+		videoCacheModel.tags = getTags();
+
+		String tags = videoCacheModel.tags;
+
+		if ((tags != null) && (tags.length() == 0)) {
+			videoCacheModel.tags = null;
+		}
+
 		return videoCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{videoId=");
 		sb.append(getVideoId());
 		sb.append(", title=");
 		sb.append(getTitle());
-		sb.append(", tags=");
-		sb.append(getTags());
 		sb.append(", lectureseriesId=");
 		sb.append(getLectureseriesId());
 		sb.append(", producerId=");
@@ -918,6 +980,12 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 		sb.append(getRootInstitutionId());
 		sb.append(", citation2go=");
 		sb.append(getCitation2go());
+		sb.append(", termId=");
+		sb.append(getTermId());
+		sb.append(", videoCreatorId=");
+		sb.append(getVideoCreatorId());
+		sb.append(", tags=");
+		sb.append(getTags());
 		sb.append("}");
 
 		return sb.toString();
@@ -925,7 +993,7 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(73);
 
 		sb.append("<model><model-name>");
 		sb.append("de.uhh.l2g.plugins.model.Video");
@@ -938,10 +1006,6 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 		sb.append(
 			"<column><column-name>title</column-name><column-value><![CDATA[");
 		sb.append(getTitle());
-		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>tags</column-name><column-value><![CDATA[");
-		sb.append(getTags());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>lectureseriesId</column-name><column-value><![CDATA[");
@@ -1015,6 +1079,18 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 			"<column><column-name>citation2go</column-name><column-value><![CDATA[");
 		sb.append(getCitation2go());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>termId</column-name><column-value><![CDATA[");
+		sb.append(getTermId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>videoCreatorId</column-name><column-value><![CDATA[");
+		sb.append(getVideoCreatorId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>tags</column-name><column-value><![CDATA[");
+		sb.append(getTags());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1025,7 +1101,6 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 	private static Class<?>[] _escapedModelInterfaces = new Class[] { Video.class };
 	private long _videoId;
 	private String _title;
-	private String _tags;
 	private long _lectureseriesId;
 	private long _originalLectureseriesId;
 	private boolean _setOriginalLectureseriesId;
@@ -1050,11 +1125,15 @@ public class VideoModelImpl extends BaseModelImpl<Video> implements VideoModel {
 	private String _surl;
 	private long _hits;
 	private Date _uploadDate;
+	private Date _originalUploadDate;
 	private int _permittedToSegment;
 	private long _rootInstitutionId;
 	private long _originalRootInstitutionId;
 	private boolean _setOriginalRootInstitutionId;
 	private int _citation2go;
+	private long _termId;
+	private long _videoCreatorId;
+	private String _tags;
 	private long _columnBitmask;
 	private Video _escapedModel;
 }

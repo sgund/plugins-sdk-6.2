@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -52,6 +52,7 @@ public class Video_LectureseriesWrapper implements Video_Lectureseries,
 		attributes.put("videoLectureseriesId", getVideoLectureseriesId());
 		attributes.put("videoId", getVideoId());
 		attributes.put("lectureseriesId", getLectureseriesId());
+		attributes.put("openAccess", getOpenAccess());
 
 		return attributes;
 	}
@@ -74,6 +75,12 @@ public class Video_LectureseriesWrapper implements Video_Lectureseries,
 
 		if (lectureseriesId != null) {
 			setLectureseriesId(lectureseriesId);
+		}
+
+		Integer openAccess = (Integer)attributes.get("openAccess");
+
+		if (openAccess != null) {
+			setOpenAccess(openAccess);
 		}
 	}
 
@@ -155,6 +162,26 @@ public class Video_LectureseriesWrapper implements Video_Lectureseries,
 	@Override
 	public void setLectureseriesId(long lectureseriesId) {
 		_video_Lectureseries.setLectureseriesId(lectureseriesId);
+	}
+
+	/**
+	* Returns the open access of this video_ lectureseries.
+	*
+	* @return the open access of this video_ lectureseries
+	*/
+	@Override
+	public int getOpenAccess() {
+		return _video_Lectureseries.getOpenAccess();
+	}
+
+	/**
+	* Sets the open access of this video_ lectureseries.
+	*
+	* @param openAccess the open access of this video_ lectureseries
+	*/
+	@Override
+	public void setOpenAccess(int openAccess) {
+		_video_Lectureseries.setOpenAccess(openAccess);
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -108,15 +108,15 @@ public class VideoLocalServiceClp implements VideoLocalService {
 
 		_methodParameterTypes17 = new String[] { "java.lang.String" };
 
-		_methodName19 = "getLatestVideoForLectureseries";
+		_methodName19 = "getLatestOpenAccessVideoForLectureseries";
 
-		_methodParameterTypes19 = new String[] { "java.lang.Long", "int", "int" };
+		_methodParameterTypes19 = new String[] { "java.lang.Long" };
 
 		_methodName20 = "unlinkLectureseriesFromVideos";
 
 		_methodParameterTypes20 = new String[] { "java.lang.Long" };
 
-		_methodName21 = "getByInstitution";
+		_methodName21 = "getByRootInstitution";
 
 		_methodParameterTypes21 = new String[] { "java.lang.Long" };
 
@@ -161,6 +161,13 @@ public class VideoLocalServiceClp implements VideoLocalService {
 		_methodName31 = "getByLectureseriesAndOpenaccess";
 
 		_methodParameterTypes31 = new String[] { "java.lang.Long", "int" };
+
+		_methodName32 = "getFilteredByInstitutionParentInstitutionTermCategoryCreator";
+
+		_methodParameterTypes32 = new String[] {
+				"java.lang.Long", "java.lang.Long", "java.util.ArrayList",
+				"java.util.ArrayList", "java.util.ArrayList"
+			};
 	}
 
 	@Override
@@ -709,20 +716,14 @@ public class VideoLocalServiceClp implements VideoLocalService {
 	}
 
 	@Override
-	public de.uhh.l2g.plugins.model.Video getLatestVideoForLectureseries(
-		java.lang.Long lectureseriesId, int begin, int end) {
+	public de.uhh.l2g.plugins.model.Video getLatestOpenAccessVideoForLectureseries(
+		java.lang.Long lectureseriesId) {
 		Object returnObj = null;
 
 		try {
 			returnObj = _invokableLocalService.invokeMethod(_methodName19,
 					_methodParameterTypes19,
-					new Object[] {
-						ClpSerializer.translateInput(lectureseriesId),
-						
-					begin,
-						
-					end
-					});
+					new Object[] { ClpSerializer.translateInput(lectureseriesId) });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -764,15 +765,16 @@ public class VideoLocalServiceClp implements VideoLocalService {
 	}
 
 	@Override
-	public java.util.List<de.uhh.l2g.plugins.model.Video> getByInstitution(
-		java.lang.Long institutionId)
+	public java.util.List<de.uhh.l2g.plugins.model.Video> getByRootInstitution(
+		java.lang.Long rootInstitutionId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
 		try {
 			returnObj = _invokableLocalService.invokeMethod(_methodName21,
 					_methodParameterTypes21,
-					new Object[] { ClpSerializer.translateInput(institutionId) });
+					new Object[] { ClpSerializer.translateInput(
+							rootInstitutionId) });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -1080,6 +1082,44 @@ public class VideoLocalServiceClp implements VideoLocalService {
 		return (java.util.List<de.uhh.l2g.plugins.model.Video>)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
+	public java.util.List<de.uhh.l2g.plugins.model.Video> getFilteredByInstitutionParentInstitutionTermCategoryCreator(
+		java.lang.Long institutionId, java.lang.Long parentInstitutionId,
+		java.util.ArrayList<java.lang.Long> termIds,
+		java.util.ArrayList<java.lang.Long> categoryIds,
+		java.util.ArrayList<java.lang.Long> creatorIds) {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName32,
+					_methodParameterTypes32,
+					new Object[] {
+						ClpSerializer.translateInput(institutionId),
+						
+					ClpSerializer.translateInput(parentInstitutionId),
+						
+					ClpSerializer.translateInput(termIds),
+						
+					ClpSerializer.translateInput(categoryIds),
+						
+					ClpSerializer.translateInput(creatorIds)
+					});
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (java.util.List<de.uhh.l2g.plugins.model.Video>)ClpSerializer.translateOutput(returnObj);
+	}
+
 	private InvokableLocalService _invokableLocalService;
 	private String _methodName0;
 	private String[] _methodParameterTypes0;
@@ -1143,4 +1183,6 @@ public class VideoLocalServiceClp implements VideoLocalService {
 	private String[] _methodParameterTypes30;
 	private String _methodName31;
 	private String[] _methodParameterTypes31;
+	private String _methodName32;
+	private String[] _methodParameterTypes32;
 }

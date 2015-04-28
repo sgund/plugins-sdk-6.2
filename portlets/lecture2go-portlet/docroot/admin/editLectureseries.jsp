@@ -5,25 +5,24 @@
 	String lName = "";
 	String lNumber = "";
 	String lLanguage = "";
-	String lEventType = "";
-	String lSemesterName = "";
+	Long categoryId = new Long(0);
+	Long lSemester = new Long(0);
 	String lShortDesc = "";
 	String lInstructors = "";
 	String lPassword = "";
 	String lLongDesc = "";
 	
 	Long lId=new Long(0);
-	Lectureseries reqLectureseries = LectureseriesLocalServiceUtil.createLectureseries(0);
+	Lectureseries reqLectureseries = new LectureseriesImpl();
 	try{ 
 		reqLectureseries = (Lectureseries)request.getAttribute("reqLectureseries");
 		lId=reqLectureseries.getLectureseriesId();
 		lName=reqLectureseries.getName();
 		lNumber=reqLectureseries.getNumber();
 		lLanguage=reqLectureseries.getLanguage();
-		lEventType=reqLectureseries.getEventType();
-		lSemesterName=reqLectureseries.getSemesterName();
+		categoryId=reqLectureseries.getCategoryId();
+		lSemester=reqLectureseries.getTermId();
 		lShortDesc=reqLectureseries.getShortDesc();
-		lInstructors=reqLectureseries.getInstructorsString();
 		lPassword=reqLectureseries.getPassword();
 		lLongDesc=reqLectureseries.getLongDesc();
 	}catch(NullPointerException npe){}
@@ -56,8 +55,21 @@
 	try{
 		pIds = ProducerLocalServiceUtil.getAllProducerIds(lId);
 	}catch (NullPointerException e){}
+
+	List<Creator> creators = new ArrayList<Creator>();
+	try{
+		creators = CreatorLocalServiceUtil.getCreators(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+	}catch (NullPointerException e){}
 	
-	List<String> semesters = LectureseriesLocalServiceUtil.getAllSemesters(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+	List<Term> semesters = new ArrayList<Term>(); 
+	try{
+		semesters = TermLocalServiceUtil.getAllSemesters(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+	}catch(Exception e){}
+	 
+	List<Category> categories = new ArrayList<Category>();
+	try{
+		categories = CategoryLocalServiceUtil.getAllCategories(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+	}catch(Exception e){}
 	
 	String backURL = "";
 	try{
@@ -93,16 +105,15 @@
 
 			<aui:input name="name" label="name" required="true" value="<%=lName%>"/>
 
-			<aui:select size="1" name="eventType" label="event-type" required="true">
+			<aui:select size="1" name="categoryId" label="event-type" required="true">
 				<aui:option value=""></aui:option>
-				<%
-				String[] l =  LanguageUtil.get(pageContext, "event-types-for-select").split(",");
-				for(int i=0; i<l.length; i++){
-					String type = l[i];
-					if(lEventType.equals(type)){%> <aui:option selected="true" value="<%=type%>"><%=type%></aui:option><%}
-					else{%> <aui:option value="<%=type%>"><%=type%></aui:option><%}
-				}
-				%>
+				<%for (int i = 0; i < categories.size(); i++) {
+					if (categoryId==categories.get(i).getCategoryId()) {%>
+						<aui:option value='<%=categories.get(i).getCategoryId()%>' selected="true"><%=categories.get(i).getName()%></aui:option>
+					<%} else {%>
+						<aui:option value='<%=categories.get(i).getCategoryId()%>'><%=categories.get(i).getName()%></aui:option>
+					<%}
+				}%>
 			</aui:select>
 			
 			<aui:select size="1" name="institutionId" label="institution" required="true">
@@ -126,7 +137,7 @@
 						%>
 						<div id='<%=f.getInstitutionId()%>'> 
 							<%=f.getName()+"&nbsp;&nbsp;&nbsp;" %> 
-							<a style='cursor:pointer;' onClick='document.getElementById("<%=f.getInstitutionId()%>").remove();'><b>X</b></a>
+							<a class="icon-large icon-remove" style='cursor:pointer;' onClick='document.getElementById("<%=f.getInstitutionId()%>").remove();'></a>
 							<aui:input type="hidden" name="institutions" id="institutions" value="<%=f.getInstitutionId()%>"/>
 						</div>
 						<%
@@ -156,7 +167,7 @@
 						%>
 						<div id='<%=p.getProducerId()%>'> 
 							<%=p.getLastName() +", "+p.getFirstName()+"&nbsp;&nbsp;&nbsp;" %> 
-							<a style='cursor:pointer;' onClick='document.getElementById("<%=p.getProducerId()%>").remove();'><b>X</b></a>
+							<a class="icon-large icon-remove"style='cursor:pointer;' onClick='document.getElementById("<%=p.getProducerId()%>").remove();'></a>
 							<aui:input type="hidden" name="producers" id="producers" value="<%=p.getProducerId()%>"/>
 						</div>
 						<%
@@ -166,32 +177,30 @@
 							
 			<aui:input name="shortDesc" label="short-description"  value="<%=lShortDesc%>"/>
 
-			<aui:select id="allSemesters" size="1" name="semesterName" label="semester">
+			<aui:select id="allSemesters" size="1" name="semesterId" label="semester">
 				<aui:option value="">select-semester</aui:option>
 				<%for (int i = 0; i < semesters.size(); i++) {
-					if (semesters.get(i).equals(lSemesterName)) {%>
-						<aui:option value='<%=semesters.get(i)%>' selected="true"><%=semesters.get(i)%></aui:option>
+					if (lSemester==semesters.get(i).getTermId()) {%>
+						<aui:option value='<%=semesters.get(i).getTermId()%>' selected="true"><%=semesters.get(i).getPrefix()+"&nbsp;"+semesters.get(i).getYear()%></aui:option>
 					<%} else {%>
-						<aui:option value='<%=semesters.get(i)%>'><%=semesters.get(i)%></aui:option>
+						<aui:option value='<%=semesters.get(i).getTermId()%>'><%=semesters.get(i).getPrefix()+"&nbsp;"+semesters.get(i).getYear()%></aui:option>
 					<%}
 				}%>
 			</aui:select>
-			
-			<a id="<portlet:namespace/>addSemester" style="cursor:pointer;">add-new-semester</a>
-			<aui:input id="newSemester" name="semesterName" style="display:none;" label=""/>
 
-			<aui:select size="1" name="language" label="language" required="true">
-				<aui:option value="">select-language</aui:option>
-				<%for (int i=0; i<languages.length; i++){
-					if (languages[i].getLanguage().equals(lLanguage)) {%>
-						<aui:option value='<%=languages[i].getLanguage()%>' selected="true"><%=languages[i].getDisplayLanguage()%></aui:option>
-					<%} else {%>
-						<aui:option value='<%=languages[i].getLanguage()%>'><%=languages[i].getDisplayLanguage()%></aui:option>
-					<%}
-				}%>
-			</aui:select>
-				
-			<aui:input name="instructorsString" label="instructors" value="<%=lInstructors%>"/>
+			<aui:select size="1" name="crId" label="creators">
+				<aui:option value="">select-creator</aui:option>
+				<%for (int i = 0; i < creators.size(); i++) {
+					%><aui:option value='<%=creators.get(i).getCreatorId()%>'><%=creators.get(i).getJobTitle() + " "+creators.get(i).getLastName() + ", " + creators.get(i).getFirstName()%></aui:option><%
+				}%>	
+			</aui:select>	
+						
+			<div id="creators"></div>
+
+			<a id="addCreator">
+			    add-new-creator <span class="icon-large icon-plus-sign"></span>
+			</a>
+			<br/><br/>
 			
 			<aui:input name="password" label="password" value="<%=lPassword%>"/>
 			
@@ -210,7 +219,75 @@
 	</aui:fieldset>
 </aui:form>
 
+<!-- Template -->
+<script type="text/x-jquery-tmpl" id="newCreator">
+	<div id="nc<%="${counter}"%>">
+	<aui:input type="hidden" name="gender"/>
+	<aui:select size="1" name="jobTitle" label="">
+		<aui:option value=""></aui:option>
+		<%
+		String[] l =  LanguageUtil.get(pageContext, "creator-titles").split(",");
+		for(int i=0; i<l.length; i++){
+			String title = l[i];
+			%><aui:option value="<%=title%>"><%=title%></aui:option><%
+		}
+		%>
+	</aui:select>
+	<aui:input name="firstName" type="text"/>
+	<aui:input name="lastName" type="text"/>
+	<aui:input name="creatorId" value="0" type="hidden"/>
+	<a class="icon-large icon-remove" onclick="remb('<%="nc${counter}"%>');"></a>
+	<br/>
+	</div>
+</script>
+
+<!-- Template -->
+<script type="text/x-jquery-tmpl" id="created">
+   	<div id="<%="c${creatorId}"%>">
+    	<%="${fullName}"%> &nbsp; <a class="icon-large icon-remove" onclick="remb('<%="c${creatorId}"%>');"></a>
+		<aui:input type="hidden" name="gender"/>
+		<input type="hidden" name="<portlet:namespace/>jobTitle" value="<%="${jobTitle}"%>"/>
+		<input type="hidden" name="<portlet:namespace/>firstName" value="<%="${firstName}"%>"/>
+		<input type="hidden" name="<portlet:namespace/>lastName" value="<%="${lastName}"%>"/>
+		<input type="hidden" name="<portlet:namespace/>creatorId" value="<%="${creatorId}"%>"/>
+	</div>
+</script>
+
+<script type="text/javascript">
+		<%
+			String vars ="";
+			try{
+				vars = CreatorLocalServiceUtil.getJSONCreatorsByLectureseriesId(reqLectureseries.getLectureseriesId()).toString();
+			}catch(Exception e){}
+		%>
+		
+		$(function () {
+	        var vars = <%=vars%>;
+	        $.template( "filesTemplate", $("#created") );
+	        $.tmpl( "filesTemplate", vars ).appendTo( "#creators" );
+	    });
+</script>
+
+<liferay-portlet:resourceURL id="getJSONCreator" var="getJSONCreatorURL" />
+
 <script>
+function appendCreator(c){
+	$(function () {
+    	var vars = {'counter':c};
+    	$.template( "filesTemplate", $("#newCreator") );
+    	$.tmpl( "filesTemplate", vars ).appendTo( "#creators" );
+	});
+};
+
+var c = 0;
+$( "#addCreator" ).on( "click", function() {
+	c++;
+	appendCreator(c);
+});
+
+function remb(c){
+	$("#"+c).remove();
+}
 
 AUI().use('aui-node',
   
@@ -219,8 +296,8 @@ function(A) {
     var contProduc = A.one('.prodCont');
     var contFacil = A.one('.facilCont');
     var producerId = A.one('#<portlet:namespace/>producerId');
+    var crId = A.one('#<portlet:namespace/>crId');
     var institutionId = A.one('#<portlet:namespace/>institutionId');
-    var addSemester = A.one('#<portlet:namespace/>addSemester');
     var newSemester = A.one('#<portlet:namespace/>newSemester');
     var allSemesters = A.one('#<portlet:namespace/>allSemesters');
     
@@ -231,6 +308,18 @@ function(A) {
   	   	 		var n = producerId.get(producerId.get('selectedIndex')).get('value');
   	    		var t = producerId.get(producerId.get('selectedIndex')).get('text')+"&nbsp;&nbsp;&nbsp;";
   	  			contProduc.append("<div id='"+n+"'> "+t+" <a style='cursor:pointer;' onClick='document.getElementById(&quot;"+n+"&quot;).remove();'><b>X</b></a><input id='<portlet:namespace></portlet:namespace>producers' name='<portlet:namespace></portlet:namespace>producers' value='"+n+"' type='hidden'/></div>");
+  			}
+      	}
+    );
+    
+    crId.on(
+      	'change',
+      	function(A) {
+  			if(crId.get('value')>0){
+  		        var vars = getJSONCreator(crId.get('value'));
+  		        console.log(vars);
+  		        $.template( "filesTemplate", $("#created") );
+  		        $.tmpl( "filesTemplate", vars ).appendTo( "#creators" );
   			}
       	}
     );
@@ -246,14 +335,26 @@ function(A) {
       	}
     );
     
-    addSemester.on(
-    		'click',
-    		function(A) {
-    			newSemester.show(); 
-    			allSemesters.set("disabled","disabled");
-    		}
-    );
-
   }
 );
+
+function getJSONCreator (data){
+	var ret;
+	$.ajax({
+		  type: "POST",
+		  url: "<%=getJSONCreatorURL%>",
+		  dataType: 'json',
+		  data: {
+		 	   	<portlet:namespace/>creatorId: data,
+		  },
+		  global: false,
+		  async:false,
+		  success: function(data) {
+		    ret = data;
+		  }
+	})
+	return ret;
+}
+
+
 </script>

@@ -2,7 +2,9 @@ package de.uhh.l2g.plugins.service.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
+import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
@@ -12,6 +14,7 @@ import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import de.uhh.l2g.plugins.model.Lectureseries;
+import de.uhh.l2g.plugins.model.Video;
 import de.uhh.l2g.plugins.model.impl.LectureseriesImpl;
 
 public class LectureseriesFinderImpl extends BasePersistenceImpl<Lectureseries> implements LectureseriesFinder {
@@ -19,7 +22,8 @@ public class LectureseriesFinderImpl extends BasePersistenceImpl<Lectureseries> 
 	public static final String FIND_ALL_SEMESTERS = LectureseriesFinder.class.getName() + ".findAllSemesters";
 	public static final String FIND_ALL_LECTURESERIES_WITH_OPENACCESS_VIDEOS = LectureseriesFinder.class.getName() + ".findAllLectureseriesWithOpenAccessVideos";
 	public static final String FIND_ALL_LECTURESERIES_WITH_PASSWORD = LectureseriesFinder.class.getName() + ".findAllLectureseriesWithPassword";
-
+	public static final String FIND_ALL_LECTURESERIES_FOR_VIDEO = LectureseriesFinder.class.getName() + ".findAllLectureseriesForVideo";
+	
 	public List<Lectureseries> findAllLectureseriesWhithPassword(){
 		Session session = null;
 		try {
@@ -28,18 +32,55 @@ public class LectureseriesFinderImpl extends BasePersistenceImpl<Lectureseries> 
 			SQLQuery q = session.createSQLQuery(sql);
 			q.addScalar("number_", Type.STRING);
 			q.addScalar("eventType", Type.STRING);
-			q.addScalar("eventCategory", Type.STRING);
+			q.addScalar("categoryId", Type.LONG);
 			q.addScalar("name", Type.STRING);
 			q.addScalar("shortDesc", Type.STRING);
-			q.addScalar("semesterName", Type.STRING);
+			q.addScalar("termId", Type.LONG);
 			q.addScalar("language", Type.STRING);
 			q.addScalar("facultyName", Type.STRING);
-			q.addScalar("instructorsString", Type.STRING);
 			q.addScalar("lectureseriesId", Type.STRING);
 			q.addScalar("password_", Type.STRING);
 			q.addScalar("approved", Type.STRING);
 			q.addScalar("longDesc", Type.STRING);
+			q.addScalar("latestOpenAccessVideoId", Type.LONG);
 			q.setCacheable(false);			
+			@SuppressWarnings("unchecked")
+			List <Object[]> ls =  (List <Object[]>) QueryUtil.list(q, getDialect(), com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+			return assembleLectureseries(ls);
+		} catch (Exception e) {
+			try {
+				throw new SystemException(e);
+			} catch (SystemException se) {
+				se.printStackTrace();
+			}
+		} finally {
+			closeSession(session);
+		}
+		return null;		
+	}
+	
+	public List<Lectureseries> findAllLectureseriesForVideo(Video video){
+		Session session = null;
+		try {
+			session = openSession();
+			String sql = CustomSQLUtil.get(FIND_ALL_LECTURESERIES_FOR_VIDEO);
+			SQLQuery q = session.createSQLQuery(sql);
+			q.addScalar("number_", Type.STRING);
+			q.addScalar("eventType", Type.STRING);
+			q.addScalar("categoryId", Type.LONG);
+			q.addScalar("name", Type.STRING);
+			q.addScalar("shortDesc", Type.STRING);
+			q.addScalar("termId", Type.LONG);
+			q.addScalar("language", Type.STRING);
+			q.addScalar("facultyName", Type.STRING);
+			q.addScalar("lectureseriesId", Type.STRING);
+			q.addScalar("password_", Type.STRING);
+			q.addScalar("approved", Type.STRING);
+			q.addScalar("longDesc", Type.STRING);
+			q.addScalar("latestOpenAccessVideoId", Type.LONG);
+			QueryPos qPos = QueryPos.getInstance(q);
+			qPos.add(video.getVideoId());
+			q.setCacheable(false);	
 			@SuppressWarnings("unchecked")
 			List <Object[]> ls =  (List <Object[]>) QueryUtil.list(q, getDialect(), com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
 			return assembleLectureseries(ls);
@@ -63,17 +104,17 @@ public class LectureseriesFinderImpl extends BasePersistenceImpl<Lectureseries> 
 			SQLQuery q = session.createSQLQuery(sql);
 			q.addScalar("number_", Type.STRING);
 			q.addScalar("eventType", Type.STRING);
-			q.addScalar("eventCategory", Type.STRING);
+			q.addScalar("categoryId", Type.LONG);
 			q.addScalar("name", Type.STRING);
 			q.addScalar("shortDesc", Type.STRING);
-			q.addScalar("semesterName", Type.STRING);
+			q.addScalar("termId", Type.LONG);
 			q.addScalar("language", Type.STRING);
 			q.addScalar("facultyName", Type.STRING);
-			q.addScalar("instructorsString", Type.STRING);
 			q.addScalar("lectureseriesId", Type.STRING);
 			q.addScalar("password_", Type.STRING);
 			q.addScalar("approved", Type.STRING);
 			q.addScalar("longDesc", Type.STRING);
+			q.addScalar("latestOpenAccessVideoId", Type.LONG);
 			q.setCacheable(false);			
 			@SuppressWarnings("unchecked")
 			List <Object[]> ls =  (List <Object[]>) QueryUtil.list(q, getDialect(), com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
@@ -90,17 +131,29 @@ public class LectureseriesFinderImpl extends BasePersistenceImpl<Lectureseries> 
 		return null;		
 	}
 	
-	public List<String> findAllSemesters(int begin, int end) {
+	public List<Lectureseries> findFilteredByInstitutionParentInstitutionTermCategoryCreator(Long institutionId, Long parentInstitutionId, ArrayList<Long> termIds, ArrayList<Long> categoryIds, ArrayList<Long> creatorIds) {
 		Session session = null;
 		try {
 			session = openSession();
-			String sql = CustomSQLUtil.get(FIND_ALL_SEMESTERS);
+			String sql = sqlFilterForOpenAccessLectureseries(institutionId, parentInstitutionId, termIds, categoryIds, creatorIds);
 			SQLQuery q = session.createSQLQuery(sql);
-			q.addScalar("semesterName", Type.STRING);
+			q.addScalar("number_", Type.STRING);
+			q.addScalar("eventType", Type.STRING);
+			q.addScalar("categoryId", Type.LONG);
+			q.addScalar("name", Type.STRING);
+			q.addScalar("shortDesc", Type.STRING);
+			q.addScalar("termId", Type.LONG);
+			q.addScalar("language", Type.STRING);
+			q.addScalar("facultyName", Type.STRING);
+			q.addScalar("lectureseriesId", Type.STRING);
+			q.addScalar("password_", Type.STRING);
+			q.addScalar("approved", Type.STRING);
+			q.addScalar("longDesc", Type.STRING);
+			q.addScalar("latestOpenAccessVideoId", Type.LONG);
 			q.setCacheable(false);
 			@SuppressWarnings("unchecked")
-			List <String> sl =  (List<String>) QueryUtil.list(q, getDialect(), begin, end);
-			return sl;
+			List <Object[]> l =  (List<Object[]>) QueryUtil.list(q, getDialect(),com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+			return assembleLectureseries(l);
 		} catch (Exception e) {
 			try {
 				throw new SystemException(e);
@@ -112,26 +165,146 @@ public class LectureseriesFinderImpl extends BasePersistenceImpl<Lectureseries> 
 		}
 		return null;
 	}
+	
+	private String sqlFilterForOpenAccessLectureseries(Long institutionId, Long institutionParentId, ArrayList<Long> termIds, List<Long> categoryIds, ArrayList<Long> creatorIds) {
+		// build query
+		
+		String lQuery = "SELECT l.number_, l.eventType, l.categoryId, l.name, l.shortDesc, l.termId, l.language, l.facultyName, l.lectureseriesId, l.password_, l.approved, l.longDesc, l.latestOpenAccessVideoId, l.latestVideoUploadDate FROM LG_Lectureseries AS l ";
+		String vQuery = "SELECT \"00.000\" AS number_, NULL AS eventType, 0 AS categoryId, v.title AS name, v.title AS shortDesc, v.termId, \"\" AS language, \"\" AS facultyName, v.videoId AS lectureseriesId, NULL AS password_, 1 AS approved, v.title AS longDesc, v.lectureseriesId AS latestOpenAccessVideoId, v.uploadDate AS latestVideoUploadDate FROM LG_Video v ";
 
-	public List<Lectureseries> findeFilteredByApprovedSemesterFacultyProducer(Integer approved, String semester, Long facultyId, Long producerId) {
+		String query = "";
+
+		if (institutionId > 0 || institutionParentId > 0) {
+			lQuery += "INNER JOIN LG_Lectureseries_Institution AS li ON ( l.lectureseriesId = li.lectureseriesId ) ";
+			vQuery += "INNER JOIN LG_Video_Institution AS vi ON ( v.videoId = vi.videoId ) ";
+		}
+
+		if (termIds.size() > 0) {
+			lQuery += "INNER JOIN LG_Term AS t ON ( l.termId = t.termId ) ";
+			vQuery += "INNER JOIN LG_Term AS t ON ( v.termId = t.termId ) ";
+		}
+		
+		if (creatorIds.size() > 0) {
+			lQuery += "INNER JOIN LG_Lectureseries_Creator AS lc ON ( l.lectureseriesId = lc.lectureseriesId ) ";
+			vQuery += "INNER JOIN LG_Video_Creator AS vc ON ( v.videoId = vc.videoId ) ";
+		}
+		
+		if (categoryIds.size() > 0) {
+			vQuery += "INNER JOIN LG_Video_Category AS vcat ON ( v.videoId = vcat.videoId ) ";
+		}
+		
+		lQuery += "WHERE l.latestOpenAccessVideoId>0 ";
+		vQuery += "WHERE v.lectureseriesId<0 ";
+		
+		if (institutionId > 0 || institutionParentId > 0 || termIds.size() > 0 || categoryIds.size() > 0 || creatorIds.size() > 0) {
+			int i = 0;
+			if (termIds.size() > 0) {
+				lQuery += "AND ";
+				vQuery += "AND ";
+				ListIterator<Long> it = termIds.listIterator();
+				lQuery += "( ";
+				vQuery += "( ";
+				while(it.hasNext()){
+					Long termId = it.next();
+					if(it.hasNext()){
+						lQuery += "t.termId="+termId+" OR ";
+						vQuery += "t.termId="+termId+" OR ";
+					}
+					else{
+						lQuery += "t.termId="+termId+" ) ";
+						vQuery += "t.termId="+termId+" ) ";
+					}
+				}
+				i++;
+			}
+
+			if (creatorIds.size() > 0) {
+				lQuery += i > 0 ? "AND " : "";
+				vQuery += i > 0 ? "AND " : "";
+				lQuery += "( ";
+				vQuery += "( ";
+				for(int j=0;j<creatorIds.size();j++){
+				Long creatorId = creatorIds.get(j);
+					if(j<(creatorIds.size()-1)){
+						lQuery += "lc.creatorId="+creatorId+" OR ";
+						vQuery += "vc.creatorId="+creatorId+" OR ";
+					}
+					else{
+						lQuery += "lc.creatorId="+creatorId+" ) ";
+						vQuery += "vc.creatorId="+creatorId+" ) ";
+					}
+				}
+				i++;				
+			}
+			
+			if (categoryIds.size() > 0) {
+				lQuery += i > 0 ? "AND " : "";
+				vQuery += i > 0 ? "AND " : "";
+				ListIterator<Long> it = categoryIds.listIterator();
+				lQuery += "( ";
+				vQuery += "( ";
+				while(it.hasNext()){
+					Long categoryId = it.next();
+					if(it.hasNext()){
+						lQuery += "l.categoryId = "+categoryId + " OR ";
+						vQuery += "vcat.categoryId = "+categoryId + " OR ";
+					}
+					else{
+						lQuery += "l.categoryId="+categoryId+" ) ";
+						vQuery += "vcat.categoryId="+categoryId+" ) ";
+					}
+				}
+				i++;				
+			}
+
+			if (institutionId > 0) {
+				lQuery += i > 0 ? "AND " : "";
+				vQuery += i > 0 ? "AND " : "";
+				lQuery += "li.institutionId = "+institutionId + " ";
+				vQuery += "vi.institutionId = "+institutionId + " ";
+				i++;
+			}
+
+			if (institutionParentId > 0) {
+				lQuery += i > 0 ? "AND " : "";
+				vQuery += i > 0 ? "AND " : "";
+				lQuery += "li.institutionParentId = "+institutionParentId + " ";
+				vQuery += "vi.institutionParentId = "+institutionParentId + " ";
+				i++;
+			}
+
+		}
+
+		query = "SELECT * FROM ( ";
+		query+= lQuery;
+		query+= "UNION "; 
+		query+= vQuery;
+		query+= ") ";
+		query+= "AS a ";
+		query+= "ORDER BY a.latestVideoUploadDate";	
+		
+	    return query;
+	}
+
+	public List<Lectureseries> findFilteredByApprovedSemesterFacultyProducer(Integer approved, Long termId, Long facultyId, Long producerId) {
 		Session session = null;
 		try {
 			session = openSession();
-			String sql = sqlFilterForLectureseries(approved, semester, facultyId, producerId);
+			String sql = sqlFilterForLectureseries(approved, termId, facultyId, producerId);
 			SQLQuery q = session.createSQLQuery(sql);
 			q.addScalar("number_", Type.STRING);
 			q.addScalar("eventType", Type.STRING);
-			q.addScalar("eventCategory", Type.STRING);
+			q.addScalar("categoryId", Type.LONG);
 			q.addScalar("name", Type.STRING);
 			q.addScalar("shortDesc", Type.STRING);
-			q.addScalar("semesterName", Type.STRING);
+			q.addScalar("termId", Type.LONG);
 			q.addScalar("language", Type.STRING);
 			q.addScalar("facultyName", Type.STRING);
-			q.addScalar("instructorsString", Type.STRING);
 			q.addScalar("lectureseriesId", Type.STRING);
 			q.addScalar("password_", Type.STRING);
 			q.addScalar("approved", Type.STRING);
 			q.addScalar("longDesc", Type.STRING);
+			q.addScalar("latestOpenAccessVideoId", Type.LONG);
 			q.setCacheable(false);
 			@SuppressWarnings("unchecked")
 			List <Object[]> l =  (List<Object[]>) QueryUtil.list(q, getDialect(),com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
@@ -154,26 +327,25 @@ public class LectureseriesFinderImpl extends BasePersistenceImpl<Lectureseries> 
 			LectureseriesImpl l = new LectureseriesImpl();
 			l.setNumber((String) lectser[0]);
 			l.setEventType((String) lectser[1]);
-			l.setEventCategory((String) lectser[2]);
+			l.setCategoryId((Long) lectser[2]);
 			l.setName((String) lectser[3]);
 			l.setShortDesc((String) lectser[4]);
-			l.setSemesterName((String) lectser[5]);
+			l.setTermId((Long) lectser[5]);
 			l.setLanguage((String) lectser[6]);
 			l.setFacultyName((String) lectser[7]);
-			l.setInstructorsString((String) lectser[8]);
-			l.setLectureseriesId(new Long((String) lectser[9]));
-			l.setPassword((String) lectser[10]);
-			l.setApproved(new Integer((String) lectser[11]));
-			l.setLongDesc((String) lectser[12]);
-			
+			l.setLectureseriesId(new Long((String) lectser[8]));
+			l.setPassword((String) lectser[9]);
+			l.setApproved(new Integer((String) lectser[10]));
+			l.setLongDesc((String) lectser[11]);
+			l.setLatestOpenAccessVideoId((Long) lectser[12]);
 			ll.add(l);
 		}
 		return ll;
 	}
 	
-	private String sqlFilterForLectureseries(Integer approved, String semester, Long facultyId, Long producerId) {
+	private String sqlFilterForLectureseries(Integer approved, Long termId, Long facultyId, Long producerId) {
 		// build query
-		String query = "SELECT c.number_, c.eventType, c.eventCategory, c.name, c.shortDesc, c.longDesc, c.semesterName, c.language, c.facultyName, c.instructorsString, c.lectureseriesId, c.password_, c.approved ";
+		String query = "SELECT c.number_, c.eventType, c.categoryId, c.name, c.shortDesc, c.longDesc, c.termId, c.language, c.facultyName, c.lectureseriesId, c.password_, c.approved, c.longDesc, c.latestOpenAccessVideoId ";
 			   query += "FROM LG_Lectureseries AS c ";
 
 		if (facultyId > 0) {
@@ -186,11 +358,11 @@ public class LectureseriesFinderImpl extends BasePersistenceImpl<Lectureseries> 
 			query += "INNER JOIN LG_Producer AS p ON ( pc.producerId = p.producerId ) ";
 		}
 
-		if ((!"".equals(semester) && semester != null) || (approved==1 || approved==0) || facultyId > 0 || producerId > 0) {
+		if (termId>0 || (approved==1 || approved==0) || facultyId > 0 || producerId > 0) {
 			query += "WHERE ";
 			int i = 0;
-			if (!"".equals(semester) && semester != null) {
-				query += "c.semesterName = \""+semester + "\" ";
+			if (termId > 0) {
+				query += "c.termId = \""+termId + "\" ";
 				i++;
 			}
 

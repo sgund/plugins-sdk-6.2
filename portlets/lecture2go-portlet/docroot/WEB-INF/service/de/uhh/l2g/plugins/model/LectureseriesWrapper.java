@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,6 +17,7 @@ package de.uhh.l2g.plugins.model;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.ModelWrapper;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,17 +52,20 @@ public class LectureseriesWrapper implements Lectureseries,
 
 		attributes.put("number", getNumber());
 		attributes.put("eventType", getEventType());
-		attributes.put("eventCategory", getEventCategory());
+		attributes.put("categoryId", getCategoryId());
 		attributes.put("name", getName());
 		attributes.put("shortDesc", getShortDesc());
-		attributes.put("semesterName", getSemesterName());
+		attributes.put("termId", getTermId());
 		attributes.put("language", getLanguage());
 		attributes.put("facultyName", getFacultyName());
-		attributes.put("instructorsString", getInstructorsString());
 		attributes.put("lectureseriesId", getLectureseriesId());
 		attributes.put("password", getPassword());
 		attributes.put("approved", getApproved());
 		attributes.put("longDesc", getLongDesc());
+		attributes.put("latestOpenAccessVideoId", getLatestOpenAccessVideoId());
+		attributes.put("latestVideoUploadDate", getLatestVideoUploadDate());
+		attributes.put("latestVideoGenerationDate",
+			getLatestVideoGenerationDate());
 
 		return attributes;
 	}
@@ -80,10 +84,10 @@ public class LectureseriesWrapper implements Lectureseries,
 			setEventType(eventType);
 		}
 
-		String eventCategory = (String)attributes.get("eventCategory");
+		Long categoryId = (Long)attributes.get("categoryId");
 
-		if (eventCategory != null) {
-			setEventCategory(eventCategory);
+		if (categoryId != null) {
+			setCategoryId(categoryId);
 		}
 
 		String name = (String)attributes.get("name");
@@ -98,10 +102,10 @@ public class LectureseriesWrapper implements Lectureseries,
 			setShortDesc(shortDesc);
 		}
 
-		String semesterName = (String)attributes.get("semesterName");
+		Long termId = (Long)attributes.get("termId");
 
-		if (semesterName != null) {
-			setSemesterName(semesterName);
+		if (termId != null) {
+			setTermId(termId);
 		}
 
 		String language = (String)attributes.get("language");
@@ -114,12 +118,6 @@ public class LectureseriesWrapper implements Lectureseries,
 
 		if (facultyName != null) {
 			setFacultyName(facultyName);
-		}
-
-		String instructorsString = (String)attributes.get("instructorsString");
-
-		if (instructorsString != null) {
-			setInstructorsString(instructorsString);
 		}
 
 		Long lectureseriesId = (Long)attributes.get("lectureseriesId");
@@ -144,6 +142,27 @@ public class LectureseriesWrapper implements Lectureseries,
 
 		if (longDesc != null) {
 			setLongDesc(longDesc);
+		}
+
+		Long latestOpenAccessVideoId = (Long)attributes.get(
+				"latestOpenAccessVideoId");
+
+		if (latestOpenAccessVideoId != null) {
+			setLatestOpenAccessVideoId(latestOpenAccessVideoId);
+		}
+
+		Date latestVideoUploadDate = (Date)attributes.get(
+				"latestVideoUploadDate");
+
+		if (latestVideoUploadDate != null) {
+			setLatestVideoUploadDate(latestVideoUploadDate);
+		}
+
+		String latestVideoGenerationDate = (String)attributes.get(
+				"latestVideoGenerationDate");
+
+		if (latestVideoGenerationDate != null) {
+			setLatestVideoGenerationDate(latestVideoGenerationDate);
 		}
 	}
 
@@ -208,23 +227,23 @@ public class LectureseriesWrapper implements Lectureseries,
 	}
 
 	/**
-	* Returns the event category of this lectureseries.
+	* Returns the category ID of this lectureseries.
 	*
-	* @return the event category of this lectureseries
+	* @return the category ID of this lectureseries
 	*/
 	@Override
-	public java.lang.String getEventCategory() {
-		return _lectureseries.getEventCategory();
+	public long getCategoryId() {
+		return _lectureseries.getCategoryId();
 	}
 
 	/**
-	* Sets the event category of this lectureseries.
+	* Sets the category ID of this lectureseries.
 	*
-	* @param eventCategory the event category of this lectureseries
+	* @param categoryId the category ID of this lectureseries
 	*/
 	@Override
-	public void setEventCategory(java.lang.String eventCategory) {
-		_lectureseries.setEventCategory(eventCategory);
+	public void setCategoryId(long categoryId) {
+		_lectureseries.setCategoryId(categoryId);
 	}
 
 	/**
@@ -268,23 +287,23 @@ public class LectureseriesWrapper implements Lectureseries,
 	}
 
 	/**
-	* Returns the semester name of this lectureseries.
+	* Returns the term ID of this lectureseries.
 	*
-	* @return the semester name of this lectureseries
+	* @return the term ID of this lectureseries
 	*/
 	@Override
-	public java.lang.String getSemesterName() {
-		return _lectureseries.getSemesterName();
+	public long getTermId() {
+		return _lectureseries.getTermId();
 	}
 
 	/**
-	* Sets the semester name of this lectureseries.
+	* Sets the term ID of this lectureseries.
 	*
-	* @param semesterName the semester name of this lectureseries
+	* @param termId the term ID of this lectureseries
 	*/
 	@Override
-	public void setSemesterName(java.lang.String semesterName) {
-		_lectureseries.setSemesterName(semesterName);
+	public void setTermId(long termId) {
+		_lectureseries.setTermId(termId);
 	}
 
 	/**
@@ -325,26 +344,6 @@ public class LectureseriesWrapper implements Lectureseries,
 	@Override
 	public void setFacultyName(java.lang.String facultyName) {
 		_lectureseries.setFacultyName(facultyName);
-	}
-
-	/**
-	* Returns the instructors string of this lectureseries.
-	*
-	* @return the instructors string of this lectureseries
-	*/
-	@Override
-	public java.lang.String getInstructorsString() {
-		return _lectureseries.getInstructorsString();
-	}
-
-	/**
-	* Sets the instructors string of this lectureseries.
-	*
-	* @param instructorsString the instructors string of this lectureseries
-	*/
-	@Override
-	public void setInstructorsString(java.lang.String instructorsString) {
-		_lectureseries.setInstructorsString(instructorsString);
 	}
 
 	/**
@@ -425,6 +424,67 @@ public class LectureseriesWrapper implements Lectureseries,
 	@Override
 	public void setLongDesc(java.lang.String longDesc) {
 		_lectureseries.setLongDesc(longDesc);
+	}
+
+	/**
+	* Returns the latest open access video ID of this lectureseries.
+	*
+	* @return the latest open access video ID of this lectureseries
+	*/
+	@Override
+	public long getLatestOpenAccessVideoId() {
+		return _lectureseries.getLatestOpenAccessVideoId();
+	}
+
+	/**
+	* Sets the latest open access video ID of this lectureseries.
+	*
+	* @param latestOpenAccessVideoId the latest open access video ID of this lectureseries
+	*/
+	@Override
+	public void setLatestOpenAccessVideoId(long latestOpenAccessVideoId) {
+		_lectureseries.setLatestOpenAccessVideoId(latestOpenAccessVideoId);
+	}
+
+	/**
+	* Returns the latest video upload date of this lectureseries.
+	*
+	* @return the latest video upload date of this lectureseries
+	*/
+	@Override
+	public java.util.Date getLatestVideoUploadDate() {
+		return _lectureseries.getLatestVideoUploadDate();
+	}
+
+	/**
+	* Sets the latest video upload date of this lectureseries.
+	*
+	* @param latestVideoUploadDate the latest video upload date of this lectureseries
+	*/
+	@Override
+	public void setLatestVideoUploadDate(java.util.Date latestVideoUploadDate) {
+		_lectureseries.setLatestVideoUploadDate(latestVideoUploadDate);
+	}
+
+	/**
+	* Returns the latest video generation date of this lectureseries.
+	*
+	* @return the latest video generation date of this lectureseries
+	*/
+	@Override
+	public java.lang.String getLatestVideoGenerationDate() {
+		return _lectureseries.getLatestVideoGenerationDate();
+	}
+
+	/**
+	* Sets the latest video generation date of this lectureseries.
+	*
+	* @param latestVideoGenerationDate the latest video generation date of this lectureseries
+	*/
+	@Override
+	public void setLatestVideoGenerationDate(
+		java.lang.String latestVideoGenerationDate) {
+		_lectureseries.setLatestVideoGenerationDate(latestVideoGenerationDate);
 	}
 
 	@Override

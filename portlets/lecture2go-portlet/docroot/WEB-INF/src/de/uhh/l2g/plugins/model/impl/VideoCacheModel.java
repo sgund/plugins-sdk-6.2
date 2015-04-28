@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -37,14 +37,12 @@ import java.util.Date;
 public class VideoCacheModel implements CacheModel<Video>, Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{videoId=");
 		sb.append(videoId);
 		sb.append(", title=");
 		sb.append(title);
-		sb.append(", tags=");
-		sb.append(tags);
 		sb.append(", lectureseriesId=");
 		sb.append(lectureseriesId);
 		sb.append(", producerId=");
@@ -81,6 +79,12 @@ public class VideoCacheModel implements CacheModel<Video>, Externalizable {
 		sb.append(rootInstitutionId);
 		sb.append(", citation2go=");
 		sb.append(citation2go);
+		sb.append(", termId=");
+		sb.append(termId);
+		sb.append(", videoCreatorId=");
+		sb.append(videoCreatorId);
+		sb.append(", tags=");
+		sb.append(tags);
 		sb.append("}");
 
 		return sb.toString();
@@ -97,13 +101,6 @@ public class VideoCacheModel implements CacheModel<Video>, Externalizable {
 		}
 		else {
 			videoImpl.setTitle(title);
-		}
-
-		if (tags == null) {
-			videoImpl.setTags(StringPool.BLANK);
-		}
-		else {
-			videoImpl.setTags(tags);
 		}
 
 		videoImpl.setLectureseriesId(lectureseriesId);
@@ -176,6 +173,15 @@ public class VideoCacheModel implements CacheModel<Video>, Externalizable {
 		videoImpl.setPermittedToSegment(permittedToSegment);
 		videoImpl.setRootInstitutionId(rootInstitutionId);
 		videoImpl.setCitation2go(citation2go);
+		videoImpl.setTermId(termId);
+		videoImpl.setVideoCreatorId(videoCreatorId);
+
+		if (tags == null) {
+			videoImpl.setTags(StringPool.BLANK);
+		}
+		else {
+			videoImpl.setTags(tags);
+		}
 
 		videoImpl.resetOriginalValues();
 
@@ -186,7 +192,6 @@ public class VideoCacheModel implements CacheModel<Video>, Externalizable {
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		videoId = objectInput.readLong();
 		title = objectInput.readUTF();
-		tags = objectInput.readUTF();
 		lectureseriesId = objectInput.readLong();
 		producerId = objectInput.readLong();
 		containerFormat = objectInput.readUTF();
@@ -205,6 +210,9 @@ public class VideoCacheModel implements CacheModel<Video>, Externalizable {
 		permittedToSegment = objectInput.readInt();
 		rootInstitutionId = objectInput.readLong();
 		citation2go = objectInput.readInt();
+		termId = objectInput.readLong();
+		videoCreatorId = objectInput.readLong();
+		tags = objectInput.readUTF();
 	}
 
 	@Override
@@ -217,13 +225,6 @@ public class VideoCacheModel implements CacheModel<Video>, Externalizable {
 		}
 		else {
 			objectOutput.writeUTF(title);
-		}
-
-		if (tags == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(tags);
 		}
 
 		objectOutput.writeLong(lectureseriesId);
@@ -289,11 +290,19 @@ public class VideoCacheModel implements CacheModel<Video>, Externalizable {
 		objectOutput.writeInt(permittedToSegment);
 		objectOutput.writeLong(rootInstitutionId);
 		objectOutput.writeInt(citation2go);
+		objectOutput.writeLong(termId);
+		objectOutput.writeLong(videoCreatorId);
+
+		if (tags == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(tags);
+		}
 	}
 
 	public long videoId;
 	public String title;
-	public String tags;
 	public long lectureseriesId;
 	public long producerId;
 	public String containerFormat;
@@ -312,4 +321,7 @@ public class VideoCacheModel implements CacheModel<Video>, Externalizable {
 	public int permittedToSegment;
 	public long rootInstitutionId;
 	public int citation2go;
+	public long termId;
+	public long videoCreatorId;
+	public String tags;
 }
