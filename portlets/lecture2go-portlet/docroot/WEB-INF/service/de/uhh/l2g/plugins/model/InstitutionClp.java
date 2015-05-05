@@ -80,6 +80,7 @@ public class InstitutionClp extends BaseModelImpl<Institution>
 		attributes.put("www", getWww());
 		attributes.put("level", getLevel());
 		attributes.put("sort", getSort());
+		attributes.put("groupOldId", getGroupOldId());
 		attributes.put("groupId", getGroupId());
 
 		return attributes;
@@ -127,6 +128,12 @@ public class InstitutionClp extends BaseModelImpl<Institution>
 
 		if (sort != null) {
 			setSort(sort);
+		}
+
+		Long groupOldId = (Long)attributes.get("groupOldId");
+
+		if (groupOldId != null) {
+			setGroupOldId(groupOldId);
 		}
 
 		Long groupId = (Long)attributes.get("groupId");
@@ -298,6 +305,29 @@ public class InstitutionClp extends BaseModelImpl<Institution>
 	}
 
 	@Override
+	public long getGroupOldId() {
+		return _groupOldId;
+	}
+
+	@Override
+	public void setGroupOldId(long groupOldId) {
+		_groupOldId = groupOldId;
+
+		if (_institutionRemoteModel != null) {
+			try {
+				Class<?> clazz = _institutionRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupOldId", long.class);
+
+				method.invoke(_institutionRemoteModel, groupOldId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
@@ -431,6 +461,7 @@ public class InstitutionClp extends BaseModelImpl<Institution>
 		clone.setWww(getWww());
 		clone.setLevel(getLevel());
 		clone.setSort(getSort());
+		clone.setGroupOldId(getGroupOldId());
 		clone.setGroupId(getGroupId());
 
 		return clone;
@@ -490,7 +521,7 @@ public class InstitutionClp extends BaseModelImpl<Institution>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{institutionId=");
 		sb.append(getInstitutionId());
@@ -506,6 +537,8 @@ public class InstitutionClp extends BaseModelImpl<Institution>
 		sb.append(getLevel());
 		sb.append(", sort=");
 		sb.append(getSort());
+		sb.append(", groupOldId=");
+		sb.append(getGroupOldId());
 		sb.append(", groupId=");
 		sb.append(getGroupId());
 		sb.append("}");
@@ -515,7 +548,7 @@ public class InstitutionClp extends BaseModelImpl<Institution>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(28);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("<model><model-name>");
 		sb.append("de.uhh.l2g.plugins.model.Institution");
@@ -550,6 +583,10 @@ public class InstitutionClp extends BaseModelImpl<Institution>
 		sb.append(getSort());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>groupOldId</column-name><column-value><![CDATA[");
+		sb.append(getGroupOldId());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>groupId</column-name><column-value><![CDATA[");
 		sb.append(getGroupId());
 		sb.append("]]></column-value></column>");
@@ -566,6 +603,7 @@ public class InstitutionClp extends BaseModelImpl<Institution>
 	private String _www;
 	private int _level;
 	private int _sort;
+	private long _groupOldId;
 	private long _groupId;
 	private BaseModel<?> _institutionRemoteModel;
 	private Class<?> _clpSerializerClass = de.uhh.l2g.plugins.service.ClpSerializer.class;

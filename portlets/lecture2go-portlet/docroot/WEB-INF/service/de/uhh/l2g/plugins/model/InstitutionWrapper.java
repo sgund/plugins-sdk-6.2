@@ -56,6 +56,7 @@ public class InstitutionWrapper implements Institution,
 		attributes.put("www", getWww());
 		attributes.put("level", getLevel());
 		attributes.put("sort", getSort());
+		attributes.put("groupOldId", getGroupOldId());
 		attributes.put("groupId", getGroupId());
 
 		return attributes;
@@ -103,6 +104,12 @@ public class InstitutionWrapper implements Institution,
 
 		if (sort != null) {
 			setSort(sort);
+		}
+
+		Long groupOldId = (Long)attributes.get("groupOldId");
+
+		if (groupOldId != null) {
+			setGroupOldId(groupOldId);
 		}
 
 		Long groupId = (Long)attributes.get("groupId");
@@ -270,6 +277,26 @@ public class InstitutionWrapper implements Institution,
 	@Override
 	public void setSort(int sort) {
 		_institution.setSort(sort);
+	}
+
+	/**
+	* Returns the group old ID of this institution.
+	*
+	* @return the group old ID of this institution
+	*/
+	@Override
+	public long getGroupOldId() {
+		return _institution.getGroupOldId();
+	}
+
+	/**
+	* Sets the group old ID of this institution.
+	*
+	* @param groupOldId the group old ID of this institution
+	*/
+	@Override
+	public void setGroupOldId(long groupOldId) {
+		_institution.setGroupOldId(groupOldId);
 	}
 
 	/**

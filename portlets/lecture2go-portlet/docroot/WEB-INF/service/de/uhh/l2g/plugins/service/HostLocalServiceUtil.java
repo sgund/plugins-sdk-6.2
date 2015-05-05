@@ -294,12 +294,6 @@ public class HostLocalServiceUtil {
 		return getService().getByTemplateConfiguredAndGroupId(groupId);
 	}
 
-	public static java.util.List<de.uhh.l2g.plugins.model.Host> getByG(
-		long groupId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getService().getByG(groupId);
-	}
-
 	public static de.uhh.l2g.plugins.model.Host getByGroupIdAndHostId(
 		long groupId, long hostId)
 		throws com.liferay.portal.kernel.exception.SystemException {

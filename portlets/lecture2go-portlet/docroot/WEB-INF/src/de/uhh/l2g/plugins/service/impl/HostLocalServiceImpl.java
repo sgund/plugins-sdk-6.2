@@ -76,10 +76,6 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 		return hostPersistence.findByTemplateConfiguredAndGroupId(groupId);
 	}
 
-	public List<Host> getByG(long groupId) throws SystemException{
-		return hostPersistence.findByG(groupId);
-	}
-
 	public Host getByGroupIdAndHostId(long groupId, long hostId) throws SystemException{
 		return hostPersistence.fetchByG_H(groupId, hostId);
 	}

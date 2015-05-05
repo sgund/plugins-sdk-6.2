@@ -44,14 +44,27 @@ create index IX_9D792271 on LG_Lectureseries (eventCategory);
 create index IX_EBC55E2D on LG_Lectureseries (eventType);
 create index IX_F43BC8 on LG_Lectureseries (facultyName);
 create index IX_4F65B8A3 on LG_Lectureseries (language);
+<<<<<<< HEAD
 create index IX_714473BA on LG_Lectureseries (latestOpenAccessVideoId);
 create index IX_7DCCF0F3 on LG_Lectureseries (latestVideoGenerationDate);
+=======
+create index IX_183A42D8 on LG_Lectureseries (latestGenerationDate);
+create index IX_714473BA on LG_Lectureseries (latestOpenAccessVideoId);
+create index IX_7DCCF0F3 on LG_Lectureseries (latestVideoGenerationDate);
+create index IX_5EDF7468 on LG_Lectureseries (latestVideoId);
+>>>>>>> refs/heads/upstream-master
 create index IX_31FBA89C on LG_Lectureseries (latestVideoUploadDate);
 create index IX_DB929396 on LG_Lectureseries (name);
 create index IX_225A0AF on LG_Lectureseries (number_);
 create index IX_3714125D on LG_Lectureseries (password_);
 create index IX_2E421DEE on LG_Lectureseries (semesterName);
+<<<<<<< HEAD
 create index IX_8D242272 on LG_Lectureseries (termId);
+=======
+create index IX_E5CD21A4 on LG_Lectureseries (tags);
+create index IX_8D242272 on LG_Lectureseries (termId);
+create index IX_77CE15C3 on LG_Lectureseries (yearId);
+>>>>>>> refs/heads/upstream-master
 
 create index IX_EE7F24BF on LG_Lectureseries_Category (categoryId);
 create index IX_E459C00E on LG_Lectureseries_Category (lectureseriesId);
@@ -65,9 +78,16 @@ create index IX_A6D66CFD on LG_Lectureseries_Institution (institutionParentId);
 create index IX_C80ED770 on LG_Lectureseries_Institution (lectureseriesId);
 create index IX_4B074373 on LG_Lectureseries_Institution (lectureseriesId, institutionId);
 
+create index IX_A925E0D7 on LG_Lectureseries_Person (lectureseriesId);
+create index IX_6537F3ED on LG_Lectureseries_Person (personId);
+
 create index IX_C0376223 on LG_License (videoId);
 
 create index IX_41F2963D on LG_Office (institutionId);
+
+create index IX_368EB4AC on LG_Person (firstName);
+create index IX_6E15F674 on LG_Person (lastName);
+create index IX_25B1F5F3 on LG_Person (middleName);
 
 create index IX_4FD6C927 on LG_Producer (approved);
 create index IX_7DAEE222 on LG_Producer (homeDir);
@@ -86,6 +106,7 @@ create index IX_87A17CC1 on LG_Segment_User_Video (segmentId);
 create index IX_165E5A37 on LG_Segment_User_Video (userId);
 create index IX_F1DC7249 on LG_Segment_User_Video (videoId);
 
+<<<<<<< HEAD
 create index IX_A0EB34C3 on LG_ServerTemplate (groupId);
 create index IX_7A43E1D3 on LG_ServerTemplate (serverTemplateId);
 create index IX_E896F037 on LG_ServerTemplate (serverTemplateId, groupId);
@@ -93,6 +114,18 @@ create index IX_E896F037 on LG_ServerTemplate (serverTemplateId, groupId);
 create index IX_CA87A1E on LG_Tagcloud (objectClassType);
 create index IX_6D2C99CC on LG_Tagcloud (objectClassType, objectId);
 create index IX_385A2033 on LG_Tagcloud (objectId);
+=======
+create index IX_8CFBC36 on LG_Tagcloud (isLectureseries);
+create index IX_A59DF0BC on LG_Tagcloud (isVideo);
+create index IX_CA87A1E on LG_Tagcloud (objectClassType);
+create index IX_6D2C99CC on LG_Tagcloud (objectClassType, objectId);
+create index IX_385A2033 on LG_Tagcloud (objectId);
+create index IX_2FE55CF0 on LG_Tagcloud (type_);
+
+create index IX_297D1038 on LG_Tags (isLectureseries);
+create index IX_AC9866BE on LG_Tags (isVideo);
+create index IX_B51AB490 on LG_Tags (tags);
+>>>>>>> refs/heads/upstream-master
 
 create index IX_4A54301C on LG_Term (prefix);
 create index IX_16F89D07 on LG_Term (year);
@@ -123,4 +156,11 @@ create index IX_B5AE333 on LG_Video_Institution (videoId, institutionId);
 create index IX_12087ECD on LG_Video_Lectureseries (lectureseriesId);
 create index IX_F35885D3 on LG_Video_Lectureseries (videoId);
 
+<<<<<<< HEAD
 create index IX_BBE4D526 on LG_Videohitlist (videoId);
+=======
+create index IX_BBE4D526 on LG_Videohitlist (videoId);
+
+create index IX_D6EE16A6 on LG_Year (name);
+create index IX_1954A2AD on LG_Year (prefix);
+>>>>>>> refs/heads/upstream-master

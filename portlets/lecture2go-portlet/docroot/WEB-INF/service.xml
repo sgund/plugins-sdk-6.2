@@ -69,7 +69,8 @@
     	<column name="www" type="String"></column>
     	<column name="level" type="int"></column>
     	<column name="sort" type="int"></column>
-    	<column name="groupId" type="long"></column>
+    	<column name="groupOldId" type="long"></column>
+        <column name="groupId" type="long"></column>
 		<order by="asc"> <order-column name="sort" />
 		</order>
     	<finder name="Parent" return-type="Collection">
@@ -217,9 +218,6 @@
         <finder name="G_H" return-type="Host">
             <finder-column name="groupId"></finder-column>
             <finder-column name="hostId"></finder-column>
-        </finder>
-        <finder name="G" return-type="Collection">
-            <finder-column name="groupId"></finder-column>
         </finder>
     </entity>
     <entity name="Institution_Host" local-service="true" remote-service="false">
@@ -426,37 +424,7 @@
             <finder-column name="lectureseriesId"></finder-column>
         </finder>
     </entity>
-    <entity name="ServerTemplate" local-service="true" remote-service="false">
-
-
-    	<!-- PK fields -->
-
-    	<column name="serverTemplateId" type="long" primary="true"></column>
-
-    	<!-- Group instance -->
-
-    	<column name="groupId" type="long"></column>
-
-    	<!-- Audit fields -->
-        <column name="name" type="String" accessor="false"></column>
-        <column name="type" type="int"></column>
-        <column name="prefixURL" type="String"></column>
-        <column name="suffixURL" type="String"></column>
-        <column name="secExt" type="String"></column>
-        <column name="templateURL" type="String"></column>
-        <column name="prefixFile" type="String"></column>
-        <column name="suffixFile" type="String"></column>
-        <column name="templateFile" type="String"></column>
-        <column name="templateIOS" type="long"></column>
-        <column name="templateAndroid" type="long"></column>
-        <finder name="GroupId" return-type="Collection" where="type &lt; 1" db-index="true">
-            <finder-column name="groupId" case-sensitive="true"></finder-column>
-        </finder>
-        <finder name="DeviceSpecificURLs" return-type="Collection" where="type = 0 AND (templateIOS &gt; 0 OR templateAndroid &gt; 0)" db-index="true">
-            <finder-column name="serverTemplateId"></finder-column>
-        </finder>
-    </entity>
-       <entity name="Term" local-service="true" remote-service="false">
+    <entity name="Term" local-service="true" remote-service="false">
 
     	<!-- PK fields -->
 
@@ -603,6 +571,27 @@
         <finder name="ObjectClassTypeAndObjectId" return-type="Tagcloud">
             <finder-column name="objectClassType"></finder-column>
             <finder-column name="objectId"></finder-column>
+        </finder>
+    </entity>
+        <entity name="ServerTemplate" local-service="true" remote-service="false">
+    	<column name="serverTemplateId" type="long" primary="true"></column>
+		<column name="groupId" type="long"></column>
+        <column name="name" type="String" accessor="false"></column>
+        <column name="type" type="int"></column>
+        <column name="prefixURL" type="String"></column>
+        <column name="suffixURL" type="String"></column>
+        <column name="secExt" type="String"></column>
+        <column name="templateURL" type="String"></column>
+        <column name="prefixFile" type="String"></column>
+        <column name="suffixFile" type="String"></column>
+        <column name="templateFile" type="String"></column>
+        <column name="templateIOS" type="long"></column>
+        <column name="templateAndroid" type="long"></column>
+        <finder name="GroupId" return-type="Collection" where="type &lt; 1" db-index="true">
+            <finder-column name="groupId" case-sensitive="true"></finder-column>
+        </finder>
+        <finder name="DeviceSpecificURLs" return-type="Collection" where="type = 0 AND (templateIOS &gt; 0 OR templateAndroid &gt; 0)" db-index="true">
+            <finder-column name="serverTemplateId"></finder-column>
         </finder>
     </entity>
     <exceptions>

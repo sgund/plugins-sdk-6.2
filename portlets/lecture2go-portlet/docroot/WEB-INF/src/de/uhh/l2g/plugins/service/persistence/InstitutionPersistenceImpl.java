@@ -10033,6 +10033,7 @@ public class InstitutionPersistenceImpl extends BasePersistenceImpl<Institution>
 		institutionImpl.setWww(institution.getWww());
 		institutionImpl.setLevel(institution.getLevel());
 		institutionImpl.setSort(institution.getSort());
+		institutionImpl.setGroupOldId(institution.getGroupOldId());
 		institutionImpl.setGroupId(institution.getGroupId());
 
 		return institutionImpl;

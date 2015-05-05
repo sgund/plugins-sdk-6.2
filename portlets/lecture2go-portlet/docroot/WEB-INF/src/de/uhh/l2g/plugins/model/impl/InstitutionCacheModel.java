@@ -36,7 +36,7 @@ public class InstitutionCacheModel implements CacheModel<Institution>,
 	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{institutionId=");
 		sb.append(institutionId);
@@ -52,6 +52,8 @@ public class InstitutionCacheModel implements CacheModel<Institution>,
 		sb.append(level);
 		sb.append(", sort=");
 		sb.append(sort);
+		sb.append(", groupOldId=");
+		sb.append(groupOldId);
 		sb.append(", groupId=");
 		sb.append(groupId);
 		sb.append("}");
@@ -89,6 +91,7 @@ public class InstitutionCacheModel implements CacheModel<Institution>,
 
 		institutionImpl.setLevel(level);
 		institutionImpl.setSort(sort);
+		institutionImpl.setGroupOldId(groupOldId);
 		institutionImpl.setGroupId(groupId);
 
 		institutionImpl.resetOriginalValues();
@@ -105,6 +108,7 @@ public class InstitutionCacheModel implements CacheModel<Institution>,
 		www = objectInput.readUTF();
 		level = objectInput.readInt();
 		sort = objectInput.readInt();
+		groupOldId = objectInput.readLong();
 		groupId = objectInput.readLong();
 	}
 
@@ -137,6 +141,7 @@ public class InstitutionCacheModel implements CacheModel<Institution>,
 
 		objectOutput.writeInt(level);
 		objectOutput.writeInt(sort);
+		objectOutput.writeLong(groupOldId);
 		objectOutput.writeLong(groupId);
 	}
 
@@ -147,5 +152,6 @@ public class InstitutionCacheModel implements CacheModel<Institution>,
 	public String www;
 	public int level;
 	public int sort;
+	public long groupOldId;
 	public long groupId;
 }

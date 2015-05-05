@@ -124,17 +124,13 @@ public class HostLocalServiceClpInvoker {
 
 		_methodParameterTypes159 = new String[] { "long" };
 
-		_methodName160 = "getByG";
+		_methodName160 = "getByGroupIdAndHostId";
 
-		_methodParameterTypes160 = new String[] { "long" };
+		_methodParameterTypes160 = new String[] { "long", "long" };
 
-		_methodName161 = "getByGroupIdAndHostId";
+		_methodName162 = "addHost";
 
-		_methodParameterTypes161 = new String[] { "long", "long" };
-
-		_methodName163 = "addHost";
-
-		_methodParameterTypes163 = new String[] {
+		_methodParameterTypes162 = new String[] {
 				"java.lang.String", "java.lang.String", "long",
 				"java.lang.String", "java.lang.String", "int",
 				"com.liferay.portal.service.ServiceContext"
@@ -264,17 +260,12 @@ public class HostLocalServiceClpInvoker {
 
 		if (_methodName160.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes160, parameterTypes)) {
-			return HostLocalServiceUtil.getByG(((Long)arguments[0]).longValue());
-		}
-
-		if (_methodName161.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes161, parameterTypes)) {
 			return HostLocalServiceUtil.getByGroupIdAndHostId(((Long)arguments[0]).longValue(),
 				((Long)arguments[1]).longValue());
 		}
 
-		if (_methodName163.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes163, parameterTypes)) {
+		if (_methodName162.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes162, parameterTypes)) {
 			return HostLocalServiceUtil.addHost((java.lang.String)arguments[0],
 				(java.lang.String)arguments[1],
 				((Long)arguments[2]).longValue(),
@@ -332,8 +323,6 @@ public class HostLocalServiceClpInvoker {
 	private String[] _methodParameterTypes159;
 	private String _methodName160;
 	private String[] _methodParameterTypes160;
-	private String _methodName161;
-	private String[] _methodParameterTypes161;
-	private String _methodName163;
-	private String[] _methodParameterTypes163;
+	private String _methodName162;
+	private String[] _methodParameterTypes162;
 }

@@ -22,6 +22,16 @@ create table LG_Creator (
 	fullName VARCHAR(75) null
 );
 
+create table LG_Creator (
+	creatorId LONG not null primary key,
+	firstName VARCHAR(75) null,
+	lastName VARCHAR(75) null,
+	middleName VARCHAR(75) null,
+	jobTitle VARCHAR(75) null,
+	gender VARCHAR(75) null,
+	fullName VARCHAR(75) null
+);
+
 create table LG_Host (
 	hostId LONG not null primary key,
 	serverTemplateId LONG,
@@ -150,6 +160,7 @@ create table LG_Segment (
 	userId LONG
 );
 
+<<<<<<< HEAD
 create table LG_Segment_User_Video (
 	segmentId LONG,
 	userId LONG,
@@ -173,6 +184,8 @@ create table LG_ServerTemplate (
 	templateAndroid LONG
 );
 
+=======
+>>>>>>> refs/heads/upstream-master
 create table LG_Sys (
 	sysId INTEGER not null primary key,
 	version VARCHAR(75) null,
@@ -195,15 +208,20 @@ create table LG_Term (
 	translation VARCHAR(75) null
 );
 
-create table LG_TestEntity (
-	testEntityId LONG not null primary key,
-	groupId LONG,
-	companyId LONG,
-	userId LONG,
-	userName VARCHAR(75) null,
-	createDate DATE null,
-	modifiedDate DATE null,
-	testField VARCHAR(75) null
+create table LG_Tagcloud (
+	tagcloudId LONG not null primary key,
+	objectClassType VARCHAR(75) null,
+	objectId LONG,
+	tags VARCHAR(75) null
+);
+
+create table LG_Term (
+	termId LONG not null primary key,
+	parentId LONG,
+	languageId VARCHAR(75) null,
+	prefix VARCHAR(75) null,
+	year VARCHAR(75) null,
+	translation VARCHAR(75) null
 );
 
 create table LG_Upload (

@@ -36,6 +36,7 @@ public class InstitutionSoap implements Serializable {
 		soapModel.setWww(model.getWww());
 		soapModel.setLevel(model.getLevel());
 		soapModel.setSort(model.getSort());
+		soapModel.setGroupOldId(model.getGroupOldId());
 		soapModel.setGroupId(model.getGroupId());
 
 		return soapModel;
@@ -145,6 +146,14 @@ public class InstitutionSoap implements Serializable {
 		_sort = sort;
 	}
 
+	public long getGroupOldId() {
+		return _groupOldId;
+	}
+
+	public void setGroupOldId(long groupOldId) {
+		_groupOldId = groupOldId;
+	}
+
 	public long getGroupId() {
 		return _groupId;
 	}
@@ -160,5 +169,6 @@ public class InstitutionSoap implements Serializable {
 	private String _www;
 	private int _level;
 	private int _sort;
+	private long _groupOldId;
 	private long _groupId;
 }

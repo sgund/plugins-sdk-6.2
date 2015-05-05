@@ -109,6 +109,7 @@
 <%@ page import="de.uhh.l2g.plugins.permission.InstitutionPermission" %>
 <%@ page import="de.uhh.l2g.plugins.permission.HostPermission" %>
 
+
 <portlet:defineObjects />
 <liferay-theme:defineObjects/>
 
@@ -137,14 +138,14 @@ try{
 	}else{
 		if(permissionCoordinator){
 			permissionProducer=false;
-			permissionStudent=false;		
+			permissionStudent=false;
 		}else{
 			if(permissionProducer){
 				permissionStudent=false;
 			}
 		}
 	}
-	PortletPreferences prefs = renderRequest.getPreferences();	
+	PortletPreferences prefs = renderRequest.getPreferences();
 }catch(Exception e){
 	//
 }

@@ -25,21 +25,31 @@ public class LectureseriesFinderUtil {
 		return getFinder().findAllLectureseriesWhithPassword();
 	}
 
+	public static java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findAllLectureseriesForVideo(
+		de.uhh.l2g.plugins.model.Video video) {
+		return getFinder().findAllLectureseriesForVideo(video);
+	}
+
 	public static java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findAllLectureseriesWhithOpenaccessVideos() {
 		return getFinder().findAllLectureseriesWhithOpenaccessVideos();
 	}
 
-	public static java.util.List<java.lang.String> findAllSemesters(int begin,
-		int end) {
-		return getFinder().findAllSemesters(begin, end);
+	public static java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findFilteredByInstitutionParentInstitutionTermCategoryCreator(
+		java.lang.Long institutionId, java.lang.Long parentInstitutionId,
+		java.util.ArrayList<java.lang.Long> termIds,
+		java.util.ArrayList<java.lang.Long> categoryIds,
+		java.util.ArrayList<java.lang.Long> creatorIds) {
+		return getFinder()
+				   .findFilteredByInstitutionParentInstitutionTermCategoryCreator(institutionId,
+			parentInstitutionId, termIds, categoryIds, creatorIds);
 	}
 
-	public static java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findeFilteredByApprovedSemesterFacultyProducer(
-		java.lang.Integer approved, java.lang.String semester,
+	public static java.util.List<de.uhh.l2g.plugins.model.Lectureseries> findFilteredByApprovedSemesterFacultyProducer(
+		java.lang.Integer approved, java.lang.Long termId,
 		java.lang.Long facultyId, java.lang.Long producerId) {
 		return getFinder()
-				   .findeFilteredByApprovedSemesterFacultyProducer(approved,
-			semester, facultyId, producerId);
+				   .findFilteredByApprovedSemesterFacultyProducer(approved,
+			termId, facultyId, producerId);
 	}
 
 	public static LectureseriesFinder getFinder() {

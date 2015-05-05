@@ -306,12 +306,6 @@ public class HostLocalServiceWrapper implements HostLocalService,
 	}
 
 	@Override
-	public java.util.List<de.uhh.l2g.plugins.model.Host> getByG(long groupId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return _hostLocalService.getByG(groupId);
-	}
-
-	@Override
 	public de.uhh.l2g.plugins.model.Host getByGroupIdAndHostId(long groupId,
 		long hostId) throws com.liferay.portal.kernel.exception.SystemException {
 		return _hostLocalService.getByGroupIdAndHostId(groupId, hostId);

@@ -16,7 +16,7 @@ import de.uhh.l2g.plugins.service.LectureseriesLocalServiceUtil;
 import de.uhh.l2g.plugins.service.VideoLocalServiceUtil;
 
 public class OpenAccessVideos extends MVCPortlet {
-	
+
 	public void viewOpenAccessLectureSeries(ActionRequest request, ActionResponse response) throws SystemException, PortalException {
 		//terms array
 		ArrayList<Long> termIds = new ArrayList<Long>();
@@ -30,16 +30,15 @@ public class OpenAccessVideos extends MVCPortlet {
 		ArrayList<Long> creatorIds =  new ArrayList<Long>();
 		creatorIds.add(new Long(1));
 		creatorIds.add(new Long(2));
-		//institution 
+		//institution
 		Long institutionId = new Long(74);
 		Long parentInstitutionId = new Long(3);
 		//return list
 		List<Lectureseries> lectureseries = LectureseriesLocalServiceUtil.getFilteredByInstitutionParentInstitutionTermCategoryCreatorSearchString(institutionId, parentInstitutionId, termIds, categoryIds, creatorIds);
 		List<Video> videos = VideoLocalServiceUtil.getFilteredByInstitutionParentInstitutionTermCategoryCreator(institutionId, parentInstitutionId, termIds, categoryIds, creatorIds);
-		
+
 		request.setAttribute("reqLectureseries", lectureseries);
 		request.setAttribute("reqVideos", videos);
 		response.setRenderParameter("jspPage","/guest/videosList.jsp");
 	}
-	
 }
