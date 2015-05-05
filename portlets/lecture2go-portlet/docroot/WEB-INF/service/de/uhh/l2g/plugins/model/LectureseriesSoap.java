@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,6 +17,7 @@ package de.uhh.l2g.plugins.model;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,17 +32,19 @@ public class LectureseriesSoap implements Serializable {
 
 		soapModel.setNumber(model.getNumber());
 		soapModel.setEventType(model.getEventType());
-		soapModel.setEventCategory(model.getEventCategory());
+		soapModel.setCategoryId(model.getCategoryId());
 		soapModel.setName(model.getName());
 		soapModel.setShortDesc(model.getShortDesc());
-		soapModel.setSemesterName(model.getSemesterName());
+		soapModel.setTermId(model.getTermId());
 		soapModel.setLanguage(model.getLanguage());
 		soapModel.setFacultyName(model.getFacultyName());
-		soapModel.setInstructorsString(model.getInstructorsString());
 		soapModel.setLectureseriesId(model.getLectureseriesId());
 		soapModel.setPassword(model.getPassword());
 		soapModel.setApproved(model.getApproved());
 		soapModel.setLongDesc(model.getLongDesc());
+		soapModel.setLatestOpenAccessVideoId(model.getLatestOpenAccessVideoId());
+		soapModel.setLatestVideoUploadDate(model.getLatestVideoUploadDate());
+		soapModel.setLatestVideoGenerationDate(model.getLatestVideoGenerationDate());
 
 		return soapModel;
 	}
@@ -110,12 +113,12 @@ public class LectureseriesSoap implements Serializable {
 		_eventType = eventType;
 	}
 
-	public String getEventCategory() {
-		return _eventCategory;
+	public long getCategoryId() {
+		return _categoryId;
 	}
 
-	public void setEventCategory(String eventCategory) {
-		_eventCategory = eventCategory;
+	public void setCategoryId(long categoryId) {
+		_categoryId = categoryId;
 	}
 
 	public String getName() {
@@ -134,12 +137,12 @@ public class LectureseriesSoap implements Serializable {
 		_shortDesc = shortDesc;
 	}
 
-	public String getSemesterName() {
-		return _semesterName;
+	public long getTermId() {
+		return _termId;
 	}
 
-	public void setSemesterName(String semesterName) {
-		_semesterName = semesterName;
+	public void setTermId(long termId) {
+		_termId = termId;
 	}
 
 	public String getLanguage() {
@@ -156,14 +159,6 @@ public class LectureseriesSoap implements Serializable {
 
 	public void setFacultyName(String facultyName) {
 		_facultyName = facultyName;
-	}
-
-	public String getInstructorsString() {
-		return _instructorsString;
-	}
-
-	public void setInstructorsString(String instructorsString) {
-		_instructorsString = instructorsString;
 	}
 
 	public long getLectureseriesId() {
@@ -198,17 +193,43 @@ public class LectureseriesSoap implements Serializable {
 		_longDesc = longDesc;
 	}
 
+	public long getLatestOpenAccessVideoId() {
+		return _latestOpenAccessVideoId;
+	}
+
+	public void setLatestOpenAccessVideoId(long latestOpenAccessVideoId) {
+		_latestOpenAccessVideoId = latestOpenAccessVideoId;
+	}
+
+	public Date getLatestVideoUploadDate() {
+		return _latestVideoUploadDate;
+	}
+
+	public void setLatestVideoUploadDate(Date latestVideoUploadDate) {
+		_latestVideoUploadDate = latestVideoUploadDate;
+	}
+
+	public String getLatestVideoGenerationDate() {
+		return _latestVideoGenerationDate;
+	}
+
+	public void setLatestVideoGenerationDate(String latestVideoGenerationDate) {
+		_latestVideoGenerationDate = latestVideoGenerationDate;
+	}
+
 	private String _number;
 	private String _eventType;
-	private String _eventCategory;
+	private long _categoryId;
 	private String _name;
 	private String _shortDesc;
-	private String _semesterName;
+	private long _termId;
 	private String _language;
 	private String _facultyName;
-	private String _instructorsString;
 	private long _lectureseriesId;
 	private String _password;
 	private int _approved;
 	private String _longDesc;
+	private long _latestOpenAccessVideoId;
+	private Date _latestVideoUploadDate;
+	private String _latestVideoGenerationDate;
 }

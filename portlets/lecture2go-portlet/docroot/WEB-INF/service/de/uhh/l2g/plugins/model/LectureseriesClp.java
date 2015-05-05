@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -28,6 +28,7 @@ import java.io.Serializable;
 
 import java.lang.reflect.Method;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,17 +76,20 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 
 		attributes.put("number", getNumber());
 		attributes.put("eventType", getEventType());
-		attributes.put("eventCategory", getEventCategory());
+		attributes.put("categoryId", getCategoryId());
 		attributes.put("name", getName());
 		attributes.put("shortDesc", getShortDesc());
-		attributes.put("semesterName", getSemesterName());
+		attributes.put("termId", getTermId());
 		attributes.put("language", getLanguage());
 		attributes.put("facultyName", getFacultyName());
-		attributes.put("instructorsString", getInstructorsString());
 		attributes.put("lectureseriesId", getLectureseriesId());
 		attributes.put("password", getPassword());
 		attributes.put("approved", getApproved());
 		attributes.put("longDesc", getLongDesc());
+		attributes.put("latestOpenAccessVideoId", getLatestOpenAccessVideoId());
+		attributes.put("latestVideoUploadDate", getLatestVideoUploadDate());
+		attributes.put("latestVideoGenerationDate",
+			getLatestVideoGenerationDate());
 
 		return attributes;
 	}
@@ -104,10 +108,10 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 			setEventType(eventType);
 		}
 
-		String eventCategory = (String)attributes.get("eventCategory");
+		Long categoryId = (Long)attributes.get("categoryId");
 
-		if (eventCategory != null) {
-			setEventCategory(eventCategory);
+		if (categoryId != null) {
+			setCategoryId(categoryId);
 		}
 
 		String name = (String)attributes.get("name");
@@ -122,10 +126,10 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 			setShortDesc(shortDesc);
 		}
 
-		String semesterName = (String)attributes.get("semesterName");
+		Long termId = (Long)attributes.get("termId");
 
-		if (semesterName != null) {
-			setSemesterName(semesterName);
+		if (termId != null) {
+			setTermId(termId);
 		}
 
 		String language = (String)attributes.get("language");
@@ -138,12 +142,6 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 
 		if (facultyName != null) {
 			setFacultyName(facultyName);
-		}
-
-		String instructorsString = (String)attributes.get("instructorsString");
-
-		if (instructorsString != null) {
-			setInstructorsString(instructorsString);
 		}
 
 		Long lectureseriesId = (Long)attributes.get("lectureseriesId");
@@ -168,6 +166,27 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 
 		if (longDesc != null) {
 			setLongDesc(longDesc);
+		}
+
+		Long latestOpenAccessVideoId = (Long)attributes.get(
+				"latestOpenAccessVideoId");
+
+		if (latestOpenAccessVideoId != null) {
+			setLatestOpenAccessVideoId(latestOpenAccessVideoId);
+		}
+
+		Date latestVideoUploadDate = (Date)attributes.get(
+				"latestVideoUploadDate");
+
+		if (latestVideoUploadDate != null) {
+			setLatestVideoUploadDate(latestVideoUploadDate);
+		}
+
+		String latestVideoGenerationDate = (String)attributes.get(
+				"latestVideoGenerationDate");
+
+		if (latestVideoGenerationDate != null) {
+			setLatestVideoGenerationDate(latestVideoGenerationDate);
 		}
 	}
 
@@ -218,21 +237,21 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 	}
 
 	@Override
-	public String getEventCategory() {
-		return _eventCategory;
+	public long getCategoryId() {
+		return _categoryId;
 	}
 
 	@Override
-	public void setEventCategory(String eventCategory) {
-		_eventCategory = eventCategory;
+	public void setCategoryId(long categoryId) {
+		_categoryId = categoryId;
 
 		if (_lectureseriesRemoteModel != null) {
 			try {
 				Class<?> clazz = _lectureseriesRemoteModel.getClass();
 
-				Method method = clazz.getMethod("setEventCategory", String.class);
+				Method method = clazz.getMethod("setCategoryId", long.class);
 
-				method.invoke(_lectureseriesRemoteModel, eventCategory);
+				method.invoke(_lectureseriesRemoteModel, categoryId);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -287,21 +306,21 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 	}
 
 	@Override
-	public String getSemesterName() {
-		return _semesterName;
+	public long getTermId() {
+		return _termId;
 	}
 
 	@Override
-	public void setSemesterName(String semesterName) {
-		_semesterName = semesterName;
+	public void setTermId(long termId) {
+		_termId = termId;
 
 		if (_lectureseriesRemoteModel != null) {
 			try {
 				Class<?> clazz = _lectureseriesRemoteModel.getClass();
 
-				Method method = clazz.getMethod("setSemesterName", String.class);
+				Method method = clazz.getMethod("setTermId", long.class);
 
-				method.invoke(_lectureseriesRemoteModel, semesterName);
+				method.invoke(_lectureseriesRemoteModel, termId);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -348,30 +367,6 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 				Method method = clazz.getMethod("setFacultyName", String.class);
 
 				method.invoke(_lectureseriesRemoteModel, facultyName);
-			}
-			catch (Exception e) {
-				throw new UnsupportedOperationException(e);
-			}
-		}
-	}
-
-	@Override
-	public String getInstructorsString() {
-		return _instructorsString;
-	}
-
-	@Override
-	public void setInstructorsString(String instructorsString) {
-		_instructorsString = instructorsString;
-
-		if (_lectureseriesRemoteModel != null) {
-			try {
-				Class<?> clazz = _lectureseriesRemoteModel.getClass();
-
-				Method method = clazz.getMethod("setInstructorsString",
-						String.class);
-
-				method.invoke(_lectureseriesRemoteModel, instructorsString);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -471,6 +466,79 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 		}
 	}
 
+	@Override
+	public long getLatestOpenAccessVideoId() {
+		return _latestOpenAccessVideoId;
+	}
+
+	@Override
+	public void setLatestOpenAccessVideoId(long latestOpenAccessVideoId) {
+		_latestOpenAccessVideoId = latestOpenAccessVideoId;
+
+		if (_lectureseriesRemoteModel != null) {
+			try {
+				Class<?> clazz = _lectureseriesRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setLatestOpenAccessVideoId",
+						long.class);
+
+				method.invoke(_lectureseriesRemoteModel, latestOpenAccessVideoId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public Date getLatestVideoUploadDate() {
+		return _latestVideoUploadDate;
+	}
+
+	@Override
+	public void setLatestVideoUploadDate(Date latestVideoUploadDate) {
+		_latestVideoUploadDate = latestVideoUploadDate;
+
+		if (_lectureseriesRemoteModel != null) {
+			try {
+				Class<?> clazz = _lectureseriesRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setLatestVideoUploadDate",
+						Date.class);
+
+				method.invoke(_lectureseriesRemoteModel, latestVideoUploadDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public String getLatestVideoGenerationDate() {
+		return _latestVideoGenerationDate;
+	}
+
+	@Override
+	public void setLatestVideoGenerationDate(String latestVideoGenerationDate) {
+		_latestVideoGenerationDate = latestVideoGenerationDate;
+
+		if (_lectureseriesRemoteModel != null) {
+			try {
+				Class<?> clazz = _lectureseriesRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setLatestVideoGenerationDate",
+						String.class);
+
+				method.invoke(_lectureseriesRemoteModel,
+					latestVideoGenerationDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
 	public BaseModel<?> getLectureseriesRemoteModel() {
 		return _lectureseriesRemoteModel;
 	}
@@ -543,17 +611,19 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 
 		clone.setNumber(getNumber());
 		clone.setEventType(getEventType());
-		clone.setEventCategory(getEventCategory());
+		clone.setCategoryId(getCategoryId());
 		clone.setName(getName());
 		clone.setShortDesc(getShortDesc());
-		clone.setSemesterName(getSemesterName());
+		clone.setTermId(getTermId());
 		clone.setLanguage(getLanguage());
 		clone.setFacultyName(getFacultyName());
-		clone.setInstructorsString(getInstructorsString());
 		clone.setLectureseriesId(getLectureseriesId());
 		clone.setPassword(getPassword());
 		clone.setApproved(getApproved());
 		clone.setLongDesc(getLongDesc());
+		clone.setLatestOpenAccessVideoId(getLatestOpenAccessVideoId());
+		clone.setLatestVideoUploadDate(getLatestVideoUploadDate());
+		clone.setLatestVideoGenerationDate(getLatestVideoGenerationDate());
 
 		return clone;
 	}
@@ -593,6 +663,10 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 		}
 	}
 
+	public Class<?> getClpSerializerClass() {
+		return _clpSerializerClass;
+	}
+
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
@@ -600,26 +674,24 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("{number=");
 		sb.append(getNumber());
 		sb.append(", eventType=");
 		sb.append(getEventType());
-		sb.append(", eventCategory=");
-		sb.append(getEventCategory());
+		sb.append(", categoryId=");
+		sb.append(getCategoryId());
 		sb.append(", name=");
 		sb.append(getName());
 		sb.append(", shortDesc=");
 		sb.append(getShortDesc());
-		sb.append(", semesterName=");
-		sb.append(getSemesterName());
+		sb.append(", termId=");
+		sb.append(getTermId());
 		sb.append(", language=");
 		sb.append(getLanguage());
 		sb.append(", facultyName=");
 		sb.append(getFacultyName());
-		sb.append(", instructorsString=");
-		sb.append(getInstructorsString());
 		sb.append(", lectureseriesId=");
 		sb.append(getLectureseriesId());
 		sb.append(", password=");
@@ -628,6 +700,12 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 		sb.append(getApproved());
 		sb.append(", longDesc=");
 		sb.append(getLongDesc());
+		sb.append(", latestOpenAccessVideoId=");
+		sb.append(getLatestOpenAccessVideoId());
+		sb.append(", latestVideoUploadDate=");
+		sb.append(getLatestVideoUploadDate());
+		sb.append(", latestVideoGenerationDate=");
+		sb.append(getLatestVideoGenerationDate());
 		sb.append("}");
 
 		return sb.toString();
@@ -635,7 +713,7 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(49);
 
 		sb.append("<model><model-name>");
 		sb.append("de.uhh.l2g.plugins.model.Lectureseries");
@@ -650,8 +728,8 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 		sb.append(getEventType());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>eventCategory</column-name><column-value><![CDATA[");
-		sb.append(getEventCategory());
+			"<column><column-name>categoryId</column-name><column-value><![CDATA[");
+		sb.append(getCategoryId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>name</column-name><column-value><![CDATA[");
@@ -662,8 +740,8 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 		sb.append(getShortDesc());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>semesterName</column-name><column-value><![CDATA[");
-		sb.append(getSemesterName());
+			"<column><column-name>termId</column-name><column-value><![CDATA[");
+		sb.append(getTermId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>language</column-name><column-value><![CDATA[");
@@ -672,10 +750,6 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 		sb.append(
 			"<column><column-name>facultyName</column-name><column-value><![CDATA[");
 		sb.append(getFacultyName());
-		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>instructorsString</column-name><column-value><![CDATA[");
-		sb.append(getInstructorsString());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>lectureseriesId</column-name><column-value><![CDATA[");
@@ -693,6 +767,18 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 			"<column><column-name>longDesc</column-name><column-value><![CDATA[");
 		sb.append(getLongDesc());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>latestOpenAccessVideoId</column-name><column-value><![CDATA[");
+		sb.append(getLatestOpenAccessVideoId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>latestVideoUploadDate</column-name><column-value><![CDATA[");
+		sb.append(getLatestVideoUploadDate());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>latestVideoGenerationDate</column-name><column-value><![CDATA[");
+		sb.append(getLatestVideoGenerationDate());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -701,16 +787,19 @@ public class LectureseriesClp extends BaseModelImpl<Lectureseries>
 
 	private String _number;
 	private String _eventType;
-	private String _eventCategory;
+	private long _categoryId;
 	private String _name;
 	private String _shortDesc;
-	private String _semesterName;
+	private long _termId;
 	private String _language;
 	private String _facultyName;
-	private String _instructorsString;
 	private long _lectureseriesId;
 	private String _password;
 	private int _approved;
 	private String _longDesc;
+	private long _latestOpenAccessVideoId;
+	private Date _latestVideoUploadDate;
+	private String _latestVideoGenerationDate;
 	private BaseModel<?> _lectureseriesRemoteModel;
+	private Class<?> _clpSerializerClass = de.uhh.l2g.plugins.service.ClpSerializer.class;
 }

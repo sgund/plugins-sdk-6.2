@@ -71,4 +71,5 @@ public class CoordinatorLocalServiceImpl extends CoordinatorLocalServiceBaseImpl
 		List<Coordinator> coords = CoordinatorLocalServiceUtil.getCoordinators(begin, end);
 		return fillProps(coords);
 	}
+	
 }

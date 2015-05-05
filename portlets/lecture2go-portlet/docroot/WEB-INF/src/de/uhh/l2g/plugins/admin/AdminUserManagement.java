@@ -28,6 +28,9 @@ import de.uhh.l2g.plugins.model.Coordinator;
 import de.uhh.l2g.plugins.model.Institution;
 import de.uhh.l2g.plugins.model.Host;
 import de.uhh.l2g.plugins.model.Producer;
+import de.uhh.l2g.plugins.model.impl.CoordinatorImpl;
+import de.uhh.l2g.plugins.model.impl.HostImpl;
+import de.uhh.l2g.plugins.model.impl.ProducerImpl;
 import de.uhh.l2g.plugins.service.CoordinatorLocalServiceUtil;
 import de.uhh.l2g.plugins.service.InstitutionLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Institution_HostLocalServiceUtil;
@@ -95,8 +98,10 @@ public class AdminUserManagement extends MVCPortlet {
 			List<Institution> allFacil = InstitutionLocalServiceUtil.getByLevel(1);//all institutions for coordinator drop down menu
 			List<User> allCoord = UserLocalServiceUtil.getRoleUsers(RoleLocalServiceUtil.getRole(remoteUser.getCompanyId(), "L2Go Coordinator").getRoleId()); 
 			List<Institution> assignedInstitutions = new ArrayList<Institution>();		
-			for (int i = 0; i < allCoord.size(); i++)
+			try{
+				for (int i = 0; i < allCoord.size(); i++)
 				assignedInstitutions.add(InstitutionLocalServiceUtil.getInstitution(CoordinatorLocalServiceUtil.getCoordinator(allCoord.get(i).getUserId()).getInstitutionId()));
+			}catch(Exception e){}
 			List<Institution> notAssignedInstitutions = new ArrayList<Institution>();
 			for(int i = 0; i < allFacil.size(); i++){
 				boolean assigned = false;
@@ -220,8 +225,12 @@ public class AdminUserManagement extends MVCPortlet {
 		}
 		if(n.equals("L2Go Producer")){
 			// remove role from l2go producer table, because empty
-			if (ProducerLocalServiceUtil.fetchProducer(u.getUserId()) != null)
-				ProducerLocalServiceUtil.deleteProducer(u.getUserId());			
+			Producer p = ProducerLocalServiceUtil.fetchProducer(u.getUserId());
+			if ( p != null) {
+				p.setInstitutionId(0);
+				p.setApproved(0);
+				ProducerLocalServiceUtil.updateProducer(p);	
+			}
 		}
 	}
 	
@@ -238,8 +247,8 @@ public class AdminUserManagement extends MVCPortlet {
 	
 	private void handleCoordinatorRequest(ActionRequest request) throws NumberFormatException, PortalException, SystemException {
 		User u = UserLocalServiceUtil.getUser(new Long(request.getParameter("userId")));
-		Coordinator c = null;
-
+		
+		Coordinator c = new CoordinatorImpl();
 		try {
 			c = CoordinatorLocalServiceUtil.getCoordinator(new Long(u.getUserId()));
 		} catch (PortalException e) {
@@ -257,36 +266,35 @@ public class AdminUserManagement extends MVCPortlet {
 	
 	private void handleProducerRequest(ActionRequest request) throws NumberFormatException, PortalException, SystemException, IOException {
 		User u = UserLocalServiceUtil.getUser(new Long(request.getParameter("userId")));
-		Producer p = null;
+		Producer p = new ProducerImpl();
 		//initialize producer
 		try {
-			p = ProducerLocalServiceUtil.getProducer(new Long(u.getUserId()));
-		} catch (PortalException e) {
-			p = ProducerLocalServiceUtil.createProducer(u.getUserId());
+			p = ProducerLocalServiceUtil.getProducer(u.getUserId());
+		} catch (Exception e) {
+			p.setProducerId(u.getUserId());
 		}
 		// save role to l2go producer table
-		p.setProducerId(u.getUserId());
 		p.setInstitutionId(new Long(request.getParameter("pfId")));
 		p.setApproved(1);
+		// home directory 
+		p.setHomeDir(u.getScreenName());
 		// repository for producer
-		Host h = null;
+		Host h = new HostImpl();
 		try{
 			h = Institution_HostLocalServiceUtil.getByInstitutionId(p.getInstitutionId());
 			// host to producer 
 			p.setHostId(h.getHostId());
-			// home directory 
-			p.setHomeDir(u.getScreenName());
-			if(createProducersRepository(h, p)){
-				// add or update entry
-				ProducerLocalServiceUtil.updateProducer(p);				
-				// finaly add role to user
-				addL2GoRole("L2Go Producer", u);
-				UserLocalServiceUtil.addRoleUser(RoleLocalServiceUtil.getRole(u.getCompanyId(), "L2Go Producer").getRoleId(), u.getUserId());	
-			}else{
-				SessionErrors.add(request, "system-permissions-error");
-			}
 		}catch(Exception e){
 			SessionErrors.add(request, "host-or-institution-error");
+		}
+		if(createProducersRepository(h, p)){
+			// add or update entry
+			ProducerLocalServiceUtil.updateProducer(p);				
+			// finaly add role to user
+			addL2GoRole("L2Go Producer", u);
+			UserLocalServiceUtil.addRoleUser(RoleLocalServiceUtil.getRole(u.getCompanyId(), "L2Go Producer").getRoleId(), u.getUserId());	
+		}else{
+			SessionErrors.add(request, "system-permissions-error");
 		}
 	}
 	
@@ -310,7 +318,9 @@ public class AdminUserManagement extends MVCPortlet {
 				}
 				ret = true;
 			}
-		}	
+		}else{
+			ret = true;
+		}
 		return ret;
 	}
 	

@@ -22,13 +22,13 @@
 		if(coordinatorId>0){
 			Long institutionId = CoordinatorLocalServiceUtil.getCoordinator(coordinatorId).getInstitutionId();
 			producers = ProducerLocalServiceUtil.getProducersByInstitutionId(institutionId);
-			if(producerId==0)tempVideosList = VideoLocalServiceUtil.getByInstitution(institutionId);
+			if(producerId==0)tempVideosList = VideoLocalServiceUtil.getByRootInstitution(institutionId);
 			else {
-				lectureseries = LectureseriesLocalServiceUtil.getFilteredBySemesterFacultyProducer(1, "", new Long(0), producerId);
+				lectureseries = LectureseriesLocalServiceUtil.getFilteredBySemesterFacultyProducer(1, new Long(0), new Long(0), producerId);
 				if(lectureseriesId==0) tempVideosList = VideoLocalServiceUtil.getByProducer(producerId);
 				else tempVideosList = VideoLocalServiceUtil.getByProducerAndLectureseries(producerId, lectureseriesId);
 			}
-		}else{
+		}else{ 
 			producerId = new Long(0);
 			tempVideosList = VideoLocalServiceUtil.getVideos(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
 		}
@@ -39,18 +39,18 @@
 			Long institutionId = CoordinatorLocalServiceUtil.getCoordinator(coordinatorId).getInstitutionId();
 			producers = ProducerLocalServiceUtil.getProducersByInstitutionId(institutionId);
 			if(producerId>0){
-				lectureseries = LectureseriesLocalServiceUtil.getFilteredBySemesterFacultyProducer(1, "", new Long(0), producerId);
+				lectureseries = LectureseriesLocalServiceUtil.getFilteredBySemesterFacultyProducer(1, new Long(0), new Long(0), producerId);
 				if(lectureseriesId==0)tempVideosList = VideoLocalServiceUtil.getByProducer(producerId);
 				else tempVideosList = VideoLocalServiceUtil.getByProducerAndLectureseries(producerId, lectureseriesId);
 			}else{
-				tempVideosList = VideoLocalServiceUtil.getByInstitution(institutionId);
+				tempVideosList = VideoLocalServiceUtil.getByRootInstitution(institutionId);
 			}
 		}else{
 			if(permissionProducer){
 				producerId = remoteUser.getUserId();
 				if(lectureseriesId>0) tempVideosList = VideoLocalServiceUtil.getByProducerAndLectureseries(producerId, lectureseriesId);
 				else tempVideosList = VideoLocalServiceUtil.getByProducer(producerId);
-				lectureseries = LectureseriesLocalServiceUtil.getFilteredBySemesterFacultyProducer(1, "", new Long(0), producerId);
+				lectureseries = LectureseriesLocalServiceUtil.getFilteredBySemesterFacultyProducer(1, new Long(0), new Long(0), producerId);
 			}
 		}
 	}
@@ -131,7 +131,7 @@
 			<portlet:param name="producerId" value='<%=producerId+""%>'/>
 			<portlet:param name="backURL" value="<%=String.valueOf(portletURL)%>"/>	
 		</portlet:actionURL>	
-		<a href="<%=addVideoURL.toString()%>">
+		<a href="<%=addVideoURL.toString()%>" target="_blank">
 		    add-video <span class="icon-large icon-plus-sign"/>
 		</a>
 <%}%>
@@ -166,7 +166,7 @@
 				String vName = vid.getTitle();
 				if(vName.trim().equals(""))vName ="NOT TITLED";
 			
-			if(!vid.getFilename().equals("")){%><aui:a  href="<%=url%>" target="blank"><%=vName%></aui:a><%}
+			if(!vid.getFilename().equals("")){%><aui:a  href="<%=url%>" target="blank"><i class="icon-small icon-link"></i>&nbsp;<%=vName%></aui:a><%}
 			else{%> <%=vName%> <%}%>
 			<%if(!lName.equals("")){%>
 				<br/>

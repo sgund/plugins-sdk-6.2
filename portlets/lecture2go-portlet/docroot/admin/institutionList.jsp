@@ -66,7 +66,7 @@ portletURL.setParameter("hostId", hostId+"");
 portletURL.setParameter("serverTemplateId", hostId+"");
 
 List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupIdAndParent(0,1);
-List<Host> hostList = HostLocalServiceUtil.getByTemplateAndGroupId(0);
+List<Host> hostList = HostLocalServiceUtil.getByTemplateConfiguredAndGroupId(groupId);
 
 for (int i = 0; i < institutions.size(); i++) {
 	Institution curInstitution = (Institution) institutions.get(i);

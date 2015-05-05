@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -285,6 +285,12 @@ public class VideohitlistLocalServiceWrapper implements VideohitlistLocalService
 		throws java.lang.Throwable {
 		return _videohitlistLocalService.invokeMethod(name, parameterTypes,
 			arguments);
+	}
+
+	@Override
+	public void deleteByVideoId(java.lang.Long videoId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		_videohitlistLocalService.deleteByVideoId(videoId);
 	}
 
 	/**

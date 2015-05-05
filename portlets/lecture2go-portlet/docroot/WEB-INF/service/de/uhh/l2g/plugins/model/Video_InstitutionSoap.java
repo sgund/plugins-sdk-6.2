@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -32,6 +32,7 @@ public class Video_InstitutionSoap implements Serializable {
 		soapModel.setVideoInstitutionId(model.getVideoInstitutionId());
 		soapModel.setVideoId(model.getVideoId());
 		soapModel.setInstitutionId(model.getInstitutionId());
+		soapModel.setInstitutionParentId(model.getInstitutionParentId());
 
 		return soapModel;
 	}
@@ -111,7 +112,16 @@ public class Video_InstitutionSoap implements Serializable {
 		_institutionId = institutionId;
 	}
 
+	public long getInstitutionParentId() {
+		return _institutionParentId;
+	}
+
+	public void setInstitutionParentId(long institutionParentId) {
+		_institutionParentId = institutionParentId;
+	}
+
 	private long _videoInstitutionId;
 	private long _videoId;
 	private long _institutionId;
+	private long _institutionParentId;
 }

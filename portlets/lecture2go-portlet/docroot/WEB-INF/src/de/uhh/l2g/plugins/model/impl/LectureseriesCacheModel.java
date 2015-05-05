@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import java.util.Date;
+
 /**
  * The cache model class for representing Lectureseries in entity cache.
  *
@@ -36,26 +38,24 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("{number=");
 		sb.append(number);
 		sb.append(", eventType=");
 		sb.append(eventType);
-		sb.append(", eventCategory=");
-		sb.append(eventCategory);
+		sb.append(", categoryId=");
+		sb.append(categoryId);
 		sb.append(", name=");
 		sb.append(name);
 		sb.append(", shortDesc=");
 		sb.append(shortDesc);
-		sb.append(", semesterName=");
-		sb.append(semesterName);
+		sb.append(", termId=");
+		sb.append(termId);
 		sb.append(", language=");
 		sb.append(language);
 		sb.append(", facultyName=");
 		sb.append(facultyName);
-		sb.append(", instructorsString=");
-		sb.append(instructorsString);
 		sb.append(", lectureseriesId=");
 		sb.append(lectureseriesId);
 		sb.append(", password=");
@@ -64,6 +64,12 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 		sb.append(approved);
 		sb.append(", longDesc=");
 		sb.append(longDesc);
+		sb.append(", latestOpenAccessVideoId=");
+		sb.append(latestOpenAccessVideoId);
+		sb.append(", latestVideoUploadDate=");
+		sb.append(latestVideoUploadDate);
+		sb.append(", latestVideoGenerationDate=");
+		sb.append(latestVideoGenerationDate);
 		sb.append("}");
 
 		return sb.toString();
@@ -87,12 +93,7 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 			lectureseriesImpl.setEventType(eventType);
 		}
 
-		if (eventCategory == null) {
-			lectureseriesImpl.setEventCategory(StringPool.BLANK);
-		}
-		else {
-			lectureseriesImpl.setEventCategory(eventCategory);
-		}
+		lectureseriesImpl.setCategoryId(categoryId);
 
 		if (name == null) {
 			lectureseriesImpl.setName(StringPool.BLANK);
@@ -108,12 +109,7 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 			lectureseriesImpl.setShortDesc(shortDesc);
 		}
 
-		if (semesterName == null) {
-			lectureseriesImpl.setSemesterName(StringPool.BLANK);
-		}
-		else {
-			lectureseriesImpl.setSemesterName(semesterName);
-		}
+		lectureseriesImpl.setTermId(termId);
 
 		if (language == null) {
 			lectureseriesImpl.setLanguage(StringPool.BLANK);
@@ -127,13 +123,6 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 		}
 		else {
 			lectureseriesImpl.setFacultyName(facultyName);
-		}
-
-		if (instructorsString == null) {
-			lectureseriesImpl.setInstructorsString(StringPool.BLANK);
-		}
-		else {
-			lectureseriesImpl.setInstructorsString(instructorsString);
 		}
 
 		lectureseriesImpl.setLectureseriesId(lectureseriesId);
@@ -154,6 +143,23 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 			lectureseriesImpl.setLongDesc(longDesc);
 		}
 
+		lectureseriesImpl.setLatestOpenAccessVideoId(latestOpenAccessVideoId);
+
+		if (latestVideoUploadDate == Long.MIN_VALUE) {
+			lectureseriesImpl.setLatestVideoUploadDate(null);
+		}
+		else {
+			lectureseriesImpl.setLatestVideoUploadDate(new Date(
+					latestVideoUploadDate));
+		}
+
+		if (latestVideoGenerationDate == null) {
+			lectureseriesImpl.setLatestVideoGenerationDate(StringPool.BLANK);
+		}
+		else {
+			lectureseriesImpl.setLatestVideoGenerationDate(latestVideoGenerationDate);
+		}
+
 		lectureseriesImpl.resetOriginalValues();
 
 		return lectureseriesImpl;
@@ -163,17 +169,19 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		number = objectInput.readUTF();
 		eventType = objectInput.readUTF();
-		eventCategory = objectInput.readUTF();
+		categoryId = objectInput.readLong();
 		name = objectInput.readUTF();
 		shortDesc = objectInput.readUTF();
-		semesterName = objectInput.readUTF();
+		termId = objectInput.readLong();
 		language = objectInput.readUTF();
 		facultyName = objectInput.readUTF();
-		instructorsString = objectInput.readUTF();
 		lectureseriesId = objectInput.readLong();
 		password = objectInput.readUTF();
 		approved = objectInput.readInt();
 		longDesc = objectInput.readUTF();
+		latestOpenAccessVideoId = objectInput.readLong();
+		latestVideoUploadDate = objectInput.readLong();
+		latestVideoGenerationDate = objectInput.readUTF();
 	}
 
 	@Override
@@ -193,12 +201,7 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 			objectOutput.writeUTF(eventType);
 		}
 
-		if (eventCategory == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(eventCategory);
-		}
+		objectOutput.writeLong(categoryId);
 
 		if (name == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
@@ -214,12 +217,7 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 			objectOutput.writeUTF(shortDesc);
 		}
 
-		if (semesterName == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(semesterName);
-		}
+		objectOutput.writeLong(termId);
 
 		if (language == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
@@ -233,13 +231,6 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 		}
 		else {
 			objectOutput.writeUTF(facultyName);
-		}
-
-		if (instructorsString == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(instructorsString);
 		}
 
 		objectOutput.writeLong(lectureseriesId);
@@ -259,19 +250,31 @@ public class LectureseriesCacheModel implements CacheModel<Lectureseries>,
 		else {
 			objectOutput.writeUTF(longDesc);
 		}
+
+		objectOutput.writeLong(latestOpenAccessVideoId);
+		objectOutput.writeLong(latestVideoUploadDate);
+
+		if (latestVideoGenerationDate == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(latestVideoGenerationDate);
+		}
 	}
 
 	public String number;
 	public String eventType;
-	public String eventCategory;
+	public long categoryId;
 	public String name;
 	public String shortDesc;
-	public String semesterName;
+	public long termId;
 	public String language;
 	public String facultyName;
-	public String instructorsString;
 	public long lectureseriesId;
 	public String password;
 	public int approved;
 	public String longDesc;
+	public long latestOpenAccessVideoId;
+	public long latestVideoUploadDate;
+	public String latestVideoGenerationDate;
 }

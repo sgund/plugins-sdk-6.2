@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -76,6 +76,7 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 		attributes.put("videoLectureseriesId", getVideoLectureseriesId());
 		attributes.put("videoId", getVideoId());
 		attributes.put("lectureseriesId", getLectureseriesId());
+		attributes.put("openAccess", getOpenAccess());
 
 		return attributes;
 	}
@@ -98,6 +99,12 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 
 		if (lectureseriesId != null) {
 			setLectureseriesId(lectureseriesId);
+		}
+
+		Integer openAccess = (Integer)attributes.get("openAccess");
+
+		if (openAccess != null) {
+			setOpenAccess(openAccess);
 		}
 	}
 
@@ -165,6 +172,29 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 				Method method = clazz.getMethod("setLectureseriesId", long.class);
 
 				method.invoke(_video_LectureseriesRemoteModel, lectureseriesId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public int getOpenAccess() {
+		return _openAccess;
+	}
+
+	@Override
+	public void setOpenAccess(int openAccess) {
+		_openAccess = openAccess;
+
+		if (_video_LectureseriesRemoteModel != null) {
+			try {
+				Class<?> clazz = _video_LectureseriesRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setOpenAccess", int.class);
+
+				method.invoke(_video_LectureseriesRemoteModel, openAccess);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -246,6 +276,7 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 		clone.setVideoLectureseriesId(getVideoLectureseriesId());
 		clone.setVideoId(getVideoId());
 		clone.setLectureseriesId(getLectureseriesId());
+		clone.setOpenAccess(getOpenAccess());
 
 		return clone;
 	}
@@ -287,6 +318,10 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 		}
 	}
 
+	public Class<?> getClpSerializerClass() {
+		return _clpSerializerClass;
+	}
+
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
@@ -294,7 +329,7 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(7);
+		StringBundler sb = new StringBundler(9);
 
 		sb.append("{videoLectureseriesId=");
 		sb.append(getVideoLectureseriesId());
@@ -302,6 +337,8 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 		sb.append(getVideoId());
 		sb.append(", lectureseriesId=");
 		sb.append(getLectureseriesId());
+		sb.append(", openAccess=");
+		sb.append(getOpenAccess());
 		sb.append("}");
 
 		return sb.toString();
@@ -309,7 +346,7 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(13);
+		StringBundler sb = new StringBundler(16);
 
 		sb.append("<model><model-name>");
 		sb.append("de.uhh.l2g.plugins.model.Video_Lectureseries");
@@ -327,6 +364,10 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 			"<column><column-name>lectureseriesId</column-name><column-value><![CDATA[");
 		sb.append(getLectureseriesId());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>openAccess</column-name><column-value><![CDATA[");
+		sb.append(getOpenAccess());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -336,5 +377,7 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 	private long _videoLectureseriesId;
 	private long _videoId;
 	private long _lectureseriesId;
+	private int _openAccess;
 	private BaseModel<?> _video_LectureseriesRemoteModel;
+	private Class<?> _clpSerializerClass = de.uhh.l2g.plugins.service.ClpSerializer.class;
 }

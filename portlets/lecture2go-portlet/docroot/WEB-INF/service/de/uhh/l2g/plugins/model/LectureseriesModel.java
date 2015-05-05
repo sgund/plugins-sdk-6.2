@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,6 +22,8 @@ import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.expando.model.ExpandoBridge;
 
 import java.io.Serializable;
+
+import java.util.Date;
 
 /**
  * The base model interface for the Lectureseries service. Represents a row in the &quot;LG_Lectureseries&quot; database table, with each column mapped to a property of this class.
@@ -88,19 +90,18 @@ public interface LectureseriesModel extends BaseModel<Lectureseries> {
 	public void setEventType(String eventType);
 
 	/**
-	 * Returns the event category of this lectureseries.
+	 * Returns the category ID of this lectureseries.
 	 *
-	 * @return the event category of this lectureseries
+	 * @return the category ID of this lectureseries
 	 */
-	@AutoEscape
-	public String getEventCategory();
+	public long getCategoryId();
 
 	/**
-	 * Sets the event category of this lectureseries.
+	 * Sets the category ID of this lectureseries.
 	 *
-	 * @param eventCategory the event category of this lectureseries
+	 * @param categoryId the category ID of this lectureseries
 	 */
-	public void setEventCategory(String eventCategory);
+	public void setCategoryId(long categoryId);
 
 	/**
 	 * Returns the name of this lectureseries.
@@ -133,19 +134,18 @@ public interface LectureseriesModel extends BaseModel<Lectureseries> {
 	public void setShortDesc(String shortDesc);
 
 	/**
-	 * Returns the semester name of this lectureseries.
+	 * Returns the term ID of this lectureseries.
 	 *
-	 * @return the semester name of this lectureseries
+	 * @return the term ID of this lectureseries
 	 */
-	@AutoEscape
-	public String getSemesterName();
+	public long getTermId();
 
 	/**
-	 * Sets the semester name of this lectureseries.
+	 * Sets the term ID of this lectureseries.
 	 *
-	 * @param semesterName the semester name of this lectureseries
+	 * @param termId the term ID of this lectureseries
 	 */
-	public void setSemesterName(String semesterName);
+	public void setTermId(long termId);
 
 	/**
 	 * Returns the language of this lectureseries.
@@ -176,21 +176,6 @@ public interface LectureseriesModel extends BaseModel<Lectureseries> {
 	 * @param facultyName the faculty name of this lectureseries
 	 */
 	public void setFacultyName(String facultyName);
-
-	/**
-	 * Returns the instructors string of this lectureseries.
-	 *
-	 * @return the instructors string of this lectureseries
-	 */
-	@AutoEscape
-	public String getInstructorsString();
-
-	/**
-	 * Sets the instructors string of this lectureseries.
-	 *
-	 * @param instructorsString the instructors string of this lectureseries
-	 */
-	public void setInstructorsString(String instructorsString);
 
 	/**
 	 * Returns the lectureseries ID of this lectureseries.
@@ -249,6 +234,49 @@ public interface LectureseriesModel extends BaseModel<Lectureseries> {
 	 * @param longDesc the long desc of this lectureseries
 	 */
 	public void setLongDesc(String longDesc);
+
+	/**
+	 * Returns the latest open access video ID of this lectureseries.
+	 *
+	 * @return the latest open access video ID of this lectureseries
+	 */
+	public long getLatestOpenAccessVideoId();
+
+	/**
+	 * Sets the latest open access video ID of this lectureseries.
+	 *
+	 * @param latestOpenAccessVideoId the latest open access video ID of this lectureseries
+	 */
+	public void setLatestOpenAccessVideoId(long latestOpenAccessVideoId);
+
+	/**
+	 * Returns the latest video upload date of this lectureseries.
+	 *
+	 * @return the latest video upload date of this lectureseries
+	 */
+	public Date getLatestVideoUploadDate();
+
+	/**
+	 * Sets the latest video upload date of this lectureseries.
+	 *
+	 * @param latestVideoUploadDate the latest video upload date of this lectureseries
+	 */
+	public void setLatestVideoUploadDate(Date latestVideoUploadDate);
+
+	/**
+	 * Returns the latest video generation date of this lectureseries.
+	 *
+	 * @return the latest video generation date of this lectureseries
+	 */
+	@AutoEscape
+	public String getLatestVideoGenerationDate();
+
+	/**
+	 * Sets the latest video generation date of this lectureseries.
+	 *
+	 * @param latestVideoGenerationDate the latest video generation date of this lectureseries
+	 */
+	public void setLatestVideoGenerationDate(String latestVideoGenerationDate);
 
 	@Override
 	public boolean isNew();

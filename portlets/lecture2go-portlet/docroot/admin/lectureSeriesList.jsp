@@ -3,16 +3,16 @@
 <%
 	Map<String,String> institutions = new LinkedHashMap<String, String>();
 	List<Producer> producers = new ArrayList<Producer>();
-
+	
 	List<Lectureseries> tempLectureseriesList = new ArrayList();
-	List<String> semesters = LectureseriesLocalServiceUtil.getAllSemesters(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
-
+	List<Term> semesters = TermLocalServiceUtil.getAllSemesters(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+	
 	Long institutionId = ServletRequestUtils.getLongParameter(request, "institutionId", 0);
-
+	
 	Long producerId = ServletRequestUtils.getLongParameter(request, "producerId", 0);
-	String semesterId = ServletRequestUtils.getStringParameter(request, "semesterId", "");
+	Long semesterId = ServletRequestUtils.getLongParameter(request, "semesterId", 0);
 	Integer statusId = ServletRequestUtils.getIntParameter(request, "statusId", 0);
-
+	
 	PortletURL portletURL = renderResponse.createRenderURL();
 	portletURL.setParameter("institutionId", institutionId+"");
 	portletURL.setParameter("producerId", producerId+"");
@@ -24,12 +24,12 @@
 		producers = ProducerLocalServiceUtil.getAllProducers(com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
 		permissionCoordinator = false;
 	}
-
+	
 	if(permissionCoordinator){
 		if(institutionId==0)institutionId = CoordinatorLocalServiceUtil.getCoordinator(remoteUser.getUserId()).getInstitutionId();
 		institutions = InstitutionLocalServiceUtil.getByParent(CoordinatorLocalServiceUtil.getCoordinator(remoteUser.getUserId()).getInstitutionId());
 		producers = ProducerLocalServiceUtil.getProducersByInstitutionId(CoordinatorLocalServiceUtil.getCoordinator(remoteUser.getUserId()).getInstitutionId());
-	}
+	}	
 %>
 
 <portlet:renderURL var="addLectureseriesURL">
@@ -53,13 +53,13 @@
 										if(f.getKey().equals(institutionId.toString())){
 											%>
 											<aui:option value='<%=f.getKey()%>' selected="true"><%=f.getValue()%></aui:option>
-										<%}else{%>
+											<%}else{%>
 											<aui:option value='<%=f.getKey()%>'><%=f.getValue()%></aui:option>
-										<%}
+											<%}	
 								}%>
 							</aui:select>
-						</aui:form>
-				</aui:column>
+						</aui:form>	
+				</aui:column>			
 				<aui:column>
 						<portlet:renderURL var="sortByProducer">
 							<portlet:param name="jspPage" value="/admin/lectureSeriesList.jsp" />
@@ -76,11 +76,11 @@
 											<aui:option value='<%=producers.get(i).getProducerId()%>' selected="true"><%=producers.get(i).getLastName()+", "+producers.get(i).getFirstName()%></aui:option>
 											<%}else{%>
 											<aui:option value='<%=producers.get(i).getProducerId()%>'><%=producers.get(i).getLastName()+", "+producers.get(i).getFirstName()%></aui:option>
-											<%}
+											<%}					
 								}%>
 							</aui:select>
-						</aui:form>
-				</aui:column>
+						</aui:form>		
+				</aui:column>	
 				<aui:column>
 						<portlet:renderURL var="sortBySemester">
 							<portlet:param name="jspPage" value="/admin/lectureSeriesList.jsp" />
@@ -92,16 +92,16 @@
 							<aui:select name="semesterId" label="select-semester" onChange="submit();">
 								<aui:option value="">select-semester</aui:option>
 								<%for (int i = 0; i < semesters.size(); i++) {
-										if(semesters.get(i).equals(semesterId)){
+										if(semesterId==semesters.get(i).getTermId()){
 											%>
-											<aui:option value='<%=semesters.get(i)%>' selected="true"><%=semesters.get(i)%></aui:option>
+											<aui:option value='<%=semesters.get(i).getTermId()%>' selected="true"><%=semesters.get(i).getPrefix()+"&nbsp;"+semesters.get(i).getYear()%></aui:option>
 											<%}else{%>
-											<aui:option value='<%=semesters.get(i)%>'><%=semesters.get(i)%></aui:option>
-											<%}
+											<aui:option value='<%=semesters.get(i).getTermId()%>'><%=semesters.get(i).getPrefix()+"&nbsp;"+semesters.get(i).getYear()%></aui:option>
+											<%}					
 								}%>
 							</aui:select>
-						</aui:form>
-				</aui:column>
+						</aui:form>				
+				</aui:column>	
 				<aui:column>
 						<portlet:renderURL var="sortByStatus">
 							<portlet:param name="jspPage" value="/admin/lectureSeriesList.jsp" />
@@ -116,7 +116,7 @@
 											<aui:option value='0' selected="true">approved-false</aui:option>
 										<%}else{%>
 											<aui:option value='0'>approved-false</aui:option>
-										<%}%>
+										<%}%>				
 										<%if(statusId==1){%>
 											<aui:option value='1' selected="true">approved-true</aui:option>
 										<%}else{%>
@@ -124,15 +124,19 @@
 										<%}%>
 							</aui:select>
 						</aui:form>
-				</aui:column>
+				</aui:column>		
 		</aui:layout>
 		<aui:layout>
 			<aui:row>
-				<aui:button value="add-new-lectureseries" href="<%=addLectureseriesURL%>"/>
+				
+			<a href="<%=addLectureseriesURL.toString()%>">
+			    add-new-lectureseries <span class="icon-large icon-plus-sign"/>
+			</a>
+		
 			</aui:row>
 		</aui:layout>
 </aui:fieldset>
-
+				
 <liferay-ui:search-container emptyResultsMessage="no-lectureseries-found" delta="10" iteratorURL="<%= portletURL %>">
 	<liferay-ui:search-container-results>
 		<%
@@ -171,12 +175,12 @@
 			<a href="<%=editURL.toString()%>">
    				<span class="icon-large icon-pencil"></span>
 			</a>
-
+			
 			<portlet:actionURL name="removeLectureseries" var="removeURL">
 				<portlet:param name="lectureseriesId" value='<%=""+lectser.getLectureseriesId()%>' />
 				<portlet:param name="backURL" value='<%=String.valueOf(portletURL)%>' />
 			</portlet:actionURL>
-
+			
 			<a href="<%=removeURL.toString()%>">
 				<span class="icon-large icon-remove"></span>
 			</a>

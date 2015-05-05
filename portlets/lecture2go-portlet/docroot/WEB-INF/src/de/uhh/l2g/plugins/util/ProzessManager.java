@@ -34,19 +34,25 @@ package de.uhh.l2g.plugins.util;
  ***************************************************************************/
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.PropsUtil;
 
 import de.uhh.l2g.plugins.model.Host;
+import de.uhh.l2g.plugins.model.Lectureseries;
 import de.uhh.l2g.plugins.model.Metadata;
 import de.uhh.l2g.plugins.model.Producer;
 import de.uhh.l2g.plugins.model.Segment;
+import de.uhh.l2g.plugins.model.Tagcloud;
 import de.uhh.l2g.plugins.model.Video;
+import de.uhh.l2g.plugins.model.Video_Lectureseries;
 import de.uhh.l2g.plugins.model.impl.HostImpl;
+import de.uhh.l2g.plugins.model.impl.LectureseriesImpl;
 import de.uhh.l2g.plugins.model.impl.MetadataImpl;
 import de.uhh.l2g.plugins.model.impl.ProducerImpl;
 import de.uhh.l2g.plugins.service.HostLocalServiceUtil;
@@ -57,8 +63,10 @@ import de.uhh.l2g.plugins.service.MetadataLocalServiceUtil;
 import de.uhh.l2g.plugins.service.ProducerLocalServiceUtil;
 import de.uhh.l2g.plugins.service.SegmentLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Segment_User_VideoLocalServiceUtil;
+import de.uhh.l2g.plugins.service.TagcloudLocalServiceUtil;
 import de.uhh.l2g.plugins.service.UploadLocalServiceUtil;
 import de.uhh.l2g.plugins.service.VideoLocalServiceUtil;
+import de.uhh.l2g.plugins.service.Video_CreatorLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_InstitutionLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_LectureseriesLocalServiceUtil;
 import de.uhh.l2g.plugins.service.VideohitlistLocalServiceUtil;
@@ -108,7 +116,11 @@ public class ProzessManager {
 	public void activateOpenaccess(Video video) throws SystemException, PortalException {
 		Host host = HostLocalServiceUtil.getHost(video.getHostId());
 		Producer producer = ProducerLocalServiceUtil.getProducer(video.getProducerId());
-		
+		Lectureseries lectureseries = new LectureseriesImpl();
+		try{
+			lectureseries= LectureseriesLocalServiceUtil.getLectureseries(video.getLectureseriesId());
+		}catch(Exception e){}
+
 		// first rename the file from the filesystem first
 		String path = PropsUtil.get("lecture2go.media.repository") + "/" + host.getServerRoot() + "/" + producer.getHomeDir();
 		String videoPreffix = video.getPreffix();
@@ -165,11 +177,17 @@ public class ProzessManager {
 		HTACCESS.makeHtaccess(url, VideoLocalServiceUtil.getByProducerAndDownloadLink(producer.getProducerId(), 0));
 		// refresh last video list
 		VideoLocalServiceUtil.createLastVideoList();
+		// refresh open acces for lecture series
+		LectureseriesLocalServiceUtil.updateOpenAccess(video, lectureseries); 
 	}
 
 	public void deactivateOpenaccess(Video video) throws PortalException, SystemException {
 		Host host = HostLocalServiceUtil.getHost(video.getHostId());
 		Producer producer = ProducerLocalServiceUtil.getProducer(video.getProducerId());
+		Lectureseries lectureseries = new LectureseriesImpl();
+		try{
+			lectureseries= LectureseriesLocalServiceUtil.getLectureseries(video.getLectureseriesId());
+		}catch(Exception e){}
 		
 		// then update the filesystem
 		String path = PropsUtil.get("lecture2go.media.repository") + "/" + host.getServerRoot() + "/" + producer.getHomeDir();
@@ -228,13 +246,16 @@ public class ProzessManager {
 		} catch (Exception e) {
 		}
 		// delete video from videohitlist
-		VideohitlistLocalServiceUtil.deleteVideohitlist(video.getVideoId());
+		VideohitlistLocalServiceUtil.deleteByVideoId(video.getVideoId());
 		
 		String url = PropsUtil.get("lecture2go.media.repository") + "/" + host.getName() + "/" + producer.getHomeDir() + "/";
 		HTACCESS.makeHtaccess(url, VideoLocalServiceUtil.getByProducerAndDownloadLink(producer.getProducerId(), 0));
-
+		
 		// refresh last video list
 		VideoLocalServiceUtil.createLastVideoList();
+		
+		// refresh open access for lecture series
+		LectureseriesLocalServiceUtil.updateOpenAccess(video, lectureseries); 
 	}
 
 	public void deleteThumbnails(Video video) {
@@ -254,8 +275,17 @@ public class ProzessManager {
 		}
 	}
 
-	public boolean deleteVideo(Video video){
+	@SuppressWarnings("static-access")
+	public boolean deleteVideo(Video video) throws PortalException, SystemException{
 		Host host = new HostImpl();
+		Lectureseries lectureseries = new LectureseriesImpl();
+		
+		try {
+			lectureseries = LectureseriesLocalServiceUtil.getLectureseries(video.getLectureseriesId());
+		} catch (Exception e3) {
+			e3.printStackTrace();
+		}
+
 		try {
 			host = HostLocalServiceUtil.getHost(video.getHostId());
 		} catch (PortalException e1) {
@@ -318,11 +348,9 @@ public class ProzessManager {
 		
 		// delete video from videohitlist
 		try {
-			VideohitlistLocalServiceUtil.deleteVideohitlist(video.getVideoId());
-		} catch (PortalException e1) {
-			e1.printStackTrace();
-		} catch (SystemException e1) {
-			e1.printStackTrace();
+			VideohitlistLocalServiceUtil.deleteByVideoId(video.getVideoId());
+		} catch (SystemException e2) {
+			e2.printStackTrace();
 		}
 		
 		// delete meta data which belongs to video 
@@ -420,6 +448,15 @@ public class ProzessManager {
 		} catch (SystemException e) {
 			e.printStackTrace();
 		}
+		
+		// refresh open access for lecture series
+		if(lectureseries.getLectureseriesId()>0)LectureseriesLocalServiceUtil.updateOpenAccess(video, lectureseries); 
+		
+		//delete creators from video
+		Video_CreatorLocalServiceUtil.deleteByVideoId(video.getVideoId());
+		
+		//delete tag cloud for this video
+		TagcloudLocalServiceUtil.deleteByObjectId(video.getVideoId());
 		return true;
 	}
 	

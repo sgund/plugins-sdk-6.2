@@ -19,10 +19,13 @@
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Calendar"%>
+<%@ page import="java.util.GregorianCalendar"%>
 <%@ page import="java.util.Collections"%>
 <%@ page import="java.util.Locale"%>
 <%@ page import="java.util.LinkedHashMap"%>
+<%@ page import="java.util.Date"%>
 <%@ page import="java.lang.String"%>
+<%@ page import="java.text.SimpleDateFormat"%>
 
 <%@ page import="javax.portlet.PortletURL"%>
 <%@ page import="javax.portlet.PortletException"%>
@@ -68,11 +71,16 @@
 <%@ page import="de.uhh.l2g.plugins.service.Producer_LectureseriesLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.service.Lectureseries_InstitutionLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.service.VideoLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.service.Video_CategoryLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.service.Video_InstitutionLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.service.CoordinatorLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.service.LicenseLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.service.SegmentLocalServiceUtil"%>
 <%@ page import="de.uhh.l2g.plugins.NoSuchMetadataException"%>
 <%@ page import="de.uhh.l2g.plugins.service.MetadataLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.model.Term"%>
+<%@ page import="de.uhh.l2g.plugins.model.Creator"%>
+<%@ page import="de.uhh.l2g.plugins.model.Category"%>
 <%@ page import="de.uhh.l2g.plugins.model.Producer"%>
 <%@ page import="de.uhh.l2g.plugins.model.Segment"%>
 <%@ page import="de.uhh.l2g.plugins.model.Institution"%>
@@ -85,19 +93,21 @@
 <%@ page import="de.uhh.l2g.plugins.model.impl.MetadataImpl"%>
 <%@ page import="de.uhh.l2g.plugins.model.Metadata"%>
 <%@ page import="de.uhh.l2g.plugins.model.impl.VideoImpl"%>
+<%@ page import="de.uhh.l2g.plugins.model.Video_Institution"%>
 <%@ page import="de.uhh.l2g.plugins.model.impl.ProducerImpl"%>
 <%@ page import="de.uhh.l2g.plugins.model.impl.LicenseImpl"%>
 <%@ page import="de.uhh.l2g.plugins.util.Security"%>
 <%@ page import="de.uhh.l2g.plugins.service.HostLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.service.TermLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.service.CategoryLocalServiceUtil"%>
+<%@ page import="de.uhh.l2g.plugins.service.CreatorLocalServiceUtil"%>
 
 <%@ page import="de.uhh.l2g.plugins.util.Lecture2GoRoleChecker"%>
-
+<%@ page import="java.io.PrintWriter"%>
 
 <%@ page import="de.uhh.l2g.plugins.permission.L2GModelPermission" %>
 <%@ page import="de.uhh.l2g.plugins.permission.InstitutionPermission" %>
 <%@ page import="de.uhh.l2g.plugins.permission.HostPermission" %>
-<%@ page import="com.sun.xml.internal.rngom.ast.builder.Include"%>
-
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects/>

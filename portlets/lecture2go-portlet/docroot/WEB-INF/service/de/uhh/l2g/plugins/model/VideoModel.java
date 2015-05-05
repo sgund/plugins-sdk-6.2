@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -87,21 +87,6 @@ public interface VideoModel extends BaseModel<Video> {
 	 * @param title the title of this video
 	 */
 	public void setTitle(String title);
-
-	/**
-	 * Returns the tags of this video.
-	 *
-	 * @return the tags of this video
-	 */
-	@AutoEscape
-	public String getTags();
-
-	/**
-	 * Sets the tags of this video.
-	 *
-	 * @param tags the tags of this video
-	 */
-	public void setTags(String tags);
 
 	/**
 	 * Returns the lectureseries ID of this video.
@@ -361,6 +346,49 @@ public interface VideoModel extends BaseModel<Video> {
 	 * @param citation2go the citation2go of this video
 	 */
 	public void setCitation2go(int citation2go);
+
+	/**
+	 * Returns the term ID of this video.
+	 *
+	 * @return the term ID of this video
+	 */
+	public long getTermId();
+
+	/**
+	 * Sets the term ID of this video.
+	 *
+	 * @param termId the term ID of this video
+	 */
+	public void setTermId(long termId);
+
+	/**
+	 * Returns the video creator ID of this video.
+	 *
+	 * @return the video creator ID of this video
+	 */
+	public long getVideoCreatorId();
+
+	/**
+	 * Sets the video creator ID of this video.
+	 *
+	 * @param videoCreatorId the video creator ID of this video
+	 */
+	public void setVideoCreatorId(long videoCreatorId);
+
+	/**
+	 * Returns the tags of this video.
+	 *
+	 * @return the tags of this video
+	 */
+	@AutoEscape
+	public String getTags();
+
+	/**
+	 * Sets the tags of this video.
+	 *
+	 * @param tags the tags of this video
+	 */
+	public void setTags(String tags);
 
 	@Override
 	public boolean isNew();

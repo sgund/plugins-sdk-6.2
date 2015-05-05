@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -51,7 +51,6 @@ public class VideoWrapper implements Video, ModelWrapper<Video> {
 
 		attributes.put("videoId", getVideoId());
 		attributes.put("title", getTitle());
-		attributes.put("tags", getTags());
 		attributes.put("lectureseriesId", getLectureseriesId());
 		attributes.put("producerId", getProducerId());
 		attributes.put("containerFormat", getContainerFormat());
@@ -70,6 +69,9 @@ public class VideoWrapper implements Video, ModelWrapper<Video> {
 		attributes.put("permittedToSegment", getPermittedToSegment());
 		attributes.put("rootInstitutionId", getRootInstitutionId());
 		attributes.put("citation2go", getCitation2go());
+		attributes.put("termId", getTermId());
+		attributes.put("videoCreatorId", getVideoCreatorId());
+		attributes.put("tags", getTags());
 
 		return attributes;
 	}
@@ -86,12 +88,6 @@ public class VideoWrapper implements Video, ModelWrapper<Video> {
 
 		if (title != null) {
 			setTitle(title);
-		}
-
-		String tags = (String)attributes.get("tags");
-
-		if (tags != null) {
-			setTags(tags);
 		}
 
 		Long lectureseriesId = (Long)attributes.get("lectureseriesId");
@@ -202,6 +198,24 @@ public class VideoWrapper implements Video, ModelWrapper<Video> {
 		if (citation2go != null) {
 			setCitation2go(citation2go);
 		}
+
+		Long termId = (Long)attributes.get("termId");
+
+		if (termId != null) {
+			setTermId(termId);
+		}
+
+		Long videoCreatorId = (Long)attributes.get("videoCreatorId");
+
+		if (videoCreatorId != null) {
+			setVideoCreatorId(videoCreatorId);
+		}
+
+		String tags = (String)attributes.get("tags");
+
+		if (tags != null) {
+			setTags(tags);
+		}
 	}
 
 	/**
@@ -262,26 +276,6 @@ public class VideoWrapper implements Video, ModelWrapper<Video> {
 	@Override
 	public void setTitle(java.lang.String title) {
 		_video.setTitle(title);
-	}
-
-	/**
-	* Returns the tags of this video.
-	*
-	* @return the tags of this video
-	*/
-	@Override
-	public java.lang.String getTags() {
-		return _video.getTags();
-	}
-
-	/**
-	* Sets the tags of this video.
-	*
-	* @param tags the tags of this video
-	*/
-	@Override
-	public void setTags(java.lang.String tags) {
-		_video.setTags(tags);
 	}
 
 	/**
@@ -642,6 +636,66 @@ public class VideoWrapper implements Video, ModelWrapper<Video> {
 	@Override
 	public void setCitation2go(int citation2go) {
 		_video.setCitation2go(citation2go);
+	}
+
+	/**
+	* Returns the term ID of this video.
+	*
+	* @return the term ID of this video
+	*/
+	@Override
+	public long getTermId() {
+		return _video.getTermId();
+	}
+
+	/**
+	* Sets the term ID of this video.
+	*
+	* @param termId the term ID of this video
+	*/
+	@Override
+	public void setTermId(long termId) {
+		_video.setTermId(termId);
+	}
+
+	/**
+	* Returns the video creator ID of this video.
+	*
+	* @return the video creator ID of this video
+	*/
+	@Override
+	public long getVideoCreatorId() {
+		return _video.getVideoCreatorId();
+	}
+
+	/**
+	* Sets the video creator ID of this video.
+	*
+	* @param videoCreatorId the video creator ID of this video
+	*/
+	@Override
+	public void setVideoCreatorId(long videoCreatorId) {
+		_video.setVideoCreatorId(videoCreatorId);
+	}
+
+	/**
+	* Returns the tags of this video.
+	*
+	* @return the tags of this video
+	*/
+	@Override
+	public java.lang.String getTags() {
+		return _video.getTags();
+	}
+
+	/**
+	* Sets the tags of this video.
+	*
+	* @param tags the tags of this video
+	*/
+	@Override
+	public void setTags(java.lang.String tags) {
+		_video.setTags(tags);
 	}
 
 	@Override

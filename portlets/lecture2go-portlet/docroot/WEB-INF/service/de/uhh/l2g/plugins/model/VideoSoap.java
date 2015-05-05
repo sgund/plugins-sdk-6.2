@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -32,7 +32,6 @@ public class VideoSoap implements Serializable {
 
 		soapModel.setVideoId(model.getVideoId());
 		soapModel.setTitle(model.getTitle());
-		soapModel.setTags(model.getTags());
 		soapModel.setLectureseriesId(model.getLectureseriesId());
 		soapModel.setProducerId(model.getProducerId());
 		soapModel.setContainerFormat(model.getContainerFormat());
@@ -51,6 +50,9 @@ public class VideoSoap implements Serializable {
 		soapModel.setPermittedToSegment(model.getPermittedToSegment());
 		soapModel.setRootInstitutionId(model.getRootInstitutionId());
 		soapModel.setCitation2go(model.getCitation2go());
+		soapModel.setTermId(model.getTermId());
+		soapModel.setVideoCreatorId(model.getVideoCreatorId());
+		soapModel.setTags(model.getTags());
 
 		return soapModel;
 	}
@@ -117,14 +119,6 @@ public class VideoSoap implements Serializable {
 
 	public void setTitle(String title) {
 		_title = title;
-	}
-
-	public String getTags() {
-		return _tags;
-	}
-
-	public void setTags(String tags) {
-		_tags = tags;
 	}
 
 	public long getLectureseriesId() {
@@ -271,9 +265,32 @@ public class VideoSoap implements Serializable {
 		_citation2go = citation2go;
 	}
 
+	public long getTermId() {
+		return _termId;
+	}
+
+	public void setTermId(long termId) {
+		_termId = termId;
+	}
+
+	public long getVideoCreatorId() {
+		return _videoCreatorId;
+	}
+
+	public void setVideoCreatorId(long videoCreatorId) {
+		_videoCreatorId = videoCreatorId;
+	}
+
+	public String getTags() {
+		return _tags;
+	}
+
+	public void setTags(String tags) {
+		_tags = tags;
+	}
+
 	private long _videoId;
 	private String _title;
-	private String _tags;
 	private long _lectureseriesId;
 	private long _producerId;
 	private String _containerFormat;
@@ -292,4 +309,7 @@ public class VideoSoap implements Serializable {
 	private int _permittedToSegment;
 	private long _rootInstitutionId;
 	private int _citation2go;
+	private long _termId;
+	private long _videoCreatorId;
+	private String _tags;
 }

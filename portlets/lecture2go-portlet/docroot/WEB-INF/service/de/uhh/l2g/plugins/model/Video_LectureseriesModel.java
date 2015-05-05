@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -97,6 +97,20 @@ public interface Video_LectureseriesModel extends BaseModel<Video_Lectureseries>
 	 * @param lectureseriesId the lectureseries ID of this video_ lectureseries
 	 */
 	public void setLectureseriesId(long lectureseriesId);
+
+	/**
+	 * Returns the open access of this video_ lectureseries.
+	 *
+	 * @return the open access of this video_ lectureseries
+	 */
+	public int getOpenAccess();
+
+	/**
+	 * Sets the open access of this video_ lectureseries.
+	 *
+	 * @param openAccess the open access of this video_ lectureseries
+	 */
+	public void setOpenAccess(int openAccess);
 
 	@Override
 	public boolean isNew();

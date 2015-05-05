@@ -1,7 +1,25 @@
+create table LG_Category (
+	categoryId LONG not null primary key,
+	parentId LONG,
+	languageId VARCHAR(75) null,
+	name VARCHAR(75) null,
+	translation VARCHAR(75) null
+);
+
 create table LG_Coordinator (
 	coordinatorId LONG not null primary key,
 	institutionId LONG,
 	officeId LONG
+);
+
+create table LG_Creator (
+	creatorId LONG not null primary key,
+	firstName VARCHAR(75) null,
+	lastName VARCHAR(75) null,
+	middleName VARCHAR(75) null,
+	jobTitle VARCHAR(75) null,
+	gender VARCHAR(75) null,
+	fullName VARCHAR(75) null
 );
 
 create table LG_Host (
@@ -41,23 +59,38 @@ create table LG_Lastvideolist (
 create table LG_Lectureseries (
 	number_ VARCHAR(75) null,
 	eventType VARCHAR(75) null,
-	eventCategory VARCHAR(75) null,
+	categoryId LONG,
 	name VARCHAR(75) null,
 	shortDesc VARCHAR(75) null,
-	semesterName VARCHAR(75) null,
+	termId LONG,
 	language VARCHAR(75) null,
 	facultyName VARCHAR(75) null,
-	instructorsString VARCHAR(75) null,
 	lectureseriesId LONG not null primary key,
 	password_ VARCHAR(75) null,
 	approved INTEGER,
-	longDesc VARCHAR(75) null
+	longDesc VARCHAR(75) null,
+	latestOpenAccessVideoId LONG,
+	latestVideoUploadDate DATE null,
+	latestVideoGenerationDate VARCHAR(75) null
+);
+
+create table LG_Lectureseries_Category (
+	lectureseriesCategoryId LONG not null primary key,
+	categoryId LONG,
+	lectureseriesId LONG
+);
+
+create table LG_Lectureseries_Creator (
+	lectureseriesCreatorId LONG not null primary key,
+	lectureseriesId LONG,
+	creatorId LONG
 );
 
 create table LG_Lectureseries_Institution (
 	lectureseriesInstitutionId LONG not null primary key,
 	lectureseriesId LONG,
-	institutionId LONG
+	institutionId LONG,
+	institutionParentId LONG
 );
 
 create table LG_License (
@@ -74,25 +107,12 @@ create table LG_License (
 
 create table LG_Metadata (
 	metadataId LONG not null primary key,
-	URLID VARCHAR(75) null,
-	format VARCHAR(75) null,
 	type_ VARCHAR(75) null,
 	language VARCHAR(75) null,
 	title VARCHAR(75) null,
 	subject VARCHAR(75) null,
-	coverage VARCHAR(75) null,
 	description VARCHAR(75) null,
-	creator VARCHAR(75) null,
-	publisher VARCHAR(75) null,
-	contributor VARCHAR(75) null,
-	rightsHolder VARCHAR(75) null,
-	rights VARCHAR(75) null,
-	provenance VARCHAR(75) null,
-	source VARCHAR(75) null,
-	relation VARCHAR(75) null,
-	audience VARCHAR(75) null,
-	instructionalMethods VARCHAR(75) null,
-	date_ DATE null
+	publisher VARCHAR(75) null
 );
 
 create table LG_Office (
@@ -159,6 +179,22 @@ create table LG_Sys (
 	setupWizard INTEGER
 );
 
+create table LG_Tagcloud (
+	tagcloudId LONG not null primary key,
+	objectClassType VARCHAR(75) null,
+	objectId LONG,
+	tags VARCHAR(75) null
+);
+
+create table LG_Term (
+	termId LONG not null primary key,
+	parentId LONG,
+	languageId VARCHAR(75) null,
+	prefix VARCHAR(75) null,
+	year VARCHAR(75) null,
+	translation VARCHAR(75) null
+);
+
 create table LG_TestEntity (
 	testEntityId LONG not null primary key,
 	groupId LONG,
@@ -182,7 +218,6 @@ create table LG_Upload (
 create table LG_Video (
 	videoId LONG not null primary key,
 	title VARCHAR(75) null,
-	tags VARCHAR(75) null,
 	lectureseriesId LONG,
 	producerId LONG,
 	containerFormat VARCHAR(75) null,
@@ -200,19 +235,36 @@ create table LG_Video (
 	uploadDate DATE null,
 	permittedToSegment INTEGER,
 	rootInstitutionId LONG,
-	citation2go INTEGER
+	citation2go INTEGER,
+	termId LONG,
+	videoCreatorId LONG,
+	tags VARCHAR(75) null
+);
+
+create table LG_Video_Category (
+	videoCategoryId LONG not null primary key,
+	videoId LONG,
+	categoryId LONG
+);
+
+create table LG_Video_Creator (
+	videoCreatorId LONG not null primary key,
+	creatorId LONG,
+	videoId LONG
 );
 
 create table LG_Video_Institution (
 	videoInstitutionId LONG not null primary key,
 	videoId LONG,
-	institutionId LONG
+	institutionId LONG,
+	institutionParentId LONG
 );
 
 create table LG_Video_Lectureseries (
 	videoLectureseriesId LONG not null primary key,
 	videoId LONG,
-	lectureseriesId LONG
+	lectureseriesId LONG,
+	openAccess INTEGER
 );
 
 create table LG_Videohitlist (

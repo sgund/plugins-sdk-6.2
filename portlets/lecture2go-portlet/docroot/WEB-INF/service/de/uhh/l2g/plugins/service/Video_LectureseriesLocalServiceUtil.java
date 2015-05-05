@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -282,6 +282,12 @@ public class Video_LectureseriesLocalServiceUtil {
 
 	public static boolean removeByVideoId(java.lang.Long videoId) {
 		return getService().removeByVideoId(videoId);
+	}
+
+	public static java.util.List<de.uhh.l2g.plugins.model.Video_Lectureseries> updateOpenAccessByVideo(
+		de.uhh.l2g.plugins.model.Video video)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().updateOpenAccessByVideo(video);
 	}
 
 	public static void clearService() {

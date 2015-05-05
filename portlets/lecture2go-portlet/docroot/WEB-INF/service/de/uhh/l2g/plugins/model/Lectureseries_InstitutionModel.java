@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -97,6 +97,20 @@ public interface Lectureseries_InstitutionModel extends BaseModel<Lectureseries_
 	 * @param institutionId the institution ID of this lectureseries_ institution
 	 */
 	public void setInstitutionId(long institutionId);
+
+	/**
+	 * Returns the institution parent ID of this lectureseries_ institution.
+	 *
+	 * @return the institution parent ID of this lectureseries_ institution
+	 */
+	public long getInstitutionParentId();
+
+	/**
+	 * Sets the institution parent ID of this lectureseries_ institution.
+	 *
+	 * @param institutionParentId the institution parent ID of this lectureseries_ institution
+	 */
+	public void setInstitutionParentId(long institutionParentId);
 
 	@Override
 	public boolean isNew();
