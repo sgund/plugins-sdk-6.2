@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -221,7 +221,7 @@ public class Video_CreatorWrapper implements Video_Creator,
 	}
 
 	@Override
-	public int compareTo(Video_Creator video_Creator) {
+	public int compareTo(de.uhh.l2g.plugins.model.Video_Creator video_Creator) {
 		return _video_Creator.compareTo(video_Creator);
 	}
 
@@ -231,17 +231,17 @@ public class Video_CreatorWrapper implements Video_Creator,
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<Video_Creator> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Video_Creator> toCacheModel() {
 		return _video_Creator.toCacheModel();
 	}
 
 	@Override
-	public Video_Creator toEscapedModel() {
+	public de.uhh.l2g.plugins.model.Video_Creator toEscapedModel() {
 		return new Video_CreatorWrapper(_video_Creator.toEscapedModel());
 	}
 
 	@Override
-	public Video_Creator toUnescapedModel() {
+	public de.uhh.l2g.plugins.model.Video_Creator toUnescapedModel() {
 		return new Video_CreatorWrapper(_video_Creator.toUnescapedModel());
 	}
 

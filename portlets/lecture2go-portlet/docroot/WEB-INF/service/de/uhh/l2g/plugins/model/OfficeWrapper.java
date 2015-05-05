@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -274,7 +274,7 @@ public class OfficeWrapper implements Office, ModelWrapper<Office> {
 	}
 
 	@Override
-	public int compareTo(Office office) {
+	public int compareTo(de.uhh.l2g.plugins.model.Office office) {
 		return _office.compareTo(office);
 	}
 
@@ -284,17 +284,17 @@ public class OfficeWrapper implements Office, ModelWrapper<Office> {
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<Office> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Office> toCacheModel() {
 		return _office.toCacheModel();
 	}
 
 	@Override
-	public Office toEscapedModel() {
+	public de.uhh.l2g.plugins.model.Office toEscapedModel() {
 		return new OfficeWrapper(_office.toEscapedModel());
 	}
 
 	@Override
-	public Office toUnescapedModel() {
+	public de.uhh.l2g.plugins.model.Office toUnescapedModel() {
 		return new OfficeWrapper(_office.toUnescapedModel());
 	}
 

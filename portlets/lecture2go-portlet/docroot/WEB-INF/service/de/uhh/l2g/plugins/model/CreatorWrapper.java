@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -328,7 +328,7 @@ public class CreatorWrapper implements Creator, ModelWrapper<Creator> {
 	}
 
 	@Override
-	public int compareTo(Creator creator) {
+	public int compareTo(de.uhh.l2g.plugins.model.Creator creator) {
 		return _creator.compareTo(creator);
 	}
 
@@ -338,17 +338,17 @@ public class CreatorWrapper implements Creator, ModelWrapper<Creator> {
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<Creator> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Creator> toCacheModel() {
 		return _creator.toCacheModel();
 	}
 
 	@Override
-	public Creator toEscapedModel() {
+	public de.uhh.l2g.plugins.model.Creator toEscapedModel() {
 		return new CreatorWrapper(_creator.toEscapedModel());
 	}
 
 	@Override
-	public Creator toUnescapedModel() {
+	public de.uhh.l2g.plugins.model.Creator toUnescapedModel() {
 		return new CreatorWrapper(_creator.toUnescapedModel());
 	}
 

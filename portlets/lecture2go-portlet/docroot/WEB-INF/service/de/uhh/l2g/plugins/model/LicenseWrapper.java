@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -382,7 +382,7 @@ public class LicenseWrapper implements License, ModelWrapper<License> {
 	}
 
 	@Override
-	public int compareTo(License license) {
+	public int compareTo(de.uhh.l2g.plugins.model.License license) {
 		return _license.compareTo(license);
 	}
 
@@ -392,17 +392,17 @@ public class LicenseWrapper implements License, ModelWrapper<License> {
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<License> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.License> toCacheModel() {
 		return _license.toCacheModel();
 	}
 
 	@Override
-	public License toEscapedModel() {
+	public de.uhh.l2g.plugins.model.License toEscapedModel() {
 		return new LicenseWrapper(_license.toEscapedModel());
 	}
 
 	@Override
-	public License toUnescapedModel() {
+	public de.uhh.l2g.plugins.model.License toUnescapedModel() {
 		return new LicenseWrapper(_license.toUnescapedModel());
 	}
 

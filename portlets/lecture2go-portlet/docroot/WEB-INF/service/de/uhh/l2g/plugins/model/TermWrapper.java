@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -301,7 +301,7 @@ public class TermWrapper implements Term, ModelWrapper<Term> {
 	}
 
 	@Override
-	public int compareTo(Term term) {
+	public int compareTo(de.uhh.l2g.plugins.model.Term term) {
 		return _term.compareTo(term);
 	}
 
@@ -311,17 +311,17 @@ public class TermWrapper implements Term, ModelWrapper<Term> {
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<Term> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Term> toCacheModel() {
 		return _term.toCacheModel();
 	}
 
 	@Override
-	public Term toEscapedModel() {
+	public de.uhh.l2g.plugins.model.Term toEscapedModel() {
 		return new TermWrapper(_term.toEscapedModel());
 	}
 
 	@Override
-	public Term toUnescapedModel() {
+	public de.uhh.l2g.plugins.model.Term toUnescapedModel() {
 		return new TermWrapper(_term.toUnescapedModel());
 	}
 

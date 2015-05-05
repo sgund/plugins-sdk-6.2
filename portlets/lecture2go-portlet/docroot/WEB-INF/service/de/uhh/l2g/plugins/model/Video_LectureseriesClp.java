@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -318,6 +318,10 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 		}
 	}
 
+	public Class<?> getClpSerializerClass() {
+		return _clpSerializerClass;
+	}
+
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
@@ -375,4 +379,5 @@ public class Video_LectureseriesClp extends BaseModelImpl<Video_Lectureseries>
 	private long _lectureseriesId;
 	private int _openAccess;
 	private BaseModel<?> _video_LectureseriesRemoteModel;
+	private Class<?> _clpSerializerClass = de.uhh.l2g.plugins.service.ClpSerializer.class;
 }

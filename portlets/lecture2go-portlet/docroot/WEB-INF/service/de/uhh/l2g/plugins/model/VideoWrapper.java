@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -762,7 +762,7 @@ public class VideoWrapper implements Video, ModelWrapper<Video> {
 	}
 
 	@Override
-	public int compareTo(Video video) {
+	public int compareTo(de.uhh.l2g.plugins.model.Video video) {
 		return _video.compareTo(video);
 	}
 
@@ -772,17 +772,17 @@ public class VideoWrapper implements Video, ModelWrapper<Video> {
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<Video> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Video> toCacheModel() {
 		return _video.toCacheModel();
 	}
 
 	@Override
-	public Video toEscapedModel() {
+	public de.uhh.l2g.plugins.model.Video toEscapedModel() {
 		return new VideoWrapper(_video.toEscapedModel());
 	}
 
 	@Override
-	public Video toUnescapedModel() {
+	public de.uhh.l2g.plugins.model.Video toUnescapedModel() {
 		return new VideoWrapper(_video.toUnescapedModel());
 	}
 

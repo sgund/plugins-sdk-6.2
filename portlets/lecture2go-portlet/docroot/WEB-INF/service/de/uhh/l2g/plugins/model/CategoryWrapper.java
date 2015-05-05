@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -274,7 +274,7 @@ public class CategoryWrapper implements Category, ModelWrapper<Category> {
 	}
 
 	@Override
-	public int compareTo(Category category) {
+	public int compareTo(de.uhh.l2g.plugins.model.Category category) {
 		return _category.compareTo(category);
 	}
 
@@ -284,17 +284,17 @@ public class CategoryWrapper implements Category, ModelWrapper<Category> {
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<Category> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Category> toCacheModel() {
 		return _category.toCacheModel();
 	}
 
 	@Override
-	public Category toEscapedModel() {
+	public de.uhh.l2g.plugins.model.Category toEscapedModel() {
 		return new CategoryWrapper(_category.toEscapedModel());
 	}
 
 	@Override
-	public Category toUnescapedModel() {
+	public de.uhh.l2g.plugins.model.Category toUnescapedModel() {
 		return new CategoryWrapper(_category.toUnescapedModel());
 	}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -551,7 +551,7 @@ public class LectureseriesWrapper implements Lectureseries,
 	}
 
 	@Override
-	public int compareTo(Lectureseries lectureseries) {
+	public int compareTo(de.uhh.l2g.plugins.model.Lectureseries lectureseries) {
 		return _lectureseries.compareTo(lectureseries);
 	}
 
@@ -561,17 +561,17 @@ public class LectureseriesWrapper implements Lectureseries,
 	}
 
 	@Override
-	public com.liferay.portal.model.CacheModel<Lectureseries> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<de.uhh.l2g.plugins.model.Lectureseries> toCacheModel() {
 		return _lectureseries.toCacheModel();
 	}
 
 	@Override
-	public Lectureseries toEscapedModel() {
+	public de.uhh.l2g.plugins.model.Lectureseries toEscapedModel() {
 		return new LectureseriesWrapper(_lectureseries.toEscapedModel());
 	}
 
 	@Override
-	public Lectureseries toUnescapedModel() {
+	public de.uhh.l2g.plugins.model.Lectureseries toUnescapedModel() {
 		return new LectureseriesWrapper(_lectureseries.toUnescapedModel());
 	}
 
