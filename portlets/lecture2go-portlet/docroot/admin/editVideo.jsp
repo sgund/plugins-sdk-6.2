@@ -19,6 +19,8 @@
 <liferay-portlet:resourceURL id="updateSubInstitutions" var="updateSubInstitutionsURL" />
 <liferay-portlet:resourceURL id="getJSONCreator" var="getJSONCreatorURL" />
 <liferay-portlet:resourceURL id="updateupdateOpenAccessForLectureseries" var="updateupdateOpenAccessForLectureseriesURL" />
+<liferay-portlet:resourceURL id="videoUpdateGenerationDate" var="videoUpdateGenerationDateURL" />
+<liferay-portlet:resourceURL id="getGenerationDate" var="getGenerationDateURL" />
 
 <%
 	String actionURL = "";
@@ -48,13 +50,13 @@
 %>
 
 <script type="text/javascript">
-  $("#upload-form").hide();
   $(function(){
-    if(isFirstUpload()==1){
+    if(isFirstUpload()==1 && getDateTime().length==0){
+   	  	$("#date-time-form").fadeIn(1000);
     	$("#upload-form").hide();
     }else{
-  	  $('#date-time-form').hide();
-	  $("#upload-form").fadeIn( 1000 ); 	
+  	  $("#date-time-form").hide();
+	  $("#upload-form").fadeIn(1000); 	
     }
     //
     $('#<portlet:namespace/>datetimepicker').datetimepicker({
@@ -68,40 +70,34 @@
     	step:10
     });
   });
-  
-  function applyDateTime(){
-	  $('#date-time-form').fadeOut( 1000 );
-	  $("#upload-form").fadeIn( 1000 ); 	
-	  $("#l2gDateTime").val( $('#<portlet:namespace/>datetimepicker').val());
-  }
 </script>
 
-<div id="date-time-form">
-	<aui:fieldset helpMessage="test" column="true" label="video-file" >
-		<aui:layout>
-			<aui:input id="datetimepicker" name="datetimepicker" label="chose-date-first"/>
-			<aui:button-row>
-				<aui:button id="apply-date-time" name="apply-date-time" value="apply-date-time" onClick="applyDateTime();"/>
-				<aui:button type="cancel" value="cancel" href="<%=backURL%>"/>
-			</aui:button-row>
-		</aui:layout>
-	</aui:fieldset>
-</div>
-
-<div id="upload-form">
-	<aui:fieldset helpMessage="test" column="true" label="video-file" >
-		<aui:layout>
-			<div>
-				<input id="fileupload" type="file" name="files[]" data-url="/servlet-file-upload/upload" multiple/>
-				<input type="hidden" id="l2gDateTime" value=""/>
-				<br/>
-				<div id="progress" class="progress">
-			    	<div class="bar" style="width: 0%;"></div>
+	<div id="date-time-form">
+		<aui:fieldset helpMessage="test" column="true" label="video-file" >
+			<aui:layout>
+				<aui:input id="datetimepicker" name="datetimepicker" label="chose-date-first"/>
+				<aui:button-row>
+					<aui:button id="apply-date-time" name="apply-date-time" value="apply-date-time" onClick="applyDateTime();"/>
+				</aui:button-row>
+			</aui:layout>
+		</aui:fieldset>
+	</div>
+	
+	<div id="upload-form">
+		<aui:fieldset helpMessage="test" column="true" label="video-file" >
+			<aui:layout>
+				<div>
+					<input id="fileupload" type="file" name="files[]" data-url="/servlet-file-upload/upload" multiple/>
+					<input type="hidden" id="l2gDateTime" value=""/>
+					<br/>
+					<div id="progress" class="progress">
+				    	<div class="bar" style="width: 0%;"></div>
+					</div>
+					<table id="uploaded-files" class="table"></table>
 				</div>
-				<table id="uploaded-files" class="table"></table>
-			</div>
-		</aui:layout>
-	</aui:fieldset>
+			</aui:layout>
+		</aui:fieldset>
+	</div>
 	
 	<aui:fieldset helpMessage="test" column="true" label="video-metadata" >
 		<aui:layout>
@@ -244,7 +240,6 @@
 			</aui:form>
 		</aui:layout>
 	</aui:fieldset>
-</div>
 
 <script type="text/javascript">
 var $options = $( "#options" );
@@ -252,7 +247,7 @@ var $options = $( "#options" );
 $(function () {
 	var lsId = <%=reqLectureseries.getLectureseriesId()%>;
 	if(lsId>0){
-		$options.fadeOut(1000);
+		$options.hide();
 	}
 });
 
@@ -260,9 +255,9 @@ function toggleLectureseries(){
 	var $lId = $( "#<portlet:namespace/>lectureseriesId option:selected" ).val();
 	//
 	if($lId==0){
-		$options.fadeIn( 1000 ); 	
+		$options.fadeIn( 500 ); 	
 	}else{
-		$options.fadeOut(1000);
+		$options.hide();
 	}
 }
 
@@ -331,6 +326,7 @@ $(function () {
         		lectureseriesNumber: "<%=reqLectureseries.getNumber()%>",
         		fileName: "<%=VideoLocalServiceUtil.getVideo(reqVideo.getVideoId()).getFilename()%>",
         		secureFileName: "<%=VideoLocalServiceUtil.getVideo(reqVideo.getVideoId()).getSurl()%>",
+        		l2gDateTime: $("#l2gDateTime").val(),
         };        
     });
    
@@ -567,6 +563,11 @@ function deleteFile(fileName){
 		        var id = "#"+obj.fileId;
 		        $(id).remove();
 	        }
+	        //update view
+	        if (isFirstUpload()==1){
+	      	  	$('#date-time-form').fadeIn( 500 );
+	    	  	$("#upload-form").hide(); 
+	        }
 	    }
 	});	
 }
@@ -618,6 +619,46 @@ function updateCreators(){
 	        $.tmpl( "filesTemplate", data ).appendTo( "#creators" );		    
 		  }
 	})
+}
+
+function applyDateTime(){
+	  var genDate = $('#<portlet:namespace/>datetimepicker').val();
+	  //
+	  $.ajax({
+			  type: "POST",
+			  url: "<%=videoUpdateGenerationDateURL%>",
+			  dataType: 'json',
+			  data: {
+				  <portlet:namespace/>generationDate: genDate,
+			 	  <portlet:namespace/>videoId: "<%=reqVideo.getVideoId()%>"
+			  },
+			  global: false,
+			  async:false,
+			  success: function(data) {
+				  $('#date-time-form').hide();
+				  $("#upload-form").fadeIn(500); 	
+				  $("#l2gDateTime").val(genDate);
+			  }
+	  })
+}
+
+function getDateTime(){
+	var ret ="";
+	  //
+	  $.ajax({
+			  type: "POST",
+			  url: "<%=getGenerationDateURL%>",
+			  dataType: 'json',
+			  data: {
+			 	  <portlet:namespace/>videoId: "<%=reqVideo.getVideoId()%>"
+			  },
+			  global: false,
+			  async:false,
+			  success: function(data) {
+				 ret=data.generationDate; 
+			  }
+	  })
+	  return ret;
 }
 
 function updateSubInstitutions(){
