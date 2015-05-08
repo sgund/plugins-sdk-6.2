@@ -40,7 +40,6 @@
 		<field name="www" type="String" />
 		<field name="level" type="int" />
 		<field name="sort" type="int" />
-		<field name="groupOldId" type="long" />
 		<field name="groupId" type="long" />
 	</model>
 	<model name="de.uhh.l2g.plugins.model.Institution_Host">

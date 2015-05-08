@@ -69,7 +69,6 @@
     	<column name="www" type="String"></column>
     	<column name="level" type="int"></column>
     	<column name="sort" type="int"></column>
-    	<column name="groupOldId" type="long"></column>
         <column name="groupId" type="long"></column>
 		<order by="asc"> <order-column name="sort" />
 		</order>

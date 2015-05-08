@@ -67,7 +67,6 @@
 			<basic name="www" />
 			<basic name="level" />
 			<basic name="sort" />
-			<basic name="groupOldId" />
 			<basic name="groupId" />
 			<transient name="modelAttributes" />
 			<transient name="primaryKey" />

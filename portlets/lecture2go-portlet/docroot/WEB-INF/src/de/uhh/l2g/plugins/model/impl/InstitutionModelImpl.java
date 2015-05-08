@@ -65,10 +65,9 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 			{ "www", Types.VARCHAR },
 			{ "level", Types.INTEGER },
 			{ "sort", Types.INTEGER },
-			{ "groupOldId", Types.BIGINT },
 			{ "groupId", Types.BIGINT }
 		};
-	public static final String TABLE_SQL_CREATE = "create table LG_Institution (institutionId LONG not null primary key,parentId LONG,name VARCHAR(75) null,typ VARCHAR(75) null,www VARCHAR(75) null,level INTEGER,sort INTEGER,groupOldId LONG,groupId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table LG_Institution (institutionId LONG not null primary key,parentId LONG,name VARCHAR(75) null,typ VARCHAR(75) null,www VARCHAR(75) null,level INTEGER,sort INTEGER,groupId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table LG_Institution";
 	public static final String ORDER_BY_JPQL = " ORDER BY institution.sort ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY LG_Institution.sort ASC";
@@ -139,7 +138,6 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 		attributes.put("www", getWww());
 		attributes.put("level", getLevel());
 		attributes.put("sort", getSort());
-		attributes.put("groupOldId", getGroupOldId());
 		attributes.put("groupId", getGroupId());
 
 		return attributes;
@@ -187,12 +185,6 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 
 		if (sort != null) {
 			setSort(sort);
-		}
-
-		Long groupOldId = (Long)attributes.get("groupOldId");
-
-		if (groupOldId != null) {
-			setGroupOldId(groupOldId);
 		}
 
 		Long groupId = (Long)attributes.get("groupId");
@@ -366,16 +358,6 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 	}
 
 	@Override
-	public long getGroupOldId() {
-		return _groupOldId;
-	}
-
-	@Override
-	public void setGroupOldId(long groupOldId) {
-		_groupOldId = groupOldId;
-	}
-
-	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
@@ -435,7 +417,6 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 		institutionImpl.setWww(getWww());
 		institutionImpl.setLevel(getLevel());
 		institutionImpl.setSort(getSort());
-		institutionImpl.setGroupOldId(getGroupOldId());
 		institutionImpl.setGroupId(getGroupId());
 
 		institutionImpl.resetOriginalValues();
@@ -560,8 +541,6 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 
 		institutionCacheModel.sort = getSort();
 
-		institutionCacheModel.groupOldId = getGroupOldId();
-
 		institutionCacheModel.groupId = getGroupId();
 
 		return institutionCacheModel;
@@ -569,7 +548,7 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(17);
 
 		sb.append("{institutionId=");
 		sb.append(getInstitutionId());
@@ -585,8 +564,6 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 		sb.append(getLevel());
 		sb.append(", sort=");
 		sb.append(getSort());
-		sb.append(", groupOldId=");
-		sb.append(getGroupOldId());
 		sb.append(", groupId=");
 		sb.append(getGroupId());
 		sb.append("}");
@@ -596,7 +573,7 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(28);
 
 		sb.append("<model><model-name>");
 		sb.append("de.uhh.l2g.plugins.model.Institution");
@@ -631,10 +608,6 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 		sb.append(getSort());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>groupOldId</column-name><column-value><![CDATA[");
-		sb.append(getGroupOldId());
-		sb.append("]]></column-value></column>");
-		sb.append(
 			"<column><column-name>groupId</column-name><column-value><![CDATA[");
 		sb.append(getGroupId());
 		sb.append("]]></column-value></column>");
@@ -666,7 +639,6 @@ public class InstitutionModelImpl extends BaseModelImpl<Institution>
 	private int _sort;
 	private int _originalSort;
 	private boolean _setOriginalSort;
-	private long _groupOldId;
 	private long _groupId;
 	private long _originalGroupId;
 	private boolean _setOriginalGroupId;

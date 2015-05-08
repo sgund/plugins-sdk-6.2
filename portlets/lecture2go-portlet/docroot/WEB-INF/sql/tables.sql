@@ -160,7 +160,6 @@ create table LG_Segment (
 	userId LONG
 );
 
-<<<<<<< HEAD
 create table LG_Segment_User_Video (
 	segmentId LONG,
 	userId LONG,
@@ -184,8 +183,6 @@ create table LG_ServerTemplate (
 	templateAndroid LONG
 );
 
-=======
->>>>>>> refs/heads/upstream-master
 create table LG_Sys (
 	sysId INTEGER not null primary key,
 	version VARCHAR(75) null,
