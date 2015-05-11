@@ -68,7 +68,7 @@ public class AdminInstitutionManagement extends MVCPortlet {
 			long defaultServerTemplateId = 0;
 
 
-		    List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(groupId);
+		    List<Institution> institutions = InstitutionLocalServiceUtil.getByGroupId(0);
 		    List<Host> host = HostLocalServiceUtil.getByTemplateConfiguredAndGroupId(groupId);
 		    List<ServerTemplate> serverTemplate = ServerTemplateLocalServiceUtil.getByGroupId(0);
 
