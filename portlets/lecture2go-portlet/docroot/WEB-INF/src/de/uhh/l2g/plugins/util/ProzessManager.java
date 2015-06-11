@@ -60,6 +60,7 @@ import de.uhh.l2g.plugins.service.SegmentLocalServiceUtil;
 import de.uhh.l2g.plugins.service.TagcloudLocalServiceUtil;
 import de.uhh.l2g.plugins.service.UploadLocalServiceUtil;
 import de.uhh.l2g.plugins.service.VideoLocalServiceUtil;
+import de.uhh.l2g.plugins.service.Video_CategoryLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_CreatorLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_InstitutionLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_LectureseriesLocalServiceUtil;
@@ -472,6 +473,9 @@ public class ProzessManager {
 		
 		//delete tag cloud for this video
 		TagcloudLocalServiceUtil.deleteByObjectId(video.getVideoId());
+		
+		//delete all categories for video
+		Video_CategoryLocalServiceUtil.removeByVideo(video.getVideoId());
 		return true;
 	}
 	
@@ -608,7 +612,12 @@ public class ProzessManager {
 		// RSS generate for this lecture
 		RSSManager rssMan = new RSSManager();
 		String feedName = "";
-		rssMan.setTitle(LectureseriesLocalServiceUtil.getLectureseries(video.getLectureseriesId()).getName());
+		String title = "";
+		try{
+			title = LectureseriesLocalServiceUtil.getLectureseries(video.getLectureseriesId()).getName();
+		}catch(Exception e){}
+		
+		rssMan.setTitle(title);
 		try {
 			List<Video> videoList = VideoLocalServiceUtil.getByLectureseriesAndOpenaccess(video.getLectureseriesId(), 1);
 			

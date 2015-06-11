@@ -19,12 +19,15 @@ import java.util.List;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.model.ResourceConstants;
+import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 
 import de.uhh.l2g.plugins.HostNameException;
-import de.uhh.l2g.plugins.HostServerTemplateException;
 import de.uhh.l2g.plugins.HostStreamerException;
+import de.uhh.l2g.plugins.HostStreamingServerTemplateException;
 import de.uhh.l2g.plugins.model.Host;
+import de.uhh.l2g.plugins.service.Institution_HostLocalServiceUtil;
 import de.uhh.l2g.plugins.service.base.HostLocalServiceBaseImpl;
 
 /**
@@ -47,46 +50,72 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 	 *
 	 * Never reference this interface directly. Always use {@link de.uhh.l2g.plugins.service.HostLocalServiceUtil} to access the host local service.
 	 */
-	
 
-	public List<Host> getByInstitution(long institutionId) throws SystemException {
-		// TODO Auto-generated method stub
-		return null;
+
+	public Host getByInstitution(long institutionId) throws SystemException{
+		Host h = null;
+		try {
+			h = Institution_HostLocalServiceUtil.getByInstitutionId(institutionId);
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return h;
 	}
 
 	public Host getByHostId(long hostId) throws SystemException{
 		return hostPersistence.fetchByPrimaryKey(hostId);
 	}
-	
-	protected void validate (String name, String streamer, String serverTemplate) throws PortalException {
-	    
+
+	public List<Host> getByGroupId(long groupId) throws SystemException{
+		return hostPersistence.findByGroupId(groupId);
+	}
+
+	public List<Host> getByTemplateConfiguredAndGroupId(long groupId) throws SystemException{
+		return hostPersistence.findByTemplateConfiguredAndGroupId(groupId);
+	}
+
+	public Host getByGroupIdAndHostId(long groupId, long hostId) throws SystemException{
+		return hostPersistence.fetchByG_H(groupId, hostId);
+	}
+
+
+
+	protected void validate (String name, String streamer, long streamingServerTemplateId) throws PortalException {
+
 		if (Validator.isNull(name)) {
 	       throw new HostNameException();
 		 }
-		
-	     if (Validator.isNull(streamer) || !Validator.isDomain(streamer) ) {
+
+	     if (Validator.isNull(streamer) || !Validator.isDomain(streamer) || !Validator.isHostName(streamer) ) {
 	       throw new HostStreamerException();
-	     }     
-	     
-	     if (Validator.isNull(serverTemplate)) {
-	       throw new HostServerTemplateException();
+	     }
+
+	     if (Validator.isNull(streamingServerTemplateId)) {
+	       throw new HostStreamingServerTemplateException();
 	     }
 	}
-	
-	public Host addHost(long userId, String name, String streamer, String serverTemplate,
+
+	public Host addHost(String name, String streamLocation, long streamingServerTemplateId,
 			String protocol, String serverRoot, int port,
 			ServiceContext serviceContext) throws SystemException, PortalException {
-		
-		validate(name,streamer,serverTemplate);
-		
+
+		long groupId = serviceContext.getScopeGroupId();
+		long userId = serviceContext.getUserId();
+
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		//validate(name,streamLocation,streamingServerTemplateId);
+
 
 		long hostId = counterLocalService.increment();
 
 		Host host = hostPersistence.create(hostId);
-		
+
 		host.setName(name);
-		host.setServerTemplate(serverTemplate);
-		host.setStreamer(streamer);
+		host.setGroupId(groupId);
+		host.setStreamingServerTemplateId(streamingServerTemplateId);
+		host.setStreamer(streamLocation);
 		host.setProtocol(protocol);
 		host.setServerRoot(serverRoot);
 		host.setPort(port);
@@ -94,7 +123,25 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 
 		hostPersistence.update(host);
 
+		resourceLocalService.addResources(user.getCompanyId(), groupId, userId,
+			       Host.class.getName(), hostId, false, true, true);
+
 		return host;
 	}
-	
+
+	   public Host deleteHost(long hostId, ServiceContext serviceContext)
+		        throws PortalException, SystemException {
+
+		        Host host = getHost(hostId);
+
+		        resourceLocalService.deleteResource(serviceContext.getCompanyId(),
+		        		Host.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+		        		hostId);
+
+		        host = deleteHost(hostId);
+
+		        return host;
+
+		    }
+
 }

@@ -17,25 +17,20 @@ String backURL = request.getAttribute("backURL").toString();
 <aui:fieldset helpMessage="test" column="true" label='<%=reqVideo.getTitle()%>'>
 	<aui:layout>
 		<aui:form action="<%=addSegmentURL.toString()%>" commandName="model" name="segments" id="segments">
-			<%if(reqVideo.getPermittedToSegment()==0){%>
-				<aui:input name="segmentationPermitted" type="checkbox" label="segmentation allowed" id="segmentationPermitted"/>
-			<%}else{%>
-				<aui:input name="segmentationPermitted" type="checkbox" label="segmentation allowed" id="segmentationPermitted" checked="true"/>
-			<%}%>
-
+		
 			<div class="player">
-				<%@ include file="mediaplayer/includeStrobeMediaPlayer.html"%>
+				<%@ include file="player/includePlayer.html"%>
 			</div>
 			
 		    <aui:input name="segment" value="1" type="radio" label="chapter" id="chapter" checked="true"/>	
 	
 		    <aui:input name="segment" value="0" type="radio" label="comment" id="comment"/>	
 			
-			<aui:input name="chortTitle" label="chort title" required="true" id="chortTitle"/>
+			<aui:input name="chortTitle" label="short title" required="true" id="chortTitle"/>
 	
-			<aui:input name="segmentBegin" label="segment begin" required="true" onclick="updateL2GoTimeForStart();" id="timeStart" readonly="true"/>
+			<aui:input name="segmentBegin" label="segment begin" required="true" id="timeStart" readonly="true"/>
 	
-			<aui:input name="segmentEnd" label="segment end" required="true" onclick="updateL2GoTimeForEnd();" id="timeEnd" readonly="true"/>
+			<aui:input name="segmentEnd" label="segment end" required="true" id="timeEnd" readonly="true"/>
 			
 			<div id="iav">
 				<aui:input name="text" type="textarea" label="text" autoSize="true" id="text"/>
@@ -158,11 +153,9 @@ String backURL = request.getAttribute("backURL").toString();
 				text.hide();
 				var chapter = A.one('#<portlet:namespace/>chapter');
 				var comment = A.one('#<portlet:namespace/>comment');
-				var segmentationPermitted = A.one('#<portlet:namespace/>segmentationPermittedCheckbox');
 				
 				chapter.on('click',function(A){text.hide()});
 				comment.on('click',function(A){text.show()});
-				segmentationPermitted.on('click',function(A){toggleSegmentationPermitted(segmentationPermitted.get('checked'))});
 			}
 	);
 	
@@ -201,25 +194,4 @@ String backURL = request.getAttribute("backURL").toString();
 		);
 	}
 	
-	function toggleSegmentationPermitted(data){
-		AUI().use('aui-io-request', 'aui-node',
-			function(A){
-				A.io.request('<%=toggleSegmentationURL%>', {
-			 	dataType: 'json',
-			 	method: 'POST',
-				 	//send data to server
-				 	data: {
-					 	   	<portlet:namespace/>segmentationPermittedCheckbox: data,
-					 	   	<portlet:namespace/>videoId: A.one('#<portlet:namespace/>videoId').get('value'),
-				 	},
-				 	//get server response
-					on: {
-						   success: function() {
-						     var jsonResponse = this.get('responseData');
-						   }
-					}
-				});	
-			}
-		);
-	}
 </script>

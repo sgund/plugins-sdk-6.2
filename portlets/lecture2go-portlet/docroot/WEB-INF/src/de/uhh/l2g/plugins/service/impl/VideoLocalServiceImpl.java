@@ -127,26 +127,26 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 		try {
 			objectVideo = videoPersistence.findByPrimaryKey(videoId);
 		} catch (NoSuchModelException e1) {
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		} catch (SystemException e1) {
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		}
 		// add all properties to the video object
 		Host objectHost = new HostImpl();
 		try {
 			objectHost = HostLocalServiceUtil.getHost(objectVideo.getHostId());
 		} catch (PortalException e1) {
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		} catch (SystemException e1) {
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		}
 		Producer objectProducer = new ProducerImpl();
 		try {
 			objectProducer = producerPersistence.findByPrimaryKey(objectVideo.getProducerId());
 		} catch (NoSuchProducerException e1) {
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		} catch (SystemException e1) {
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		}
 
 		// prepare video short name
@@ -239,7 +239,7 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 			File fvlFile = new File(homedirPath + ".flv");
 			File oggFile = new File(homedirPath + ".ogg");
 			File webmFile = new File(homedirPath + ".webm");
-			String vttFile = new String(PropsUtil.get("lecture2go.chapters.web.root") +"/"+objectVideo.getVideoId()+".vtt");
+			String vttChapterFile = new String(PropsUtil.get("lecture2go.chapters.web.root") +"/"+objectVideo.getVideoId()+".vtt");
 			//
 			objectVideo.setMp4File(mp4File);
 			objectVideo.setMp3File(mp3File);
@@ -249,7 +249,7 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 			objectVideo.setFlvFile(fvlFile);
 			objectVideo.setOggFile(oggFile);
 			objectVideo.setWebmFile(webmFile);
-			objectVideo.setVttFile(vttFile); 
+			objectVideo.setVttChapterFile(vttChapterFile);
 			//test
 		} catch (Exception e) {
 			//
@@ -260,15 +260,15 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 		try {
 			institudion = institutionPersistence.findByPrimaryKey(objectVideo.getRootInstitutionId());
 		} catch (NoSuchInstitutionException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		} catch (SystemException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		try {
 			if (webhome.contains("localhost"))
 				webhome += "/web/vod";
 			if (institudion.getTyp().equals("tree1"))
-				objectVideo.setUrl(webhome + "/l2go/-/v/" + objectVideo.getVideoId());
+				objectVideo.setUrl(webhome + "/l2go/-/get/v/" + objectVideo.getVideoId());
 		} catch (NoSuchElementException nseex) {
 		}
 		// SURL
@@ -350,6 +350,29 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 			objectVideo.setFlvRssLink(rssFlvLink);
 		}
 		
+		//embed iframe
+		String embedIframe="&lt;iframe src='"+PropsUtil.get("lecture2go.web.root")+"/lecture2go-portlet/player/iframe/?v="+objectVideo.getVideoId()+"' frameborder='0' width='647' height='373'&gt; &lt;/iframe&gt;";
+		objectVideo.setEmbedIframe(embedIframe);
+		
+		//embed html5
+		String embedHtml5="";
+		if(objectVideo.getDownloadLink()==1){
+			if(objectVideo.getContainerFormat().equals("mp4")){
+				if(objectVideo.getOpenAccess()==1){
+					embedHtml5="<video width='647' height='373' controls><source src='"+PropsUtil.get("lecture2go.downloadserver.web.root")+"/abo/"+objectVideo.getPreffix()+".mp4"+"' type='video/mp4'>Your browser does not support the video tag.</video>";
+				}else{
+					embedHtml5="<video width='647' height='373' controls><source src='"+PropsUtil.get("lecture2go.downloadserver.web.root")+"/videorep/"+objectHost.getName()+"/"+objectProducer.getHomeDir()+"/"+objectVideo.getSecureUrl()+"' type='video/mp4'>Your browser does not support the video tag.</video>";
+				}
+			}else{
+				if(objectVideo.getOpenAccess()==1){
+					embedHtml5="<audio controls><source src='"+PropsUtil.get("lecture2go.downloadserver.web.root")+"/abo/"+objectVideo.getPreffix()+".mp3"+"' type='audio/mpeg'>Your browser does not support the audio element.</audio>";
+				}else{
+					embedHtml5="<audio controls><source src='"+PropsUtil.get("lecture2go.downloadserver.web.root")+"/videorep/"+objectHost.getName()+"/"+objectProducer.getHomeDir()+"/"+objectVideo.getSecureUrl()+"' type='audio/mpeg'>Your browser does not support the audio element.</audio>";
+				}				
+			}
+		}
+		objectVideo.setEmbedHtml5(embedHtml5);
+		
 		return objectVideo;
 	}
 	
@@ -372,7 +395,7 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 				jsonoMp4.put("type", "mp4");
 				json.put(jsonoMp4);
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 
@@ -385,7 +408,7 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 				jsonoMp3.put("type", "mp3");
 				json.put(jsonoMp3);
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		
@@ -398,7 +421,7 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 				jsonoM4a.put("type", "m4a");
 				json.put(jsonoM4a);
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			} 
 		}
 
@@ -411,7 +434,7 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 				jsonoM4v.put("type", "m4v");
 				json.put(jsonoM4v);
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		
@@ -424,7 +447,7 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 				pdf.put("type", "pdf");
 				json.put(pdf);
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		
@@ -437,7 +460,7 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 				flv.put("type", "flv");
 				json.put(flv);
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		
@@ -450,7 +473,7 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 				ogg.put("type", "ogg");
 				json.put(ogg);
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		
@@ -463,7 +486,7 @@ public class VideoLocalServiceImpl extends VideoLocalServiceBaseImpl {
 				webm.put("type", "webm");
 				json.put(webm);
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		return json;

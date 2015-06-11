@@ -31,27 +31,53 @@ import de.uhh.l2g.plugins.service.Video_InstitutionLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_LectureseriesLocalServiceUtil;
 
 public class OpenAccessVideos extends MVCPortlet {
-	
+
+	public void addFilter(ActionRequest request, ActionResponse response){
+		String jspPage = request.getParameter("jspPage");
+		Long institutionId = new Long(request.getParameter("institutionId"));
+		Long parentInstitutionId = new Long(request.getParameter("parentInstitutionId"));
+		Long termId = new Long(request.getParameter("termId"));
+		Long categoryId = new Long(request.getParameter("categoryId"));
+		Long creatorId = new Long(request.getParameter("creatorId"));
+
+		response.setRenderParameter("institutionId", institutionId+"");
+		response.setRenderParameter("parentInstitutionId", parentInstitutionId+"");
+		response.setRenderParameter("termId", termId+"");
+		response.setRenderParameter("categoryId", categoryId+"");
+		response.setRenderParameter("creatorId", creatorId+"");
+		response.setRenderParameter("jspPage", jspPage);
+	}
+
 	public void viewOpenAccessVideo(ActionRequest request, ActionResponse response) throws SystemException, PortalException {
-	    Long videoId = ParamUtil.getLong(request, "videoId");
-	    Long lectureseriesId = ParamUtil.getLong(request, "lectureseriesId");
+	    Long objectId = ParamUtil.getLong(request, "objectId");
+	    String objectType = ParamUtil.getString(request, "objectType");
+
+	    Long timeStart = new Long(0);
+	    Long timeEnd = new Long(0);
+	    
+	    try{
+	    	timeStart = new Long(ParamUtil.getString(request, "timeStart"));
+	    	timeEnd = new Long(ParamUtil.getString(request, "timeEnd"));
+	    }catch(Exception e){}
+	   
+	    
 	    Video video = new VideoImpl();
 	    //lecture series object
 	    Lectureseries lectureseries = new LectureseriesImpl();
-	    try{
-	    	lectureseries = LectureseriesLocalServiceUtil.getLectureseries(lectureseriesId);
-	    }catch(Exception e){}
+	    
+	    //Lecture series
+	    if(objectType.equals("l")){
+	    	try{
+	    		lectureseries = LectureseriesLocalServiceUtil.getLectureseries(objectId);
+	    		video = VideoLocalServiceUtil.getFullVideo(lectureseries.getLatestOpenAccessVideoId());
+	    	}catch(Exception e){}
+	    }else if(objectType.equals("v")){
+	    	video = VideoLocalServiceUtil.getFullVideo(objectId);
+	    	try{lectureseries = LectureseriesLocalServiceUtil.getLectureseries(video.getLectureseriesId());}catch(Exception e){}
+	    }
+	    
 	    List<Video> relatedVideos = new ArrayList<Video>();
-	    Long objectId = new Long(0);
-	    	video = VideoLocalServiceUtil.getFullVideo(videoId);
-	    	if(video.getVideoId()>0){
-	    		//video object
-	    		objectId = video.getVideoId();
-	    	}else{
-	    		objectId = lectureseries.getLatestOpenAccessVideoId();
-	    		video = VideoLocalServiceUtil.getFullVideo(objectId);
-	    	}
-    	//related videos by lectureseries id
+	    //related videos by lectureseries id
     	relatedVideos = VideoLocalServiceUtil.getByLectureseriesAndOpenaccess(lectureseries.getLectureseriesId(),1);
 	    
 	    //chapters and segments
@@ -74,6 +100,12 @@ public class OpenAccessVideos extends MVCPortlet {
 	    License l = new LicenseImpl();
 	    l = LicenseLocalServiceUtil.getByVideoId(video.getVideoId());
 	    
+	    //update video hits
+	    Long hits = video.getHits();
+	    hits = hits+1;
+	    video.setHits(hits);
+	    VideoLocalServiceUtil.updateVideo(video);
+	    
 	    request.setAttribute("videoLicense",l);
 	    request.setAttribute("videoMetadata",m);
 	    request.setAttribute("videoInstitutions",vi);
@@ -82,6 +114,8 @@ public class OpenAccessVideos extends MVCPortlet {
 	    request.setAttribute("relatedVideos",relatedVideos);
 	    request.setAttribute("segments",segments);
 	    request.setAttribute("lectureseries",lectureseries);
+	    request.setAttribute("timeStart",timeStart);
+	    request.setAttribute("timeEnd",timeEnd);
 		response.setRenderParameter("jspPage","/guest/videoDetails.jsp");
 	}
 	

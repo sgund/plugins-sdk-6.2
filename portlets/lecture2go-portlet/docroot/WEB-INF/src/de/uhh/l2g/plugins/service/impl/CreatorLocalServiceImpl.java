@@ -14,6 +14,7 @@
 
 package de.uhh.l2g.plugins.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -126,5 +127,9 @@ public class CreatorLocalServiceImpl extends CreatorLocalServiceBaseImpl {
 	
 	public List<Creator> getByFullName(String fullName) throws SystemException{
 		return creatorPersistence.findByFullName(fullName);
+	}
+	
+	public List<Creator> getCreatorsFromLectureseriesIdsAndVideoIds(ArrayList<Long> lectureseriesIds, ArrayList<Long> videoIds) {
+		return CreatorFinderUtil.findCreatorsByLectureseriesIdsAndVideoIds(lectureseriesIds, videoIds);
 	}
 }

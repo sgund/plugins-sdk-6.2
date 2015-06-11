@@ -1,7 +1,10 @@
 package de.uhh.l2g.plugins.service.persistence;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -19,7 +22,8 @@ public class InstitutionFinderImpl extends BasePersistenceImpl<Institution> impl
 
 	public static final String FIND_ALL_SORTED_AS_TREE = InstitutionFinder.class.getName() + ".findAllSortedAsTree";
 	public static final String FIND_FROM_LECTURESERIES = InstitutionFinder.class.getName() + ".findByLectureseriesId";
-	
+	public static final String FIND_MAX_SORT_BY_PARENT = InstitutionFinder.class.getName() + ".findMaxSortByParent";
+
 	public List<Institution> findByLectureseriesId(long lectureseriesId, int begin, int end) {
 		Session session = null;
 		try {
@@ -51,6 +55,8 @@ public class InstitutionFinderImpl extends BasePersistenceImpl<Institution> impl
 		return null;
 	}
 
+
+
 	public List<Institution> findAllSortedAsTree(int begin, int end) {
 		Session session = null;
 		try {
@@ -80,6 +86,109 @@ public class InstitutionFinderImpl extends BasePersistenceImpl<Institution> impl
 		}
 		return null;
 	}
+
+	public int findMaxSortByParent(long parentId) {
+		Session session = null;
+		int out = 0;
+		try {
+			session = openSession();
+			String sql = CustomSQLUtil.get(FIND_MAX_SORT_BY_PARENT);
+			SQLQuery q = session.createSQLQuery(sql);
+			q.addScalar("maxsort", Type.INTEGER);
+			q.setCacheable(false);
+			QueryPos qPos = QueryPos.getInstance(q);
+			qPos.add(parentId);
+			Iterator<?> itr = q.list().iterator();
+
+	        if (itr.hasNext()) {
+	          Integer count = (Integer)itr.next();
+
+	          if (count != null) {
+	            return count.intValue();
+	          }
+	        }
+
+	        return out;
+	      } catch (Exception e) {
+			try {
+				throw new SystemException(e);
+			} catch (SystemException se) {
+				se.printStackTrace();
+			}
+		} finally {
+			closeSession(session);
+		}
+		return out;
+	}
+	
+	public List<Institution> findInstitutionsByLectureseriesIdsAndVideoIds (ArrayList<Long> lectureseriesIds,  ArrayList<Long> videoIds, Long parentId)  {
+		Session session = null;
+		try {
+			session = openSession();
+			String sql = sqlInstitutionsByLectureseriesIdsAndVideoIds(lectureseriesIds,videoIds,parentId);
+			SQLQuery q = session.createSQLQuery(sql);
+			q.addScalar("institutionId", Type.LONG);
+			q.addScalar("parentId", Type.INTEGER);
+			q.addScalar("name", Type.STRING);
+			q.addScalar("typ", Type.STRING);
+			q.addScalar("www", Type.STRING);
+			q.addScalar("level", Type.INTEGER);
+			q.addScalar("sort", Type.INTEGER);
+			q.setCacheable(false);
+			@SuppressWarnings("unchecked")
+			List <Object[]> fl =  (List<Object[]>) QueryUtil.list(q, getDialect(),com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS , com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS);
+			return assembleInstitutions(fl);
+		} catch (Exception e) {
+			try {
+				throw new SystemException(e);
+			} catch (SystemException se) {
+				se.printStackTrace();
+			}
+		} finally {
+			closeSession(session);
+		}
+		return null;
+	}
+	
+	private String sqlInstitutionsByLectureseriesIdsAndVideoIds (ArrayList<Long> lectureseriesIds, ArrayList<Long> videoIds, Long parentId) {
+		boolean hasLectureseries 	= !lectureseriesIds.isEmpty();
+		boolean hasVideos 			= !videoIds.isEmpty();
+		boolean institutionsWanted	= parentId >0;
+		// the query fetches the parentinstitutions or the child institutions depending on the given parentId
+		String institutionQuery = institutionsWanted ? "institutionId" : "institutionParentId";
+		String lquery = "";
+		String vquery = "";
+		
+		if (hasLectureseries) {
+			// convert the list of ids to a comma-seperated string for the sql query
+			String lectureseriesIdsQuery = StringUtils.join(lectureseriesIds, ',');
+			lquery = "SELECT " + institutionQuery + " FROM LG_Lectureseries_Institution WHERE lectureseriesId IN (" + lectureseriesIdsQuery + ")";
+		}
+		if (hasVideos) {
+			// convert the list of ids to a comma-seperated string for the sql query
+			String videoIdsQuery = StringUtils.join(videoIds, ',');
+			vquery = "SELECT " + institutionQuery + " FROM LG_Video_Institution WHERE videoId IN (" + videoIdsQuery + ")";
+		}
+				
+		String query =  "SELECT DISTINCT i.institutionId,i.parentId,i.name,i.typ,i.www,i.level,i.sort FROM (";
+		
+		if (hasLectureseries && hasVideos) {
+			query += lquery + " UNION " + vquery;
+ 		} else if (hasLectureseries) {
+			query += lquery;
+		} else if (hasVideos) {
+			query += vquery;
+		}
+		
+		query += ") AS a JOIN LG_Institution AS i ON a." + institutionQuery + " = i.institutionId";
+		
+		if (institutionsWanted) {
+			query += " WHERE i.parentId = " + parentId.toString();
+		}
+					
+		return query;
+	}
+	
 	
 	private List<Institution> assembleInstitutionsWithPath(List<Object[]> objectList){
 		List<Institution> fl = new ArrayList<Institution>();

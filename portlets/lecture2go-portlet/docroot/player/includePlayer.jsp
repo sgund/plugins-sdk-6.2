@@ -33,23 +33,38 @@
         };
 
         // Start- und Endzeit der Zitatfunktion ermitteln (Durch die URL Parameter)
-        var frameStart = getUrlParameter('start');
-        var frameEnd = getUrlParameter('end');
+        var frameStart = 0;
+        var frameEnd = 0;
+        var fs = <%=timeStart%>;
+        var fe = <%=timeEnd%>;
+        var citationAllowed = <%=video.getCitation2go()%>;
+        
+		if(citationAllowed==1 && fs>0 && fe>fs){
+	        frameStart = <%=timeStart%>;
+	        frameEnd = <%=timeEnd%>;			
+		}
 		
+        var containerFormat = "${video.containerFormat}";
         var desctopStreamUrl ="${video.streamUrl}";
 		var mobileStreamUrl ="${video.streamAndroidUrl}";
-		var mp4OpenAccessDownloadLink ="${video.mp4OpenAccessDownloadLink}";
-		var vttFile ="${video.vttFile}";
+		var openAccessDownloadLink ="";
+		if(containerFormat=="mp4"){
+			openAccessDownloadLink = "${video.mp4OpenAccessDownloadLink}";
+		}else{
+			openAccessDownloadLink = "${video.mp3OpenAccessDownloadLink}";
+		}
+		var vttFile ="${video.vttChapterFile}";
 		
         // Hier wird der JW-Player initialisiert
         // Interessant ist hierbei, dass es mehrere Quellen geben kann
         jwplayer('player1').setup({
             width: "100%",
             aspectratio: "16:9",
+            image: "${video.image}",
             sources: [
             	{ file: mobileStreamUrl },
             	{ file: desctopStreamUrl },
-				{ file: mp4OpenAccessDownloadLink }
+				{ file: openAccessDownloadLink }
             ],
             tracks: [{
                 file: vttFile,
@@ -84,7 +99,7 @@
                 }
             ];
             
-         	// Inputfelder für Start und Ende der Zitate / Kapitel speichern 
+         	// Inputfelder fuer Start und Ende der Zitate / Kapitel speichern 
             var $inputTimeStart = $("#<portlet:namespace></portlet:namespace>timeStart").val("");
             var $inputTimeEnd = $("#<portlet:namespace></portlet:namespace>timeEnd").val("");
             var $citation = $("#<portlet:namespace></portlet:namespace>citation").val("");
