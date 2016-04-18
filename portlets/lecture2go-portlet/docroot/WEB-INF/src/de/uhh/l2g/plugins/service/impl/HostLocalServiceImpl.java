@@ -68,10 +68,6 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 	 */
 
     protected static Log LOG = LogFactoryUtil.getLog(Host.class.getName());	
-    protected static final String SYS_ROOT = "lg_0000";
-    protected static final String SYS_SERVER = "localhost";
-    protected static final String SYS_PROTOCOL = "http";
-    protected static final int SYS_PORT = 80;
 
 	public Host getByInstitution(long institutionId) throws SystemException{
 		Host h = null;
@@ -175,19 +171,19 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 		int port = Integer.valueOf(GetterUtil.getInteger(PropsUtil.get("lecture2go.default.streamingPort")));
         
 		if (streamer.isEmpty()) {
-        	streamer = SYS_SERVER;
+        	streamer = RepositoryManager.SYS_SERVER;
         	LOG.error("Portal property lecture2go.default.streamingHost not set. Using System default!");
         }
         if (protocol.isEmpty()) {
-        	protocol = SYS_PROTOCOL;
+        	protocol = RepositoryManager.SYS_PROTOCOL;
         	LOG.error("Portal property lecture2go.default.streamingProtocol not set. Using System default!");
         }
         if (serverRoot.isEmpty()){
-        	serverRoot = SYS_ROOT;
+        	serverRoot = RepositoryManager.SYS_ROOT;
         	LOG.error("Portal property lecture2go.default.serverRoot not set. Using System default!");
         }
         if (port == 0){
-        	port = SYS_PORT;
+        	port = RepositoryManager.SYS_PORT;
         	LOG.error("Portal property lecture2go.default.streamingPort not set. Using System default!");
         }
 		defaultHost.setStreamer(streamer);
@@ -208,9 +204,7 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 		try {	
 			RepositoryManager.createFolder(PropsUtil.get("lecture2go.media.repository")+"/"+ defaultHost.getServerRoot());
 		} 
-		catch (NoPropertyException e) {
-			LOG.error("System property not configured!", e);
-		}catch (IOException e) {
+		catch (IOException e) {
 			LOG.error("Folder creation failed!", e);
 		}
 
@@ -326,29 +320,33 @@ public class HostLocalServiceImpl extends HostLocalServiceBaseImpl {
 		    }
 	   
 	   public long updateCounter() throws SystemException, PortalException {
-		      Counter counter = CounterLocalServiceUtil.getCounter(Host.class.getName());
+	      		// Initialize counter with a default value liferay suggests
+				//CounterLocalServiceUtil.increment(Host.class.getName());
+				Counter counter = CounterLocalServiceUtil.getCounter(Host.class.getName());
 	   			//check if Database is initialized
+				LOG.info("It's strongly suggested to set portal property: counter.increment."+Host.class.getName()+"=1");
 		        int count = HostLocalServiceUtil.getHostsCount();
 		        long newHostId = 0; //Reset if table is empty
+				long hostId = 0;
+				LOG.info(counter.toString());
 		        if (count > 0){
-			      	// Initialize counter with a default value liferay suggests
-					CounterLocalServiceUtil.increment(Host.class.getName());
-					counter = CounterLocalServiceUtil.getCounter(Host.class.getName());
-		   
+		        	
 					//Retrieve actual table data
 					ClassLoader classLoader = (ClassLoader)PortletBeanLocatorUtil.locate(ClpSerializer.getServletContextName(),"portletClassLoader");    		
 					DynamicQuery query = DynamicQueryFactoryUtil.forClass(Host.class,classLoader).addOrder(OrderFactoryUtil.desc("hostId"));
 					query.setLimit(0,1);
 					List<Host> hosts = HostLocalServiceUtil.dynamicQuery(query);
-					long hostId = 0;
 					if (hosts.size() > 0) hostId = hosts.get(0).getHostId();
-					
-					//Check back with real directory
-					newHostId = java.lang.Math.max(RepositoryManager.getMaximumRealServerRootId(),hostId);
 		        }
+					//Check back with real directory, there might be tons of folders with larger id
+				    newHostId = java.lang.Math.max(RepositoryManager.getMaximumRealServerRootId(),hostId);
+		        
 				//write Counter
-				counter.setCurrentId(newHostId);
-				CounterLocalServiceUtil.updateCounter(counter);
+				 LOG.info(newHostId +" "+hostId);
+				if (newHostId > counter.getCurrentId() || count == 0){
+					counter.setCurrentId(newHostId+1);
+					CounterLocalServiceUtil.updateCounter(counter);
+				}
 				
 				return newHostId;
 					
