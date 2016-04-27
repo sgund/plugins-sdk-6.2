@@ -110,8 +110,8 @@ public class ThreadManagement extends MVCPortlet {
 			  //Make sure to use the appropriate Message Consumer 
 			  ClassLoader classLoader = PortletClassLoaderUtil.getClassLoader(serviceContext.getPortletId()); //Where portletID is not null
 			  PortletScheduler scheduler = (PortletScheduler) classLoader.loadClass(schedulerClassName).newInstance();
-			  scheduler.initScheduler(schedulerClassName, serviceContext.getPortletId());
-			  //System.out.println(scheduler.getPortletId());
+			  scheduler.initScheduler(schedulerClassName, serviceContext);
+			 
 			  scheduler.start();
 
 		 } catch (Exception e) {
@@ -141,7 +141,7 @@ public class ThreadManagement extends MVCPortlet {
 			  //Make sure to use the appropriate Message Consumer 
 			  ClassLoader classLoader = PortletClassLoaderUtil.getClassLoader(serviceContext.getPortletId()); //Where portletID is not null
 			  PortletScheduler scheduler = (PortletScheduler) classLoader.loadClass(schedulerClassName).newInstance();
-			  scheduler.initScheduler(schedulerClassName, serviceContext.getPortletId());
+			  scheduler.initScheduler(schedulerClassName, serviceContext);
 			  //System.out.println(scheduler.getPortletId());
 			  scheduler.resume();
 
@@ -172,7 +172,7 @@ public class ThreadManagement extends MVCPortlet {
 			  ClassLoader classLoader = PortletClassLoaderUtil.getClassLoader(serviceContext.getPortletId()); //Where portletID is not null
 			  PortletScheduler scheduler = (PortletScheduler) classLoader.loadClass(schedulerClassName).newInstance();
 			  
-			  scheduler.initScheduler(schedulerClassName, serviceContext.getPortletId());
+			  scheduler.initScheduler(schedulerClassName, serviceContext);
 			  //System.out.println(scheduler.getPortletId());
 			  
 			  scheduler.pause();
@@ -207,7 +207,7 @@ public class ThreadManagement extends MVCPortlet {
 			  ClassLoader classLoader = PortletClassLoaderUtil.getClassLoader(serviceContext.getPortletId()); //Where portletID is not null
 			  PortletScheduler scheduler = (PortletScheduler) classLoader.loadClass(schedulerClassName).newInstance();
 			  
-			  scheduler.initScheduler(schedulerClassName, serviceContext.getPortletId());
+			  scheduler.initScheduler(schedulerClassName, serviceContext);
 			  //System.out.println(scheduler.getPortletId());
 			  
 			  scheduler.update();
@@ -240,7 +240,7 @@ public class ThreadManagement extends MVCPortlet {
 			  ClassLoader classLoader = PortletClassLoaderUtil.getClassLoader(serviceContext.getPortletId()); //Where portletID is not null
 			  PortletScheduler scheduler = (PortletScheduler) classLoader.loadClass(schedulerClassName).newInstance();
 			  
-			  scheduler.initScheduler(schedulerClassName, serviceContext.getPortletId());
+			  scheduler.initScheduler(schedulerClassName, serviceContext);
 			  System.out.println(scheduler.getPortletId());
 			  
 			  scheduler.unschedule();
@@ -272,7 +272,7 @@ public class ThreadManagement extends MVCPortlet {
 			  ClassLoader classLoader = PortletClassLoaderUtil.getClassLoader(serviceContext.getPortletId()); //Where portletID is not null
 			  PortletScheduler scheduler = (PortletScheduler) classLoader.loadClass(schedulerClassName).newInstance();
 			  
-			  scheduler.initScheduler(schedulerClassName, serviceContext.getPortletId());
+			  scheduler.initScheduler(schedulerClassName, serviceContext);
 			  System.out.println(scheduler.getPortletId());
 			  
 			  scheduler.stop();
