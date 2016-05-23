@@ -1,3 +1,4 @@
+<%@page import="de.uhh.l2g.plugins.model.Host"%>
 <%@include file="/init.jsp"%>
 
 <jsp:useBean id="reqLectureseriesList" type="java.util.List<de.uhh.l2g.plugins.model.Lectureseries>" scope="request" />
@@ -47,6 +48,16 @@
 
 	Map<String,String> subInstitutions = new LinkedHashMap<String, String>();
 	subInstitutions = InstitutionLocalServiceUtil.getByParent(reqVideo.getRootInstitutionId());
+	List<Institution> producersSubInstitutions = InstitutionLocalServiceUtil.getByParentId(reqProducer.getInstitutionId());
+	ListIterator<Institution> itPSI = producersSubInstitutions.listIterator();
+	//video upload path
+	//is first upload:
+	String uploadRepository="";
+
+	Host host = new HostImpl();	
+	host = HostLocalServiceUtil.getByHostId(reqVideo.getHostId());
+	uploadRepository=PropsUtil.get("lecture2go.media.repository")+"/"+host.getServerRoot()+"/"+reqProducer.getIdNum();
+	
 %>
 
 <script type="text/javascript">
@@ -134,16 +145,16 @@
 				
 				<div id="options">
 					<aui:select id="subInstitutionId" size="1" name="subInstitutionId" label="sub-institution">
-						<aui:option value="" selected="true"><liferay-ui:message key="select-lecture-series"/></aui:option>
+						<aui:option value="" selected="true"><liferay-ui:message key="select-sub-institution"/></aui:option>
 					<%
 					Long subInstitutionId = new Long(0);
 					try{subInstitutionId = Video_InstitutionLocalServiceUtil.getByVideo(reqVideo.getVideoId()).get(0).getInstitutionId();}catch (Exception e){}
 					
-					for (Map.Entry<String, String> f : subInstitutions.entrySet()) {
-					if(f.getKey().equals(subInstitutionId.toString())){
-						%><aui:option value='<%=f.getKey()%>'><%=f.getValue()%></aui:option>
-						<%}
-					}%>
+					while(itPSI.hasNext()){
+						Institution i = itPSI.next();
+						%><aui:option value='<%=i.getInstitutionId()%>'><%=i.getName()%></aui:option><%
+					}
+					%>
 					</aui:select>
 					
 					<div class="subInstitutions" >
@@ -247,8 +258,8 @@
 				</div>
 				
 				<aui:button-row>
-					<aui:button value="apply-changes" onclick="applyAllMetadataChanges()"/>
-					<aui:button type="cancel" value="go-to-overview" href="<%=backURL%>"/>
+					<aui:button value="apply-changes" onclick="applyAllMetadataChanges()" cssClass="btn-primary"/>
+					<aui:button type="cancel" value="cancel" href="<%=backURL%>"/>
 				</aui:button-row>
 				
 				<aui:input name="videoId" type="hidden" value="<%=reqVideo.getVideoId()%>"/>
@@ -341,12 +352,14 @@ $(function () {
     }).bind('fileuploadsubmit', function (e, data) {
         // The example input, doesn't have to be part of the upload form:
         data.formData = {
-        		repository: "<%=reqProducer.getHomeDir()%>",
+        		//p.setHomeDir(PropsUtil.get("lecture2go.media.repository")+"/"+HostLocalServiceUtil.getByHostId(p.getHostId()).getServerRoot()+"/"+p.getHomeDir());
+        		repository: "<%=uploadRepository%>",
         		openaccess: "<%=reqVideo.getOpenAccess()%>",
         		lectureseriesNumber: "<%=reqLectureseries.getNumber()%>",
         		fileName: "<%=VideoLocalServiceUtil.getVideo(reqVideo.getVideoId()).getFilename()%>",
         		secureFileName: "<%=VideoLocalServiceUtil.getVideo(reqVideo.getVideoId()).getSecureFilename()%>",
         		l2gDateTime: $("#l2gDateTime").val(),
+        		videoId: "<%=reqVideo.getVideoId()%>",
         };        
     });
    
@@ -532,12 +545,10 @@ function applyAllMetadataChanges(){
 			'aui-node',
 			function(A) {
 					// Select the node(s) using a css selector string
-				    var license1 = A.one('#<portlet:namespace/>ccbyncsa');
-				    var license2 = A.one('#<portlet:namespace/>uhhl2go');
-				    
+				    var license = A.one("input[name=<portlet:namespace/>license]:checked").get("value");
+				    //alert(license2.get('value'));
 				    updateDescription(descData);
-				    updateLicense(license1.get('value'));
-				    updateLicense(license2.get('value'));
+				    updateLicense(license);
 				    updateCreators();
 				    updateSubInstitutions();
 				    updateMetadata();//last place, important!

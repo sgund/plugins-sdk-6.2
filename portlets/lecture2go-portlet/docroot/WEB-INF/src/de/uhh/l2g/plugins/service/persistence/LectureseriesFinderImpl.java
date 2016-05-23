@@ -20,6 +20,7 @@ import de.uhh.l2g.plugins.model.Lectureseries;
 import de.uhh.l2g.plugins.model.Video;
 import de.uhh.l2g.plugins.model.Video_Lectureseries;
 import de.uhh.l2g.plugins.model.impl.LectureseriesImpl;
+import de.uhh.l2g.plugins.service.VideoLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_LectureseriesLocalServiceUtil;
 
 public class LectureseriesFinderImpl extends BasePersistenceImpl<Lectureseries> implements LectureseriesFinder {
@@ -365,8 +366,11 @@ public class LectureseriesFinderImpl extends BasePersistenceImpl<Lectureseries> 
 				l.setLatestVideoUploadDate(date);
 			}catch (Exception e){}
 			try{
-				List<Video_Lectureseries> nV = Video_LectureseriesLocalServiceUtil.getByLectureseries(l.getLectureseriesId()); 
-				l.setNumberOfVideos(nV.size());
+				Integer nV = Video_LectureseriesLocalServiceUtil.getNumberOfVideosByLectureseries(l.getLectureseriesId());
+				Integer nOAV = Video_LectureseriesLocalServiceUtil.getNumberOfVideosByLectureseriesAndOpenAccess(l.getLectureseriesId(), 1);
+				
+				l.setNumberOfVideos(nV);
+				l.setNumberOfOpenAccessVideos(nOAV);
 			}catch (Exception e){}
 			// 
 			ll.add(l);

@@ -445,6 +445,13 @@
         <finder name="Lectureseries" return-type="Collection">
             <finder-column name="lectureseriesId"></finder-column>
         </finder>
+        <finder name="Openaccess" return-type="Collection">
+            <finder-column name="openAccess"></finder-column>
+        </finder>
+        <finder name="LectureseriesAndOpenAccess" return-type="Collection">
+            <finder-column name="lectureseriesId"></finder-column>
+            <finder-column name="openAccess"></finder-column>
+        </finder>
     </entity>
     <entity name="Term" local-service="true" remote-service="false">
 
@@ -602,16 +609,16 @@
     </entity>
     <entity name="Statistic" local-service="true"
     	remote-service="false">
-
-    	<column name="statisticId" type="long" primary="true"></column>
-	    <column name="groupId" type="long"></column>
-    	<column name="companyId" type="long"></column>
+        <column name="createDate" type="Date"></column>
         <column name="publicVideos" type="int"></column>
         <column name="privateVideos" type="int"></column>
         <column name="autofillRow" type="int"></column>
+
+    	<column name="statisticId" type="long" primary="true" id-type="increment"></column>
+	    <column name="groupId" type="long"></column>
+    	<column name="companyId" type="long"></column>
     	<column name="userId" type="long"></column>
     	<column name="userName" type="String"></column>
-    	<column name="createDate" type="Date"></column>
     	<column name="modifiedDate" type="Date"></column>
         <finder name="StatisticId" return-type="Statistic">
             <finder-column name="statisticId"></finder-column>
@@ -663,6 +670,10 @@
         <column name="currentPrivPercent" type="int"></column>
         <column name="intervalName" type="String"></column>
     	<!-- Finder methods -->
+        <column name="publicDiff" type="int"></column>
+        <column name="privateDiff" type="int"></column>
+        <column name="totalDiff" type="int"></column>
+        <column name="dateDiff" type="int"></column>
         <finder name="CompanyIdAndGroupId" return-type="Collection">
             <finder-column name="groupId"></finder-column>
             <finder-column name="companyId"></finder-column>

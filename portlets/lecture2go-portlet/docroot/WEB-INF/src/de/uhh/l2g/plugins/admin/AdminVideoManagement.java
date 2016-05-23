@@ -72,7 +72,6 @@ import de.uhh.l2g.plugins.service.Video_CategoryLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_CreatorLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_InstitutionLocalServiceUtil;
 import de.uhh.l2g.plugins.service.Video_LectureseriesLocalServiceUtil;
-import de.uhh.l2g.plugins.util.AutocompleteManager;
 import de.uhh.l2g.plugins.util.FFmpegManager;
 import de.uhh.l2g.plugins.util.ProzessManager;
 import de.uhh.l2g.plugins.util.Security;
@@ -330,14 +329,9 @@ public class AdminVideoManagement extends MVCPortlet {
 				}
 				String thumbnailLocation = PropsUtil.get("lecture2go.images.system.path") + "/" + image;
 				//delete old thumbs
-				String thumbPreffLoc = thumbnailLocation.split(".jpg")[0];
-				File f1 = new File(thumbnailLocation);
-				File f2 = new File(thumbPreffLoc + "_s.jpg");
-				File f3 = new File(thumbPreffLoc + "_m.jpg");
-				f1.delete();
-				f2.delete();
-				f3.delete();
-				//and and thumbs for segments
+				ProzessManager pm = new ProzessManager();
+				pm.deleteThumbnails(video);
+				//and thumbs for segments
 				// delete all segment images from repository location
 				try{
 					List<Segment> segmentList = SegmentLocalServiceUtil.getSegmentsByVideoId(video.getVideoId());
@@ -348,7 +342,8 @@ public class AdminVideoManagement extends MVCPortlet {
 					e.printStackTrace();
 				} catch (NullPointerException e){
 					e.printStackTrace();
-				}				
+				}	
+				//
 				FFmpegManager.createThumbnail(fileLocation, thumbnailLocation);
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -505,14 +500,14 @@ public class AdminVideoManagement extends MVCPortlet {
 			} catch (SystemException e) {
 //				System.out.println(e);
 			}
-			
+			//rebuild rss
+			// generate RSS
+			ProzessManager pm = new ProzessManager();
+			for (String f: pm.MEDIA_FORMATS) {           
+				pm.generateRSS(video, f);
+			}			
 			JSONObject json = JSONFactoryUtil.createJSONObject();
 			//generate new JSON date for auto complete functionality
-//			try {
-//				AutocompleteManager.generateAutocompleteResults();
-//			} catch (SystemException e) {
-//				e.printStackTrace();
-//			}
 			writeJSON(resourceRequest, resourceResponse, json);
 		}
 
@@ -555,8 +550,13 @@ public class AdminVideoManagement extends MVCPortlet {
 			license.setCcbyncsa(0);
 			license.setL2go(0);
 			//save next
-			if(licens.equals("uhhl2go"))license.setL2go(1);
-			if(licens.equals("ccbyncsa"))license.setCcbyncsa(1);
+			if(licens.equals("uhhl2go")){
+				license.setL2go(1);
+				license.setCcbyncsa(0);
+			}else{
+				license.setL2go(0);
+				license.setCcbyncsa(1);				
+			}
 			try {
 				LicenseLocalServiceUtil.updateLicense(license);
 				logger.info("LICENSE_UPDATE_SUCCESS");
@@ -921,12 +921,6 @@ public class AdminVideoManagement extends MVCPortlet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//generate new JSON date for auto complete functionality
-//		try {
-//			AutocompleteManager.generateAutocompleteResults();
-//		} catch (SystemException e) {
-//			e.printStackTrace();
-//		}
 	}
 	
 	public void lockVideo(ActionRequest request, ActionResponse response){
@@ -948,12 +942,6 @@ public class AdminVideoManagement extends MVCPortlet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//generate new JSON date for auto complete functionality
-//		try {
-//			AutocompleteManager.generateAutocompleteResults();
-//		} catch (SystemException e) {
-//			e.printStackTrace();
-//		}
 	}
 	
 	public void unlockVideo(ActionRequest request, ActionResponse response){
@@ -975,12 +963,6 @@ public class AdminVideoManagement extends MVCPortlet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//generate new JSON date for auto complete functionality
-//		try {
-//			AutocompleteManager.generateAutocompleteResults();
-//		} catch (SystemException e) {
-//			e.printStackTrace();
-//		}
 	}
 	
 	public void activateDownload(ActionRequest request, ActionResponse response) throws SystemException, PortalException{
